@@ -12,8 +12,10 @@ let MD=JSON.parse(localStorage.getItem('sk_masjid')||'null')||MASJID;
 let KD=JSON.parse(localStorage.getItem('sk_kempen')||'null')||KEMPEN;
 let favs=JSON.parse(localStorage.getItem('sk_favs')||'[]');
 let hist=JSON.parse(localStorage.getItem('sk_hist')||'[]');
+let localMasjid=JSON.parse(localStorage.getItem('sk_local_masjid')||'[]'); // user-scanned collection
 let cur=null;
 let curK=null;
+let scanPending=null; // holds parsed EMVCo data before user confirms
 
 const T={
   bm:{
@@ -222,10 +224,17 @@ function toggleColl(el){
 function renderSearch(q=''){
   const el=document.getElementById('searchList');
   if(!el) return;
-  const filtered = MD.filter(m => 
+
+  // Merge official + user-scanned collection
+  const allMasjid = [
+    ...MD,
+    ...localMasjid.filter(lm => !MD.find(m => m.id === lm.id))
+  ];
+
+  const filtered = allMasjid.filter(m => 
     m.name.toLowerCase().includes(q.toLowerCase()) || 
-    m.state.toLowerCase().includes(q.toLowerCase()) || 
-    m.mukim.toLowerCase().includes(q.toLowerCase())
+    (m.state||'').toLowerCase().includes(q.toLowerCase()) || 
+    (m.mukim||'').toLowerCase().includes(q.toLowerCase())
   );
   
   if(!filtered.length){
@@ -233,7 +242,15 @@ function renderSearch(q=''){
     return;
   }
   
-  el.innerHTML = filtered.map(m => `<div class="fcard" data-id="${m.id}"><div class="fico">🕌</div><div class="finfo"><div class="fname">${m.name}</div><div class="floc">${m.mukim}, ${m.state}</div></div><span style="color:var(--teal);opacity:.6;font-size:20px">›</span></div>`).join('');
+  el.innerHTML = filtered.map(m => `
+    <div class="fcard" data-id="${m.id}">
+      <div class="fico">${m.verified ? '🕌' : '🔖'}</div>
+      <div class="finfo">
+        <div class="fname">${m.name}${!m.verified ? ' <span style="font-size:9px;color:#ffc800;font-weight:600;">● LOKAL</span>' : ''}</div>
+        <div class="floc">${m.mukim||''}${m.state ? ', '+m.state : ''}</div>
+      </div>
+      <span style="color:var(--teal);opacity:.6;font-size:20px">›</span>
+    </div>`).join('');
   bindCards();
 }
 
@@ -246,7 +263,9 @@ function bindCards(){
         curK = KD.find(x=>x.id===el.dataset.id);
         m = MD.find(x=>x.id===curK.masjidId);
       } else {
-        m = MD.find(x=>x.id===el.dataset.id) || favs.find(f=>f.id===el.dataset.id);
+        m = MD.find(x=>x.id===el.dataset.id)
+          || favs.find(f=>f.id===el.dataset.id)
+          || localMasjid.find(l=>l.id===el.dataset.id);
       }
       if(m){ cur=m; openQR(); }
     };
@@ -359,6 +378,122 @@ async function refreshData(){
   }catch(e){}
 }
 
+// ── EMVCo QR Parser ─────────────────────────────────────────────
+function parseEMVCo(raw) {
+  const result = {};
+  let i = 0;
+  try {
+    while (i < raw.length) {
+      const tag = raw.substring(i, i+2);
+      const len = parseInt(raw.substring(i+2, i+4), 10);
+      const val = raw.substring(i+4, i+4+len);
+      result[tag] = val;
+      i += 4 + len;
+    }
+  } catch(e) {}
+  return result;
+}
+
+function processScannedQR(rawString) {
+  const parsed = parseEMVCo(rawString);
+  const name = parsed['59'] || '';
+  const city = parsed['60'] || '';
+  const postal = parsed['61'] || '';
+  const country = parsed['58'] || 'MY';
+
+  if (!name) {
+    showToast('QR tidak dikenali sebagai DuitNow');
+    return;
+  }
+
+  scanPending = {
+    id: 'local_' + Date.now(),
+    name: name,
+    state: city,
+    mukim: city,
+    postal: postal,
+    country: country,
+    duitnow: rawString, // store full EMVCo string for QR regeneration
+    verified: false,
+    verifiedSource: 'user-scan',
+    scannedAt: new Date().toISOString()
+  };
+
+  closeScan();
+
+  // Show confirm sheet
+  document.getElementById('addName').textContent = name;
+  document.getElementById('addCity').textContent = city + (postal ? ', ' + postal : '');
+  document.getElementById('addProxy').textContent = rawString.length > 60 ? rawString.substring(0, 60) + '...' : rawString;
+  document.getElementById('addMasjidModal').classList.add('open');
+}
+
+// ── Scanner Controls ─────────────────────────────────────────────
+let html5Scanner = null;
+
+function openScan() {
+  document.getElementById('scanModal').classList.add('open');
+  try {
+    html5Scanner = new Html5Qrcode('qr-reader');
+    html5Scanner.start(
+      { facingMode: 'environment' },
+      { fps: 10, qrbox: { width: 250, height: 250 } },
+      (decodedText) => { processScannedQR(decodedText); },
+      () => {}
+    ).catch(() => showToast('Kamera tidak dapat diakses'));
+  } catch(e) {
+    showToast('Scanner tidak tersedia');
+  }
+}
+
+function closeScan() {
+  document.getElementById('scanModal').classList.remove('open');
+  if (html5Scanner) {
+    html5Scanner.stop().catch(()=>{});
+    html5Scanner = null;
+  }
+}
+
+// ── Confirm Add Scanned Masjid ────────────────────────────────────
+function confirmAddMasjid() {
+  if (!scanPending) return;
+  // Add to local collection
+  const exists = localMasjid.find(m => m.name === scanPending.name);
+  if (exists) {
+    showToast('Sudah disimpan!');
+  } else {
+    localMasjid.push(scanPending);
+    localStorage.setItem('sk_local_masjid', JSON.stringify(localMasjid));
+    // Also add to favs so user can donate immediately
+    if (!favs.find(f => f.id === scanPending.id)) {
+      favs.push(scanPending);
+      localStorage.setItem('sk_favs', JSON.stringify(favs));
+    }
+    updStats();
+    renderMI();
+    showToast('✅ ' + scanPending.name + ' disimpan!');
+  }
+  scanPending = null;
+  document.getElementById('addMasjidModal').classList.remove('open');
+}
+
+function submitToAdmin() {
+  if (!scanPending) return;
+  const data = scanPending;
+  const msg = encodeURIComponent(
+    '🕌 *Cadangan Masjid Baru*\n\n' +
+    '*Nama:* ' + data.name + '\n' +
+    '*Lokasi:* ' + data.mukim + ', ' + data.postal + '\n' +
+    '*QR String:* ' + data.duitnow + '\n' +
+    '*Masa Imbas:* ' + new Date(data.scannedAt).toLocaleString('ms-MY') + '\n\n' +
+    'Sila sahkan dan tambah ke dalam direktori SedekahKu.'
+  );
+  // Submit via WhatsApp to admin — update number as needed
+  window.open('https://wa.me/60123456789?text=' + msg, '_blank');
+  // Also save locally
+  confirmAddMasjid();
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('btnShuffle').onclick = shuffleM;
   document.getElementById('btnInfaq').onclick = openQR;
@@ -376,6 +511,15 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('nav-btn-kempen').onclick = () => goTab('kempen');
   document.getElementById('nav-btn-myinfaq').onclick = () => goTab('myinfaq');
   
+  document.getElementById('btnScan').onclick = openScan;
+  document.getElementById('btnCancelScan').onclick = closeScan;
+  document.getElementById('btnConfirmAdd').onclick = confirmAddMasjid;
+  document.getElementById('btnSubmitAdmin').onclick = submitToAdmin;
+  document.getElementById('btnCancelAdd').onclick = () => {
+    scanPending = null;
+    document.getElementById('addMasjidModal').classList.remove('open');
+  };
+
   const sInput = document.getElementById('searchInput');
   if(sInput) sInput.oninput = (e) => renderSearch(e.target.value);
 
