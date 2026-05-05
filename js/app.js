@@ -127,11 +127,37 @@ function openQR(){
   }catch(e){
     c.innerHTML='<div style="width:200px;height:200px;display:flex;align-items:center;justify-content:center;color:#093C5D;font-size:11px;text-align:center;padding:10px">'+cur.duitnow+'</div>';
   }
+  updFavBtn();
   document.getElementById('qrModal').classList.add('open');
 }
 
 function closeQR(){
   document.getElementById('qrModal').classList.remove('open');
+}
+
+function updFavBtn(){
+  const btn = document.getElementById('btnFavToggle');
+  if(!btn || !cur) return;
+  const isFav = !!favs.find(f => f.id === cur.id);
+  btn.textContent = isFav ? '💔 Buang dari Kegemaran' : '❤️ Simpan sebagai Kegemaran';
+  btn.style.color = isFav ? '#ff4d4d' : 'var(--teal)';
+  btn.style.borderColor = isFav ? 'rgba(255,77,77,.3)' : 'var(--border)';
+}
+
+function toggleFav(){
+  if(!cur) return;
+  const idx = favs.findIndex(f => f.id === cur.id);
+  if(idx >= 0){
+    favs.splice(idx, 1);
+    showToast('Dibuang dari kegemaran');
+  } else {
+    favs.push(cur);
+    showToast('❤️ Disimpan sebagai kegemaran!');
+  }
+  localStorage.setItem('sk_favs', JSON.stringify(favs));
+  updStats();
+  renderMI();
+  updFavBtn();
 }
 
 function confirmPay(){
@@ -531,6 +557,7 @@ function submitToAdmin() {
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('btnShuffle').onclick = shuffleM;
   document.getElementById('btnInfaq').onclick = openQR;
+  document.getElementById('btnFavToggle').onclick = toggleFav;
   document.getElementById('btnSimpan').onclick = saveFav;
   document.getElementById('btnKongsi').onclick = shareM;
   document.getElementById('btnLain').onclick = () => goTab('search');
