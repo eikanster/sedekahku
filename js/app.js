@@ -488,8 +488,8 @@ function submitToAdmin() {
     '*Masa Imbas:* ' + new Date(data.scannedAt).toLocaleString('ms-MY') + '\n\n' +
     'Sila sahkan dan tambah ke dalam direktori SedekahKu.'
   );
-  // Submit via WhatsApp to admin — update number as needed
-  window.open('https://wa.me/60123456789?text=' + msg, '_blank');
+  // Submit via Telegram to admin
+  window.open('https://t.me/kawantelegram?text=' + msg, '_blank');
   // Also save locally
   confirmAddMasjid();
 }
