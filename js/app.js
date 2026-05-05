@@ -24,15 +24,15 @@ const T={
     mi:'Rekod',
     'lbl-hariini':'Masjid Hari Ini',
     'lbl-kempen-title':'Kempen Aktif',
-    'lbl-fav-title':'Masjid Disimpan',
+    'lbl-fav-title':'❤️ Masjid Kegemaran',
     'lbl-hist-title':'Rekod Infaq',
     'lbl-simpan':'Simpan',
     'lbl-kongsi':'Kongsi',
     'lbl-lain':'Cari',
     'lbl-stat1':'Masjid Disimpan',
     'lbl-stat2':'Infaq Dicatat',
-    'lbl-hist-infaq':'Infaq Masjid',
-    'lbl-hist-kempen':'Infaq Kempen',
+    'lbl-hist-infaq':'Sejarah Infaq Masjid',
+    'lbl-hist-kempen':'Sejarah Infaq Kempen',
     'menu-lbl1':'Rekod',
     'menu-lbl2':'Tetapan',
     'menu-history':'Rekod Infaq',
@@ -57,15 +57,15 @@ const T={
     mi:'History',
     'lbl-hariini':"Today's Masjid",
     'lbl-kempen-title':'Active Campaigns',
-    'lbl-fav-title':'Saved Masjid',
+    'lbl-fav-title':'❤️ Fav Masjid',
     'lbl-hist-title':'Infaq History',
     'lbl-simpan':'Save',
     'lbl-kongsi':'Share',
     'lbl-lain':'Search',
     'lbl-stat1':'Saved Masjid',
     'lbl-stat2':'Infaq Recorded',
-    'lbl-hist-infaq':'Masjid Infaq',
-    'lbl-hist-kempen':'Campaign Infaq',
+    'lbl-hist-infaq':'Masjid Infaq History',
+    'lbl-hist-kempen':'Campaign Infaq History',
     'menu-lbl1':'Records',
     'menu-lbl2':'Settings',
     'menu-history':'Infaq History',
@@ -328,7 +328,7 @@ function toggleLang(){
 }
 
 function applyLang(){
-  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-hist-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','menu-lbl1','menu-lbl2','menu-history','menu-lang','menu-export','lbl-hist-infaq','lbl-hist-kempen'].forEach(id=>{
+  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','menu-lbl1','menu-lbl2','menu-history','menu-lang','menu-export','lbl-hist-infaq','lbl-hist-kempen'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.textContent=t(id);
   });
