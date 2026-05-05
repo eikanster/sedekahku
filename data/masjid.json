@@ -1,0 +1,20 @@
+[
+  {
+    "id": "sgmy001",
+    "name": "Masjid Negara",
+    "state": "WP Kuala Lumpur",
+    "mukim": "Kuala Lumpur",
+    "duitnow": "MASJIDNEGARA@PUBLIC",
+    "verified": true,
+    "verifiedSource": "official"
+  },
+  {
+    "id": "sgmy002",
+    "name": "Masjid Sultan Salahuddin Abdul Aziz Shah",
+    "state": "Selangor",
+    "mukim": "Shah Alam",
+    "duitnow": "MASJIDSHAHALAM@PUBLIC",
+    "verified": true,
+    "verifiedSource": "official"
+  }
+]
