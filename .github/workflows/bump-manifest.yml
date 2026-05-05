@@ -1,0 +1,44 @@
+name: Bump data version in manifest.json
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/masjid.json'
+      - 'data/kempen.json'
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update manifest.json versions
+        run: |
+          TODAY=$(date +%Y-%m-%d)
+          CHANGED=$(git diff --name-only HEAD~1 HEAD)
+          
+          # Read current manifest
+          MANIFEST=$(cat manifest.json)
+          
+          # Bump masjid version if changed
+          if echo "$CHANGED" | grep -q "data/masjid.json"; then
+            MANIFEST=$(echo "$MANIFEST" | jq --arg d "$TODAY" '.files.masjid = $d | .dataVersion = $d')
+            echo "Bumped masjid version to $TODAY"
+          fi
+          
+          # Bump kempen version if changed
+          if echo "$CHANGED" | grep -q "data/kempen.json"; then
+            MANIFEST=$(echo "$MANIFEST" | jq --arg d "$TODAY" '.files.kempen = $d | .dataVersion = $d')
+            echo "Bumped kempen version to $TODAY"
+          fi
+          
+          echo "$MANIFEST" > manifest.json
+
+      - name: Commit updated manifest
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add manifest.json
+          git diff --staged --quiet || git commit -m "chore: auto-bump manifest version [skip ci]"
+          git push
