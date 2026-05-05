@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><meta name="theme-color" content="#093C5D"/>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="theme-color" content="#093C5D"/>
 <title>SedekahKu</title>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -19,7 +20,6 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
 .logo{font-family:'Amiri',serif;font-size:26px;color:var(--mint)}.logo span{color:var(--teal)}
 .hdr-r{display:flex;gap:8px;align-items:center}
 .lang-btn{background:var(--card);border:1px solid var(--border);color:var(--teal);font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:600;padding:5px 10px;border-radius:20px;cursor:pointer;letter-spacing:.5px;transition:all .2s}
-.lang-btn:hover{background:rgba(111,209,215,.15)}
 .mbtn{background:none;border:none;color:var(--fg);cursor:pointer;width:36px;height:36px;display:flex;flex-direction:column;justify-content:center;gap:5px;padding:6px}
 .mbtn span{display:block;height:2px;background:var(--fg);border-radius:2px}
 .screens{flex:1;overflow:hidden;position:relative}
@@ -28,49 +28,52 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
 .screen::-webkit-scrollbar{width:3px}.screen::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 .slbl{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin:24px 0 12px}
 .hero{background:linear-gradient(135deg,rgba(59,117,151,.3),rgba(9,60,93,.5));border:1px solid var(--border);border-radius:var(--r);padding:28px 24px;margin-top:8px;position:relative;overflow:hidden}
-.hero::before{content:'🕌';position:absolute;font-size:100px;right:-15px;top:-10px;opacity:.12}
+.hero::before{content:'🕌';position:absolute;font-size:100px;right:-15px;top:-10px;opacity:.12;pointer-events:none}
 .hdate{font-family:'Amiri',serif;font-size:13px;color:var(--teal);margin-bottom:6px}
 .mname{font-family:'Amiri',serif;font-size:28px;font-weight:700;line-height:1.2;margin-bottom:4px}
 .mloc{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:4px;margin-bottom:20px}
 .mloc svg{width:12px;height:12px}
-.btn-i{background:linear-gradient(135deg,var(--mint),var(--teal));color:var(--dark);border:none;padding:14px;border-radius:50px;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;width:100%;box-shadow:0 4px 20px rgba(93,248,216,.3);animation:pulse 3s infinite}
-@keyframes pulse{0%,100%{box-shadow:0 4px 20px rgba(93,248,216,.3)}50%{box-shadow:0 4px 30px rgba(93,248,216,.5)}}
+.btn-i{background:linear-gradient(135deg,var(--mint),var(--teal));color:var(--dark);border:none;padding:14px;border-radius:50px;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;width:100%;box-shadow:0 4px 20px rgba(93,248,216,.3);animation:pulse 3s infinite;transition:transform .15s}
+.btn-i:active{transform:scale(.97)}
+@keyframes pulse{0%,100%{box-shadow:0 4px 20px rgba(93,248,216,.3)}50%{box-shadow:0 4px 32px rgba(93,248,216,.55)}}
 .arow{display:flex;gap:10px;margin-top:10px}
 .btn-s{flex:1;background:var(--card);border:1px solid var(--border);color:var(--fg);padding:11px;border-radius:var(--rs);font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s}
 .btn-s:hover{background:rgba(111,209,215,.1);border-color:rgba(111,209,215,.3)}
+.btn-s:active{transform:scale(.96)}
 .sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
 .scard{background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:16px}
 .snum{font-size:22px;font-weight:700;color:var(--mint)}.slb{font-size:11px;color:var(--muted);margin-top:2px}
-.kov{position:fixed;inset:0;z-index:100;background:rgba(6,43,68,.9);backdrop-filter:blur(12px);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .3s}
+.kov{position:fixed;inset:0;z-index:100;background:rgba(6,43,68,.92);backdrop-filter:blur(12px);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .3s}
 .kov.open{opacity:1;pointer-events:all}
 .ksh{background:var(--navy);border:1px solid var(--border);border-bottom:none;border-radius:28px 28px 0 0;padding:28px 24px 48px;width:100%;transform:translateY(100%);transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
 .kov.open .ksh{transform:none}
 .khdl{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px}
 .ktit{font-family:'Amiri',serif;font-size:22px;font-weight:700;text-align:center;margin-bottom:4px}
 .ksub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:24px}
-#qrc{background:#fff;border-radius:16px;padding:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;width:fit-content}
+#qrc{background:#fff;border-radius:16px;padding:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;width:fit-content;min-height:240px}
 .dbadge{display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(93,248,216,.1);border:1px solid rgba(93,248,216,.2);border-radius:50px;padding:10px 20px;margin-bottom:20px}
 .dbadge span{font-size:13px;color:var(--mint);font-weight:500}
-.btn-db{background:linear-gradient(135deg,var(--mint),var(--teal));color:var(--dark);border:none;padding:16px;border-radius:50px;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;width:100%}
+.btn-db{background:linear-gradient(135deg,var(--mint),var(--teal));color:var(--dark);border:none;padding:16px;border-radius:50px;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;width:100%;transition:transform .15s}
+.btn-db:active{transform:scale(.98)}
 .kcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:12px;cursor:pointer;transition:all .2s}
 .kcard:hover{border-color:rgba(111,209,215,.35);transform:translateY(-1px)}
+.kcard:active{transform:scale(.99)}
 .kbadge{display:inline-block;background:rgba(93,248,216,.15);color:var(--mint);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:10px}
 .ktitle{font-family:'Amiri',serif;font-size:19px;font-weight:700;margin-bottom:6px;line-height:1.3}
 .kmsj{font-size:12px;color:var(--muted);margin-bottom:14px}
 .pbar{background:rgba(255,255,255,.08);border-radius:50px;height:6px;margin-bottom:8px;overflow:hidden}
 .pfill{height:100%;border-radius:50px;background:linear-gradient(90deg,var(--teal),var(--mint))}
 .plbls{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
-.plbls strong{color:var(--mint)}
-.kdl{font-size:11px;color:var(--muted);margin-top:10px}
+.plbls strong{color:var(--mint)}.kdl{font-size:11px;color:var(--muted);margin-top:10px}
 .empty{text-align:center;padding:60px 20px}
 .eico{font-size:64px;margin-bottom:16px;opacity:.5}
 .etit{font-family:'Amiri',serif;font-size:22px;margin-bottom:8px;color:var(--teal)}
 .edesc{font-size:14px;color:var(--muted);line-height:1.6}
 .fcard{background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s}
 .fcard:hover{border-color:rgba(111,209,215,.35)}
+.fcard:active{transform:scale(.99)}
 .fico{width:44px;height:44px;background:linear-gradient(135deg,var(--mid),var(--light));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.finfo{flex:1;min-width:0}
-.fname{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.finfo{flex:1;min-width:0}.fname{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .floc{font-size:12px;color:var(--muted);margin-top:2px}
 .hi{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border)}
 .hdot{width:8px;height:8px;background:var(--mint);border-radius:50%;flex-shrink:0}
@@ -97,10 +100,8 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 .screen.active>*{animation:fu .4s ease both}
-.screen.active>*:nth-child(1){animation-delay:.05s}
-.screen.active>*:nth-child(2){animation-delay:.1s}
-.screen.active>*:nth-child(3){animation-delay:.15s}
-.screen.active>*:nth-child(4){animation-delay:.2s}
+.screen.active>*:nth-child(1){animation-delay:.05s}.screen.active>*:nth-child(2){animation-delay:.1s}
+.screen.active>*:nth-child(3){animation-delay:.15s}.screen.active>*:nth-child(4){animation-delay:.2s}
 </style>
 </head>
 <body>
@@ -117,9 +118,9 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
   <div class="screen active" id="screen-hariini">
     <div class="slbl" id="lbl-hariini">Masjid Hari Ini</div>
     <div class="hero">
-      <div class="hdate" id="hijriDate">⏳</div>
-      <div class="mname" id="masjidName">—</div>
-      <div class="mloc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-8-7.5-8-12a8 8 0 1 1 16 0c0 4.5-8 12-8 12z"/><circle cx="12" cy="9" r="2.5"/></svg><span id="masjidLoc">—</span></div>
+      <div class="hdate" id="hijriDate">📅 Memuatkan...</div>
+      <div class="mname" id="masjidName">Memuatkan...</div>
+      <div class="mloc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-8-7.5-8-12a8 8 0 1 1 16 0c0 4.5-8 12-8 12z"/><circle cx="12" cy="9" r="2.5"/></svg><span id="masjidLoc">Malaysia</span></div>
       <button class="btn-i" id="btnInfaq" onclick="openQR()">💚 Infaq Sekarang</button>
       <div class="arow">
         <button class="btn-s" onclick="saveFav()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span id="lbl-simpan">Simpan</span></button>
@@ -134,7 +135,7 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
   </div>
   <div class="screen" id="screen-kempen">
     <div class="slbl" id="lbl-kempen-title">Kempen Aktif</div>
-    <div id="kempenList"><div style="text-align:center;padding:40px;color:var(--muted)">⏳</div></div>
+    <div id="kempenList"><div style="text-align:center;padding:40px;color:var(--muted)">⏳ Memuatkan kempen...</div></div>
   </div>
   <div class="screen" id="screen-myinfaq">
     <div class="slbl" id="lbl-fav-title">Masjid Disimpan</div>
@@ -172,49 +173,161 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
 </div>
 <div class="toast" id="toast"></div>
 <script>
+// Inline fallback data — app works immediately without network
+const FALLBACK_MASJID = [
+  {id:"sgmy001",name:"Masjid Negara",state:"WP Kuala Lumpur",mukim:"Kuala Lumpur",duitnow:"MASJIDNEGARA@PUBLIC",verified:true},
+  {id:"sgmy002",name:"Masjid Sultan Salahuddin Abdul Aziz Shah",state:"Selangor",mukim:"Shah Alam",duitnow:"MASJIDSHAHALAM@PUBLIC",verified:true}
+];
+const FALLBACK_KEMPEN = [
+  {id:"kmp001",title:"Tabung Pembinaan Masjid Negara",masjidId:"sgmy001",description:"Kempen naik taraf Masjid Negara",targetAmount:500000,raisedAmount:125000,startDate:"2026-05-01",endDate:"2026-08-31",active:true}
+];
+
 let lang=localStorage.getItem('sk_lang')||'bm';
-let MD=JSON.parse(localStorage.getItem('sk_masjid')||'[]');
-let KD=JSON.parse(localStorage.getItem('sk_kempen')||'[]');
+let MD=JSON.parse(localStorage.getItem('sk_masjid')||'null')||FALLBACK_MASJID;
+let KD=JSON.parse(localStorage.getItem('sk_kempen')||'null')||FALLBACK_KEMPEN;
 let favs=JSON.parse(localStorage.getItem('sk_favs')||'[]');
 let hist=JSON.parse(localStorage.getItem('sk_hist')||'[]');
 let cur=null;
-const T={bm:{hi:'Hari Ini',km:'Kempen',mi:'My Infaq','lbl-hariini':'Masjid Hari Ini','lbl-kempen-title':'Kempen Aktif','lbl-fav-title':'Masjid Disimpan','lbl-hist-title':'Rekod Infaq','lbl-simpan':'Simpan','lbl-kongsi':'Kongsi','lbl-lain':'Lain','lbl-stat1':'Masjid Disimpan','lbl-stat2':'Infaq Dicatat','menu-lbl1':'Rekod','menu-lbl2':'Tetapan','menu-history':'Rekod Infaq','menu-lang':'Tukar Bahasa','menu-export':'Eksport Data',bi:'💚 Infaq Sekarang',db:'✅ Dah Bayar!',qs:'Imbas QR DuitNow untuk infaq',ts:'❤️ Disimpan!',ta:'Sudah disimpan!',tr:'🎉 Infaq dicatat! Semoga diberkati.',te:'📋 Data disalin!',ef:'Belum ada masjid disimpan',efd:'Tekan Simpan pada mana-mana masjid.',eh:'Belum ada rekod infaq',ehd:'Tekan "Dah Bayar!" selepas infaq.'},en:{hi:'Today',km:'Campaigns',mi:'My Infaq','lbl-hariini':"Today's Masjid",'lbl-kempen-title':'Active Campaigns','lbl-fav-title':'Saved Masjid','lbl-hist-title':'Infaq History','lbl-simpan':'Save','lbl-kongsi':'Share','lbl-lain':'Other','lbl-stat1':'Saved Masjid','lbl-stat2':'Infaq Recorded','menu-lbl1':'Records','menu-lbl2':'Settings','menu-history':'Infaq History','menu-lang':'Switch Language','menu-export':'Export Data',bi:'💚 Donate Now',db:'✅ Done Paying!',qs:'Scan DuitNow QR to donate',ts:'❤️ Saved!',ta:'Already saved!',tr:'🎉 Infaq recorded! May it be blessed.',te:'📋 Data copied!',ef:'No saved masjid yet',efd:'Tap Save on any masjid.',eh:'No infaq records yet',ehd:'Tap "Done Paying!" after each infaq.'}};
+
+const T={
+  bm:{hi:'Hari Ini',km:'Kempen',mi:'My Infaq','lbl-hariini':'Masjid Hari Ini','lbl-kempen-title':'Kempen Aktif','lbl-fav-title':'Masjid Disimpan','lbl-hist-title':'Rekod Infaq','lbl-simpan':'Simpan','lbl-kongsi':'Kongsi','lbl-lain':'Lain','lbl-stat1':'Masjid Disimpan','lbl-stat2':'Infaq Dicatat','menu-lbl1':'Rekod','menu-lbl2':'Tetapan','menu-history':'Rekod Infaq','menu-lang':'Tukar Bahasa','menu-export':'Eksport Data',bi:'💚 Infaq Sekarang',db:'✅ Dah Bayar!',qs:'Imbas QR DuitNow untuk infaq',ts:'❤️ Disimpan!',ta:'Sudah disimpan!',tr:'🎉 Infaq dicatat! Semoga diberkati.',te:'📋 Data disalin!',ef:'Belum ada masjid disimpan',efd:'Tekan Simpan pada mana-mana masjid.',eh:'Belum ada rekod infaq',ehd:'Tekan "Dah Bayar!" selepas infaq.'},
+  en:{hi:'Today',km:'Campaigns',mi:'My Infaq','lbl-hariini':"Today's Masjid",'lbl-kempen-title':'Active Campaigns','lbl-fav-title':'Saved Masjid','lbl-hist-title':'Infaq History','lbl-simpan':'Save','lbl-kongsi':'Share','lbl-lain':'Other','lbl-stat1':'Saved Masjid','lbl-stat2':'Infaq Recorded','menu-lbl1':'Records','menu-lbl2':'Settings','menu-history':'Infaq History','menu-lang':'Switch Language','menu-export':'Export Data',bi:'💚 Donate Now',db:'✅ Done Paying!',qs:'Scan DuitNow QR to donate',ts:'❤️ Saved!',ta:'Already saved!',tr:'🎉 Infaq recorded! May it be blessed.',te:'📋 Data copied!',ef:'No saved masjid yet',efd:'Tap Save on any masjid.',eh:'No infaq records yet',ehd:'Tap Done Paying after each infaq.'}
+};
 const t=k=>(T[lang]||T.bm)[k]||k;
+
+// Load fresh data from GitHub in background — fix: manifest.json at ROOT, data files in data/
 async function loadData(){
   try{
-    const ver=JSON.parse(localStorage.getItem('sk_ver')||'{}');
-    const mf=await fetch('data/manifest.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>null);
+    const mf=await fetch('manifest.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>null);
     if(mf){
-      if(mf.files.masjid!==ver.masjid){const d=await fetch('data/masjid.json?v='+mf.files.masjid).then(r=>r.json()).catch(()=>[]);if(d.length){MD=d;localStorage.setItem('sk_masjid',JSON.stringify(d));}}
-      if(mf.files.kempen!==ver.kempen){const d=await fetch('data/kempen.json?v='+mf.files.kempen).then(r=>r.json()).catch(()=>[]);if(d.length){KD=d;localStorage.setItem('sk_kempen',JSON.stringify(d));}}
+      const ver=JSON.parse(localStorage.getItem('sk_ver')||'{}');
+      if(mf.files.masjid!==ver.masjid){
+        const d=await fetch('data/masjid.json?v='+mf.files.masjid).then(r=>r.json()).catch(()=>null);
+        if(d&&d.length){MD=d;localStorage.setItem('sk_masjid',JSON.stringify(d));}
+      }
+      if(mf.files.kempen!==ver.kempen){
+        const d=await fetch('data/kempen.json?v='+mf.files.kempen).then(r=>r.json()).catch(()=>null);
+        if(d&&d.length){KD=d;localStorage.setItem('sk_kempen',JSON.stringify(d));}
+      }
       localStorage.setItem('sk_ver',JSON.stringify(mf.files));
     }
   }catch(e){}
-  renderHI();renderK();
+  // Re-render with fresh data
+  cur=dailyM();updHero();renderK();
 }
-function dailyM(){if(!MD.length)return null;const s=new Date().toISOString().slice(0,10).replace(/-/g,'');let h=0;for(let c of s)h=((h<<5)-h)+c.charCodeAt(0);return MD[Math.abs(h)%MD.length];}
+
+function dailyM(){
+  if(!MD.length)return null;
+  const s=new Date().toISOString().slice(0,10).replace(/-/g,'');
+  let h=0;for(const c of s)h=((h<<5)-h)+c.charCodeAt(0);
+  return MD[Math.abs(h)%MD.length];
+}
 function randomM(){if(!MD.length)return;cur=MD[Math.floor(Math.random()*MD.length)];updHero();}
-function updHero(){if(!cur){document.getElementById('masjidName').textContent='—';return;}document.getElementById('masjidName').textContent=cur.name;document.getElementById('masjidLoc').textContent=cur.mukim+', '+cur.state;}
-function hijri(){try{return new Date().toLocaleDateString('ms-MY-u-ca-islamic',{day:'numeric',month:'long',year:'numeric'});}catch{return new Date().toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long'});}}
-function renderHI(){document.getElementById('hijriDate').textContent=hijri();cur=dailyM();updHero();updStats();}
+function updHero(){
+  if(!cur)return;
+  document.getElementById('masjidName').textContent=cur.name;
+  document.getElementById('masjidLoc').textContent=cur.mukim+', '+cur.state;
+}
+function hijri(){
+  try{return new Date().toLocaleDateString('ms-MY-u-ca-islamic',{day:'numeric',month:'long',year:'numeric'});}
+  catch{return new Date().toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long'});}
+}
 function updStats(){document.getElementById('sFav').textContent=favs.length;document.getElementById('sInfaq').textContent=hist.length;}
-function openQR(){if(!cur)return;document.getElementById('qrName').textContent=cur.name;document.getElementById('qrDN').textContent=cur.duitnow;document.getElementById('qrSub').textContent=t('qs');document.getElementById('btnDB').textContent=t('db');const c=document.getElementById('qrc');c.innerHTML='';try{new QRCode(c,{text:cur.duitnow,width:200,height:200,colorDark:'#093C5D',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});}catch(e){c.innerHTML='<div style="width:200px;height:200px;display:flex;align-items:center;justify-content:center;color:#093C5D;font-size:12px;text-align:center">'+cur.duitnow+'</div>';}document.getElementById('qrModal').classList.add('open');}
+
+function openQR(){
+  if(!cur)return;
+  document.getElementById('qrName').textContent=cur.name;
+  document.getElementById('qrDN').textContent=cur.duitnow;
+  document.getElementById('qrSub').textContent=t('qs');
+  document.getElementById('btnDB').textContent=t('db');
+  const c=document.getElementById('qrc');
+  c.innerHTML='';
+  try{
+    new QRCode(c,{text:cur.duitnow,width:200,height:200,colorDark:'#093C5D',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});
+  }catch(e){
+    c.innerHTML='<div style="width:200px;height:200px;display:flex;align-items:center;justify-content:center;color:#093C5D;font-size:11px;text-align:center;padding:10px">'+cur.duitnow+'</div>';
+  }
+  document.getElementById('qrModal').classList.add('open');
+}
 function closeQR(){document.getElementById('qrModal').classList.remove('open');}
-function confirmPay(){if(!cur)return;const r={id:cur.id,name:cur.name,loc:cur.mukim+', '+cur.state,date:new Date().toISOString(),disp:new Date().toLocaleDateString('ms-MY',{day:'numeric',month:'short',year:'numeric'})};hist.unshift(r);localStorage.setItem('sk_hist',JSON.stringify(hist));closeQR();toast(t('tr'));updStats();renderMI();}
-function renderK(){const el=document.getElementById('kempenList');if(!KD.length){el.innerHTML='<div class="empty"><div class="eico">📋</div><div class="etit">'+(lang==='bm'?'Tiada kempen aktif':'No active campaigns')+'</div></div>';return;}el.innerHTML=KD.filter(k=>k.active).map(k=>{const p=k.raisedAmount?Math.min(100,Math.round(k.raisedAmount/k.targetAmount*100)):0;const dl=Math.ceil((new Date(k.endDate)-new Date())/864e5);const m=MD.find(x=>x.id===k.masjidId);return'<div class="kcard" onclick="kQR(''+k.id+'')"><div class="kbadge">AKTIF</div><div class="ktitle">'+k.title+'</div><div class="kmsj">🕌 '+(m?m.name:k.masjidId)+'</div><div class="pbar"><div class="pfill" style="width:'+p+'%"></div></div><div class="plbls"><span>'+p+'%</span><span>RM <strong>'+(k.targetAmount/1000).toFixed(0)+'k</strong></span></div><div class="kdl">⏰ '+(dl>0?dl+(lang==='bm'?' hari lagi':' days left'):(lang==='bm'?'Tamat':'Ended'))+'</div></div>';}).join('');}
+function confirmPay(){
+  if(!cur)return;
+  const r={id:cur.id,name:cur.name,loc:cur.mukim+', '+cur.state,date:new Date().toISOString(),disp:new Date().toLocaleDateString('ms-MY',{day:'numeric',month:'short',year:'numeric'})};
+  hist.unshift(r);
+  localStorage.setItem('sk_hist',JSON.stringify(hist));
+  closeQR();toast(t('tr'));updStats();renderMI();
+}
+
+function renderK(){
+  const el=document.getElementById('kempenList');
+  const active=KD.filter(k=>k.active);
+  if(!active.length){el.innerHTML='<div class="empty"><div class="eico">📋</div><div class="etit">'+(lang==='bm'?'Tiada kempen aktif':'No active campaigns')+'</div></div>';return;}
+  el.innerHTML=active.map(k=>{
+    const p=k.raisedAmount?Math.min(100,Math.round(k.raisedAmount/k.targetAmount*100)):0;
+    const dl=Math.ceil((new Date(k.endDate)-new Date())/864e5);
+    const m=MD.find(x=>x.id===k.masjidId);
+    return '<div class="kcard" onclick="kQR(''+k.id+'')"><div class="kbadge">AKTIF</div><div class="ktitle">'+k.title+'</div><div class="kmsj">🕌 '+(m?m.name:k.masjidId)+'</div><div class="pbar"><div class="pfill" style="width:'+p+'%"></div></div><div class="plbls"><span>'+p+'% terkumpul</span><span>RM <strong>'+(k.targetAmount/1000).toFixed(0)+'k</strong></span></div><div class="kdl">⏰ '+(dl>0?dl+(lang==='bm'?' hari lagi':' days left'):(lang==='bm'?'Tamat':'Ended'))+'</div></div>';
+  }).join('');
+}
 function kQR(id){const k=KD.find(x=>x.id===id);if(!k)return;const m=MD.find(x=>x.id===k.masjidId);if(!m)return;cur=m;openQR();}
-function renderMI(){const fe=document.getElementById('favList');fe.innerHTML=favs.length?favs.map(f=>'<div class="fcard" onclick="favQR(''+f.id+'')"><div class="fico">🕌</div><div class="finfo"><div class="fname">'+f.name+'</div><div class="floc">'+f.mukim+', '+f.state+'</div></div><span style="color:var(--teal);opacity:.6">›</span></div>').join(''):'<div class="empty"><div class="eico">🕌</div><div class="etit">'+t('ef')+'</div><div class="edesc">'+t('efd')+'</div></div>';const he=document.getElementById('histList');he.innerHTML=hist.length?hist.slice(0,20).map(h=>'<div class="hi"><div class="hdot"></div><div class="hinfo"><div class="hname">'+h.name+'</div><div class="hdate2">'+h.disp+'</div></div><span style="color:var(--mint)">✓</span></div>').join(''):'<div style="text-align:center;padding:20px 0;color:var(--muted);font-size:13px">'+t('eh')+'<br/><small>'+t('ehd')+'</small></div>';}
+
+function renderMI(){
+  const fe=document.getElementById('favList');
+  fe.innerHTML=favs.length
+    ?favs.map(f=>'<div class="fcard" onclick="favQR(''+f.id+'')"><div class="fico">🕌</div><div class="finfo"><div class="fname">'+f.name+'</div><div class="floc">'+f.mukim+', '+f.state+'</div></div><span style="color:var(--teal);opacity:.6;font-size:20px">›</span></div>').join('')
+    :'<div class="empty"><div class="eico">🕌</div><div class="etit">'+t('ef')+'</div><div class="edesc">'+t('efd')+'</div></div>';
+  const he=document.getElementById('histList');
+  he.innerHTML=hist.length
+    ?hist.slice(0,20).map(h=>'<div class="hi"><div class="hdot"></div><div class="hinfo"><div class="hname">'+h.name+'</div><div class="hdate2">'+h.disp+'</div></div><span style="color:var(--mint)">✓</span></div>').join('')
+    :'<div style="text-align:center;padding:20px 0;color:var(--muted);font-size:13px">'+t('eh')+'<br/><small>'+t('ehd')+'</small></div>';
+}
 function favQR(id){const m=favs.find(f=>f.id===id);if(!m)return;cur=m;openQR();}
-function saveFav(){if(!cur)return;if(favs.find(f=>f.id===cur.id)){toast(t('ta'));return;}favs.push(cur);localStorage.setItem('sk_favs',JSON.stringify(favs));toast(t('ts'));updStats();renderMI();}
-function goTab(n,b){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));document.getElementById('screen-'+n).classList.add('active');if(b)b.classList.add('active');if(n==='myinfaq')renderMI();}
+function saveFav(){
+  if(!cur)return;
+  if(favs.find(f=>f.id===cur.id)){toast(t('ta'));return;}
+  favs.push(cur);localStorage.setItem('sk_favs',JSON.stringify(favs));
+  toast(t('ts'));updStats();renderMI();
+}
+function goTab(n,b){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));
+  document.getElementById('screen-'+n).classList.add('active');
+  if(b)b.classList.add('active');
+  if(n==='myinfaq')renderMI();
+}
 function toggleMenu(){document.getElementById('smenu').classList.toggle('open');}
 function toggleLang(){lang=lang==='bm'?'en':'bm';localStorage.setItem('sk_lang',lang);applyLang();}
-function applyLang(){['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-hist-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','menu-lbl1','menu-lbl2','menu-history','menu-lang','menu-export'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t(id);});document.getElementById('btnInfaq').textContent=t('bi');document.getElementById('langBtn').textContent=lang==='bm'?'EN':'BM';document.getElementById('nav-hariini').textContent=t('hi');document.getElementById('nav-kempen').textContent=t('km');document.getElementById('nav-myinfaq').textContent=t('mi');document.documentElement.lang=lang==='bm'?'ms':'en';renderK();renderMI();}
-function shareM(){if(!cur)return;const tx='🕌 Jom infaq ke '+cur.name+'!\nDuitNow: '+cur.duitnow+'\n\nhttps://eikanster.github.io/sedekahku';if(navigator.share){navigator.share({title:'SedekahKu',text:tx});}else navigator.clipboard.writeText(tx).then(()=>toast('📋 Disalin!'));}
-function exportD(){navigator.clipboard.writeText(JSON.stringify({favs,hist,exported:new Date().toISOString()},null,2)).then(()=>toast(t('te'))).catch(()=>toast('Gagal'));}
-function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2800);}
+function applyLang(){
+  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-hist-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','menu-lbl1','menu-lbl2','menu-history','menu-lang','menu-export'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t(id);});
+  document.getElementById('btnInfaq').textContent=t('bi');
+  document.getElementById('langBtn').textContent=lang==='bm'?'EN':'BM';
+  document.getElementById('nav-hariini').textContent=t('hi');
+  document.getElementById('nav-kempen').textContent=t('km');
+  document.getElementById('nav-myinfaq').textContent=t('mi');
+  document.documentElement.lang=lang==='bm'?'ms':'en';
+  renderK();renderMI();
+}
+function shareM(){
+  if(!cur)return;
+  const tx='🕌 Jom infaq ke '+cur.name+'!\nDuitNow: '+cur.duitnow+'\n\nhttps://eikanster.github.io/sedekahku';
+  if(navigator.share){navigator.share({title:'SedekahKu',text:tx});}
+  else navigator.clipboard.writeText(tx).then(()=>toast('📋 Disalin!'));
+}
+function exportD(){
+  navigator.clipboard.writeText(JSON.stringify({favs,hist,exported:new Date().toISOString()},null,2))
+    .then(()=>toast(t('te'))).catch(()=>toast('Gagal'));
+}
+function toast(msg){
+  const el=document.getElementById('toast');el.textContent=msg;
+  el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2800);
+}
+
+// Init — render immediately with fallback data, then refresh from network
+document.getElementById('hijriDate').textContent=hijri();
+cur=dailyM();updHero();updStats();renderK();renderMI();applyLang();
+loadData(); // background refresh
+
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
-applyLang();loadData();
 </script>
 </body>
 </html>
