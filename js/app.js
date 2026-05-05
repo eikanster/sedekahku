@@ -432,12 +432,24 @@ function processScannedQR(rawString) {
 let html5Scanner = null;
 
 function openScan() {
+  // Reset to options view
+  const qrReader = document.getElementById('qr-reader');
+  qrReader.style.display = 'none';
+  qrReader.innerHTML = '';
+  document.getElementById('scanOptions').style.display = 'flex';
   document.getElementById('scanModal').classList.add('open');
+}
+
+function startLiveScan() {
+  const qrReader = document.getElementById('qr-reader');
+  document.getElementById('scanOptions').style.display = 'none';
+  qrReader.style.display = 'block';
+  qrReader.style.minHeight = '220px';
   try {
     html5Scanner = new Html5Qrcode('qr-reader');
     html5Scanner.start(
       { facingMode: 'environment' },
-      { fps: 10, qrbox: { width: 250, height: 250 } },
+      { fps: 10, qrbox: { width: 230, height: 230 } },
       (decodedText) => { processScannedQR(decodedText); },
       () => {}
     ).catch(() => showToast('Kamera tidak dapat diakses'));
@@ -446,12 +458,34 @@ function openScan() {
   }
 }
 
+function scanFromFile(file) {
+  if (!file) return;
+  const tempScanner = new Html5Qrcode('qr-reader');
+  document.getElementById('scanOptions').style.display = 'none';
+  document.getElementById('qr-reader').style.display = 'block';
+  showToast('Memproses gambar...');
+  tempScanner.scanFile(file, true)
+    .then(decodedText => {
+      tempScanner.clear();
+      processScannedQR(decodedText);
+    })
+    .catch(() => {
+      tempScanner.clear();
+      showToast('QR tidak dapat dibaca. Cuba gambar lebih jelas.');
+      document.getElementById('scanOptions').style.display = 'flex';
+      document.getElementById('qr-reader').style.display = 'none';
+    });
+}
+
 function closeScan() {
   document.getElementById('scanModal').classList.remove('open');
   if (html5Scanner) {
     html5Scanner.stop().catch(()=>{});
     html5Scanner = null;
   }
+  document.getElementById('qr-reader').innerHTML = '';
+  document.getElementById('qr-reader').style.display = 'none';
+  document.getElementById('scanOptions').style.display = 'flex';
 }
 
 // ── Confirm Add Scanned Masjid ────────────────────────────────────
@@ -512,6 +546,8 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('nav-btn-myinfaq').onclick = () => goTab('myinfaq');
   
   document.getElementById('btnScan').onclick = openScan;
+  document.getElementById('btnScanLive').onclick = startLiveScan;
+  document.getElementById('scanFileInput').onchange = (e) => scanFromFile(e.target.files[0]);
   document.getElementById('btnCancelScan').onclick = closeScan;
   document.getElementById('btnConfirmAdd').onclick = confirmAddMasjid;
   document.getElementById('btnSubmitAdmin').onclick = submitToAdmin;
