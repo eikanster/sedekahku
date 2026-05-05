@@ -1,0 +1,12 @@
+[
+  {
+    "id": "kmp001",
+    "title": "Tabung Pembinaan Masjid Negara",
+    "masjidId": "sgmy001",
+    "description": "Kempen pengubahsuaian dan naik taraf Masjid Negara",
+    "targetAmount": 500000,
+    "startDate": "2026-05-01",
+    "endDate": "2026-08-31",
+    "active": true
+  }
+]
