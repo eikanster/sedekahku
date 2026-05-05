@@ -38,7 +38,6 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
 @keyframes pulse{0%,100%{box-shadow:0 4px 20px rgba(93,248,216,.3)}50%{box-shadow:0 4px 32px rgba(93,248,216,.55)}}
 .arow{display:flex;gap:10px;margin-top:10px}
 .btn-s{flex:1;background:var(--card);border:1px solid var(--border);color:var(--fg);padding:11px;border-radius:var(--rs);font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s}
-.btn-s:hover{background:rgba(111,209,215,.1);border-color:rgba(111,209,215,.3)}
 .btn-s:active{transform:scale(.96)}
 .sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
 .scard{background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:16px}
@@ -68,7 +67,6 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
 .etit{font-family:'Amiri',serif;font-size:22px;margin-bottom:8px;color:var(--teal)}
 .edesc{font-size:14px;color:var(--muted);line-height:1.6}
 .fcard{background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s}
-.fcard:active{transform:scale(.99)}
 .fico{width:44px;height:44px;background:linear-gradient(135deg,var(--mid),var(--light));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .finfo{flex:1;min-width:0}.fname{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .floc{font-size:12px;color:var(--muted);margin-top:2px}
@@ -107,8 +105,8 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
 <header class="hdr">
   <div class="logo">Sedekah<span>Ku</span></div>
   <div class="hdr-r">
-    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
-    <button class="mbtn" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+    <button class="lang-btn" id="langBtn">EN</button>
+    <button class="mbtn" id="menuBtn"><span></span><span></span><span></span></button>
   </div>
 </header>
 <div class="screens">
@@ -118,11 +116,11 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
       <div class="hdate" id="hijriDate">📅</div>
       <div class="mname" id="masjidName">Masjid Negara</div>
       <div class="mloc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-8-7.5-8-12a8 8 0 1 1 16 0c0 4.5-8 12-8 12z"/><circle cx="12" cy="9" r="2.5"/></svg><span id="masjidLoc">Kuala Lumpur, WP KL</span></div>
-      <button class="btn-i" id="btnInfaq" onclick="openQR()">💚 Infaq Sekarang</button>
+      <button class="btn-i" id="btnInfaq">💚 Infaq Sekarang</button>
       <div class="arow">
-        <button class="btn-s" onclick="saveFav()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span id="lbl-simpan">Simpan</span></button>
-        <button class="btn-s" onclick="shareM()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg><span id="lbl-kongsi">Kongsi</span></button>
-        <button class="btn-s" onclick="randomM()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg><span id="lbl-lain">Lain</span></button>
+        <button class="btn-s" id="btnSimpan"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span id="lbl-simpan">Simpan</span></button>
+        <button class="btn-s" id="btnKongsi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg><span id="lbl-kongsi">Kongsi</span></button>
+        <button class="btn-s" id="btnLain"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg><span id="lbl-lain">Lain</span></button>
       </div>
     </div>
     <div class="sgrid">
@@ -143,212 +141,93 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
 </div>
 </div>
 <nav class="bnav">
-  <button class="ni active" onclick="goTab('hariini',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M18.66 5.34l1.41-1.41"/></svg><span class="nlbl" id="nav-hariini">Hari Ini</span></button>
-  <button class="ni notif" onclick="goTab('kempen',this)"><div class="ndot"></div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span class="nlbl" id="nav-kempen">Kempen</span></button>
-  <button class="ni" onclick="goTab('myinfaq',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="nlbl" id="nav-myinfaq">My Infaq</span></button>
+  <button class="ni active" id="nav-btn-hariini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M18.66 5.34l1.41-1.41"/></svg><span class="nlbl" id="nav-hariini">Hari Ini</span></button>
+  <button class="ni notif" id="nav-btn-kempen"><div class="ndot"></div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span class="nlbl" id="nav-kempen">Kempen</span></button>
+  <button class="ni" id="nav-btn-myinfaq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="nlbl" id="nav-myinfaq">My Infaq</span></button>
 </nav>
-<div class="kov" id="qrModal" onclick="if(event.target===this)closeQR()">
+<div class="kov" id="qrModal">
   <div class="ksh">
     <div class="khdl"></div>
     <div class="ktit" id="qrName"></div>
     <div class="ksub" id="qrSub">Imbas QR DuitNow untuk infaq</div>
     <div id="qrc"></div>
     <div class="dbadge"><span>💳</span><span id="qrDN">—</span></div>
-    <button class="btn-db" id="btnDB" onclick="confirmPay()">✅ Dah Bayar!</button>
+    <button class="btn-db" id="btnDB">✅ Dah Bayar!</button>
   </div>
 </div>
 <div class="smenu" id="smenu">
-  <div class="sov" onclick="toggleMenu()"></div>
+  <div class="sov" id="menuOverlay"></div>
   <div class="spnl">
     <div class="mst" id="menu-lbl1">Rekod</div>
-    <div class="mit" onclick="goTab('myinfaq');toggleMenu()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span id="menu-history">Rekod Infaq</span></div>
+    <div class="mit" id="menuGoHistory"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span id="menu-history">Rekod Infaq</span></div>
     <div class="mst" id="menu-lbl2">Tetapan</div>
-    <div class="mit" onclick="toggleLang();toggleMenu()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span id="menu-lang">Tukar Bahasa</span></div>
-    <div class="mit" onclick="exportD();toggleMenu()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span id="menu-export">Eksport Data</span></div>
+    <div class="mit" id="menuLang"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span id="menu-lang">Tukar Bahasa</span></div>
+    <div class="mit" id="menuExport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span id="menu-export">Eksport Data</span></div>
     <div class="mft"><strong>SedekahKu</strong><br/>Data disimpan dalam peranti anda.<br/>Tiada akaun diperlukan.</div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
 <script>
-// ── Hardcoded data — always works, no network needed ──
-const MASJID = [
-  {id:"sgmy001",name:"Masjid Negara",state:"WP Kuala Lumpur",mukim:"Kuala Lumpur",duitnow:"MASJIDNEGARA@PUBLIC",verified:true},
-  {id:"sgmy002",name:"Masjid Sultan Salahuddin Abdul Aziz Shah",state:"Selangor",mukim:"Shah Alam",duitnow:"MASJIDSHAHALAM@PUBLIC",verified:true}
-];
-const KEMPEN = [
-  {id:"kmp001",title:"Tabung Pembinaan Masjid Negara",masjidId:"sgmy001",targetAmount:500000,raisedAmount:125000,endDate:"2026-08-31",active:true}
-];
+const MASJID=[{id:"sgmy001",name:"Masjid Negara",state:"WP Kuala Lumpur",mukim:"Kuala Lumpur",duitnow:"MASJIDNEGARA@PUBLIC",verified:true},{id:"sgmy002",name:"Masjid Sultan Salahuddin Abdul Aziz Shah",state:"Selangor",mukim:"Shah Alam",duitnow:"MASJIDSHAHALAM@PUBLIC",verified:true}];
+const KEMPEN=[{id:"kmp001",title:"Tabung Pembinaan Masjid Negara",masjidId:"sgmy001",targetAmount:500000,raisedAmount:125000,endDate:"2026-08-31",active:true}];
+let lang=localStorage.getItem('sk_lang')||'bm';
+let MD=JSON.parse(localStorage.getItem('sk_masjid')||'null')||MASJID;
+let KD=JSON.parse(localStorage.getItem('sk_kempen')||'null')||KEMPEN;
+let favs=JSON.parse(localStorage.getItem('sk_favs')||'[]');
+let hist=JSON.parse(localStorage.getItem('sk_hist')||'[]');
+let cur=null;
+const T={bm:{hi:'Hari Ini',km:'Kempen',mi:'My Infaq','lbl-hariini':'Masjid Hari Ini','lbl-kempen-title':'Kempen Aktif','lbl-fav-title':'Masjid Disimpan','lbl-hist-title':'Rekod Infaq','lbl-simpan':'Simpan','lbl-kongsi':'Kongsi','lbl-lain':'Lain','lbl-stat1':'Masjid Disimpan','lbl-stat2':'Infaq Dicatat','menu-lbl1':'Rekod','menu-lbl2':'Tetapan','menu-history':'Rekod Infaq','menu-lang':'Tukar Bahasa','menu-export':'Eksport Data',bi:'💚 Infaq Sekarang',db:'✅ Dah Bayar!',qs:'Imbas QR DuitNow untuk infaq',ts:'❤️ Disimpan!',ta:'Sudah disimpan!',tr:'🎉 Infaq dicatat! Semoga diberkati.',te:'📋 Data disalin!',ef:'Belum ada masjid disimpan',efd:'Tekan Simpan pada mana-mana masjid.',eh:'Belum ada rekod infaq',ehd:'Tekan Dah Bayar selepas infaq.'},en:{hi:'Today',km:'Campaigns',mi:'My Infaq','lbl-hariini':"Today's Masjid",'lbl-kempen-title':'Active Campaigns','lbl-fav-title':'Saved Masjid','lbl-hist-title':'Infaq History','lbl-simpan':'Save','lbl-kongsi':'Share','lbl-lain':'Other','lbl-stat1':'Saved Masjid','lbl-stat2':'Infaq Recorded','menu-lbl1':'Records','menu-lbl2':'Settings','menu-history':'Infaq History','menu-lang':'Switch Language','menu-export':'Export Data',bi:'💚 Donate Now',db:'✅ Done Paying!',qs:'Scan DuitNow QR to donate',ts:'❤️ Saved!',ta:'Already saved!',tr:'🎉 Infaq recorded! May it be blessed.',te:'📋 Data copied!',ef:'No saved masjid yet',efd:'Tap Save on any masjid.',eh:'No infaq records yet',ehd:'Tap Done Paying after each infaq.'}};
+const t=k=>(T[lang]||T.bm)[k]||k;
+function dailyM(){const s=new Date().toISOString().slice(0,10).replace(/-/g,'');let h=0;for(const c of s)h=((h<<5)-h)+c.charCodeAt(0);return MD[Math.abs(h)%MD.length];}
+function updHero(){if(!cur)return;document.getElementById('masjidName').textContent=cur.name;document.getElementById('masjidLoc').textContent=cur.mukim+', '+cur.state;}
+function hijri(){try{return new Date().toLocaleDateString('ms-MY-u-ca-islamic',{day:'numeric',month:'long',year:'numeric'});}catch{return new Date().toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long'});}}
+function updStats(){document.getElementById('sFav').textContent=favs.length;document.getElementById('sInfaq').textContent=hist.length;}
+function openQR(){if(!cur)return;document.getElementById('qrName').textContent=cur.name;document.getElementById('qrDN').textContent=cur.duitnow;document.getElementById('qrSub').textContent=t('qs');document.getElementById('btnDB').textContent=t('db');const c=document.getElementById('qrc');c.innerHTML='';try{new QRCode(c,{text:cur.duitnow,width:200,height:200,colorDark:'#093C5D',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});}catch(e){c.innerHTML='<div style="width:200px;height:200px;display:flex;align-items:center;justify-content:center;color:#093C5D;font-size:11px;text-align:center;padding:10px">'+cur.duitnow+'</div>';}document.getElementById('qrModal').classList.add('open');}
+function closeQR(){document.getElementById('qrModal').classList.remove('open');}
+function confirmPay(){if(!cur)return;const r={id:cur.id,name:cur.name,loc:cur.mukim+', '+cur.state,date:new Date().toISOString(),disp:new Date().toLocaleDateString('ms-MY',{day:'numeric',month:'short',year:'numeric'})};hist.unshift(r);localStorage.setItem('sk_hist',JSON.stringify(hist));closeQR();showToast(t('tr'));updStats();renderMI();}
+function renderK(){const el=document.getElementById('kempenList');const active=KD.filter(k=>k.active);if(!active.length){el.innerHTML='<div class="empty"><div class="eico">📋</div><div class="etit">'+(lang==='bm'?'Tiada kempen aktif':'No active campaigns')+'</div></div>';return;}el.innerHTML=active.map(k=>{const p=k.raisedAmount?Math.min(100,Math.round(k.raisedAmount/k.targetAmount*100)):0;const dl=Math.ceil((new Date(k.endDate)-new Date())/864e5);const m=MD.find(x=>x.id===k.masjidId);const card=document.createElement('div');card.className='kcard';card.dataset.id=k.id;card.innerHTML='<div class="kbadge">AKTIF</div><div class="ktitle">'+k.title+'</div><div class="kmsj">🕌 '+(m?m.name:k.masjidId)+'</div><div class="pbar"><div class="pfill" style="width:'+p+'%"></div></div><div class="plbls"><span>'+p+'% terkumpul</span><span>RM <strong>'+(k.targetAmount/1000).toFixed(0)+'k</strong></span></div><div class="kdl">⏰ '+(dl>0?dl+(lang==='bm'?' hari lagi':' days left'):(lang==='bm'?'Tamat':'Ended'))+'</div>';return card.outerHTML;}).join('');}
+function renderMI(){document.getElementById('favList').innerHTML=favs.length?favs.map(f=>'<div class="fcard" data-id="'+f.id+'"><div class="fico">🕌</div><div class="finfo"><div class="fname">'+f.name+'</div><div class="floc">'+f.mukim+', '+f.state+'</div></div><span style="color:var(--teal);opacity:.6;font-size:20px">›</span></div>').join(''):'<div class="empty"><div class="eico">🕌</div><div class="etit">'+t('ef')+'</div><div class="edesc">'+t('efd')+'</div></div>';document.getElementById('histList').innerHTML=hist.length?hist.slice(0,20).map(h=>'<div class="hi"><div class="hdot"></div><div class="hinfo"><div class="hname">'+h.name+'</div><div class="hdate2">'+h.disp+'</div></div><span style="color:var(--mint)">✓</span></div>').join(''):'<div style="text-align:center;padding:20px 0;color:var(--muted);font-size:13px">'+t('eh')+'<br/><small>'+t('ehd')+'</small></div>';bindFavCards();}
+function bindFavCards(){document.querySelectorAll('.fcard[data-id]').forEach(el=>{el.addEventListener('click',()=>{const m=favs.find(f=>f.id===el.dataset.id);if(m){cur=m;openQR();}});});}
+function saveFav(){if(!cur)return;if(favs.find(f=>f.id===cur.id)){showToast(t('ta'));return;}favs.push(cur);localStorage.setItem('sk_favs',JSON.stringify(favs));showToast(t('ts'));updStats();renderMI();}
+function randomM(){cur=MD[Math.floor(Math.random()*MD.length)];updHero();showToast(cur.name);}
+function goTab(n){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));document.getElementById('screen-'+n).classList.add('active');document.getElementById('nav-btn-'+n).classList.add('active');if(n==='myinfaq')renderMI();}
+function toggleMenu(){document.getElementById('smenu').classList.toggle('open');}
+function toggleLang(){lang=lang==='bm'?'en':'bm';localStorage.setItem('sk_lang',lang);applyLang();}
+function applyLang(){['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-hist-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','menu-lbl1','menu-lbl2','menu-history','menu-lang','menu-export'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t(id);});document.getElementById('btnInfaq').childNodes[0].textContent=t('bi');document.getElementById('langBtn').textContent=lang==='bm'?'EN':'BM';document.getElementById('nav-hariini').textContent=t('hi');document.getElementById('nav-kempen').textContent=t('km');document.getElementById('nav-myinfaq').textContent=t('mi');renderK();}
+function shareM(){if(!cur)return;const tx='🕌 Jom infaq ke '+cur.name+'!\nDuitNow: '+cur.duitnow+'\n\nhttps://eikanster.github.io/sedekahku';if(navigator.share)navigator.share({title:'SedekahKu',text:tx});else navigator.clipboard.writeText(tx).then(()=>showToast('📋 Disalin!'));}
+function exportD(){navigator.clipboard.writeText(JSON.stringify({favs,hist,exported:new Date().toISOString()},null,2)).then(()=>showToast(t('te'))).catch(()=>showToast('Gagal'));}
+function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2800);}
+async function refreshData(){try{const mf=await fetch('manifest.json?nc='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);if(!mf)return;const ver=JSON.parse(localStorage.getItem('sk_ver')||'{}');if(mf.files.masjid!==ver.masjid){const d=await fetch('data/masjid.json?v='+mf.files.masjid).then(r=>r.ok?r.json():null).catch(()=>null);if(d&&d.length){MD=d;localStorage.setItem('sk_masjid',JSON.stringify(d));cur=dailyM();updHero();}}if(mf.files.kempen!==ver.kempen){const d=await fetch('data/kempen.json?v='+mf.files.kempen).then(r=>r.ok?r.json():null).catch(()=>null);if(d&&d.length){KD=d;localStorage.setItem('sk_kempen',JSON.stringify(d));renderK();}}localStorage.setItem('sk_ver',JSON.stringify(mf.files));}catch(e){}}
 
-// ── State ──
-let lang = localStorage.getItem('sk_lang') || 'bm';
-let MD = JSON.parse(localStorage.getItem('sk_masjid') || 'null') || MASJID;
-let KD = JSON.parse(localStorage.getItem('sk_kempen') || 'null') || KEMPEN;
-let favs = JSON.parse(localStorage.getItem('sk_favs') || '[]');
-let hist = JSON.parse(localStorage.getItem('sk_hist') || '[]');
-let cur = null;
+// ── Wire up ALL events with addEventListener (no onclick in HTML) ──
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('btnInfaq').addEventListener('click', openQR);
+  document.getElementById('btnSimpan').addEventListener('click', saveFav);
+  document.getElementById('btnKongsi').addEventListener('click', shareM);
+  document.getElementById('btnLain').addEventListener('click', randomM);
+  document.getElementById('btnDB').addEventListener('click', confirmPay);
+  document.getElementById('langBtn').addEventListener('click', toggleLang);
+  document.getElementById('menuBtn').addEventListener('click', toggleMenu);
+  document.getElementById('menuOverlay').addEventListener('click', toggleMenu);
+  document.getElementById('menuGoHistory').addEventListener('click', function(){goTab('myinfaq');toggleMenu();});
+  document.getElementById('menuLang').addEventListener('click', function(){toggleLang();toggleMenu();});
+  document.getElementById('menuExport').addEventListener('click', function(){exportD();toggleMenu();});
+  document.getElementById('nav-btn-hariini').addEventListener('click', function(){goTab('hariini');});
+  document.getElementById('nav-btn-kempen').addEventListener('click', function(){goTab('kempen');});
+  document.getElementById('nav-btn-myinfaq').addEventListener('click', function(){goTab('myinfaq');});
+  document.getElementById('qrModal').addEventListener('click', function(e){if(e.target===this)closeQR();});
+  document.getElementById('kempenList').addEventListener('click', function(e){const card=e.target.closest('.kcard[data-id]');if(!card)return;const k=KD.find(x=>x.id===card.dataset.id);if(!k)return;const m=MD.find(x=>x.id===k.masjidId);if(!m)return;cur=m;openQR();});
 
-// ── Translations ──
-const T = {
-  bm: {hi:'Hari Ini',km:'Kempen',mi:'My Infaq','lbl-hariini':'Masjid Hari Ini','lbl-kempen-title':'Kempen Aktif','lbl-fav-title':'Masjid Disimpan','lbl-hist-title':'Rekod Infaq','lbl-simpan':'Simpan','lbl-kongsi':'Kongsi','lbl-lain':'Lain','lbl-stat1':'Masjid Disimpan','lbl-stat2':'Infaq Dicatat','menu-lbl1':'Rekod','menu-lbl2':'Tetapan','menu-history':'Rekod Infaq','menu-lang':'Tukar Bahasa','menu-export':'Eksport Data',bi:'💚 Infaq Sekarang',db:'✅ Dah Bayar!',qs:'Imbas QR DuitNow untuk infaq',ts:'❤️ Disimpan!',ta:'Sudah disimpan!',tr:'🎉 Infaq dicatat! Semoga diberkati.',te:'📋 Data disalin!',ef:'Belum ada masjid disimpan',efd:'Tekan Simpan pada mana-mana masjid.',eh:'Belum ada rekod infaq',ehd:'Tekan "Dah Bayar!" selepas infaq.'},
-  en: {hi:'Today',km:'Campaigns',mi:'My Infaq','lbl-hariini':"Today's Masjid",'lbl-kempen-title':'Active Campaigns','lbl-fav-title':'Saved Masjid','lbl-hist-title':'Infaq History','lbl-simpan':'Save','lbl-kongsi':'Share','lbl-lain':'Other','lbl-stat1':'Saved Masjid','lbl-stat2':'Infaq Recorded','menu-lbl1':'Records','menu-lbl2':'Settings','menu-history':'Infaq History','menu-lang':'Switch Language','menu-export':'Export Data',bi:'💚 Donate Now',db:'✅ Done Paying!',qs:'Scan DuitNow QR to donate',ts:'❤️ Saved!',ta:'Already saved!',tr:'🎉 Infaq recorded! May it be blessed.',te:'📋 Data copied!',ef:'No saved masjid yet',efd:'Tap Save on any masjid.',eh:'No infaq records yet',ehd:'Tap Done Paying after each infaq.'}
-};
-const t = k => (T[lang]||T.bm)[k] || k;
-
-// ── Daily pick (deterministic by date) ──
-function dailyM() {
-  const s = new Date().toISOString().slice(0,10).replace(/-/g,'');
-  let h = 0; for (const c of s) h = ((h<<5)-h) + c.charCodeAt(0);
-  return MD[Math.abs(h) % MD.length];
-}
-
-// ── Hero update ──
-function updHero() {
-  if (!cur) return;
-  document.getElementById('masjidName').textContent = cur.name;
-  document.getElementById('masjidLoc').textContent = cur.mukim + ', ' + cur.state;
-}
-
-// ── Hijri date ──
-function hijri() {
-  try { return new Date().toLocaleDateString('ms-MY-u-ca-islamic',{day:'numeric',month:'long',year:'numeric'}); }
-  catch { return new Date().toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long'}); }
-}
-
-// ── Stats ──
-function updStats() {
-  document.getElementById('sFav').textContent = favs.length;
-  document.getElementById('sInfaq').textContent = hist.length;
-}
-
-// ── QR Modal ──
-function openQR() {
-  if (!cur) { toast('Tiada masjid dipilih'); return; }
-  document.getElementById('qrName').textContent = cur.name;
-  document.getElementById('qrDN').textContent = cur.duitnow;
-  document.getElementById('qrSub').textContent = t('qs');
-  document.getElementById('btnDB').textContent = t('db');
-  const c = document.getElementById('qrc');
-  c.innerHTML = '';
-  try {
-    new QRCode(c, {text: cur.duitnow, width:200, height:200, colorDark:'#093C5D', colorLight:'#fff', correctLevel: QRCode.CorrectLevel.M});
-  } catch(e) {
-    c.innerHTML = '<div style="width:200px;height:200px;display:flex;align-items:center;justify-content:center;color:#093C5D;font-size:11px;text-align:center;padding:10px">' + cur.duitnow + '</div>';
-  }
-  document.getElementById('qrModal').classList.add('open');
-}
-function closeQR() { document.getElementById('qrModal').classList.remove('open'); }
-
-function confirmPay() {
-  if (!cur) return;
-  const r = {id:cur.id, name:cur.name, loc:cur.mukim+', '+cur.state, date:new Date().toISOString(), disp:new Date().toLocaleDateString('ms-MY',{day:'numeric',month:'short',year:'numeric'})};
-  hist.unshift(r);
-  localStorage.setItem('sk_hist', JSON.stringify(hist));
-  closeQR(); toast(t('tr')); updStats(); renderMI();
-}
-
-// ── Kempen ──
-function renderK() {
-  const el = document.getElementById('kempenList');
-  const active = KD.filter(k => k.active);
-  if (!active.length) { el.innerHTML = '<div class="empty"><div class="eico">📋</div><div class="etit">'+(lang==='bm'?'Tiada kempen aktif':'No active campaigns')+'</div></div>'; return; }
-  el.innerHTML = active.map(k => {
-    const p = k.raisedAmount ? Math.min(100, Math.round(k.raisedAmount/k.targetAmount*100)) : 0;
-    const dl = Math.ceil((new Date(k.endDate) - new Date()) / 864e5);
-    const m = MD.find(x => x.id === k.masjidId);
-    return '<div class="kcard" onclick="kQR(''+k.id+'')"><div class="kbadge">AKTIF</div><div class="ktitle">'+k.title+'</div><div class="kmsj">🕌 '+(m?m.name:k.masjidId)+'</div><div class="pbar"><div class="pfill" style="width:'+p+'%"></div></div><div class="plbls"><span>'+p+'% terkumpul</span><span>RM <strong>'+(k.targetAmount/1000).toFixed(0)+'k</strong></span></div><div class="kdl">⏰ '+(dl>0?dl+(lang==='bm'?' hari lagi':' days left'):(lang==='bm'?'Tamat':'Ended'))+'</div></div>';
-  }).join('');
-}
-function kQR(id) { const k=KD.find(x=>x.id===id); if(!k)return; const m=MD.find(x=>x.id===k.masjidId); if(!m)return; cur=m; openQR(); }
-
-// ── My Infaq ──
-function renderMI() {
-  document.getElementById('favList').innerHTML = favs.length
-    ? favs.map(f=>'<div class="fcard" onclick="favQR(''+f.id+'')"><div class="fico">🕌</div><div class="finfo"><div class="fname">'+f.name+'</div><div class="floc">'+f.mukim+', '+f.state+'</div></div><span style="color:var(--teal);opacity:.6;font-size:20px">›</span></div>').join('')
-    : '<div class="empty"><div class="eico">🕌</div><div class="etit">'+t('ef')+'</div><div class="edesc">'+t('efd')+'</div></div>';
-  document.getElementById('histList').innerHTML = hist.length
-    ? hist.slice(0,20).map(h=>'<div class="hi"><div class="hdot"></div><div class="hinfo"><div class="hname">'+h.name+'</div><div class="hdate2">'+h.disp+'</div></div><span style="color:var(--mint)">✓</span></div>').join('')
-    : '<div style="text-align:center;padding:20px 0;color:var(--muted);font-size:13px">'+t('eh')+'<br/><small>'+t('ehd')+'</small></div>';
-}
-function favQR(id) { const m=favs.find(f=>f.id===id); if(!m)return; cur=m; openQR(); }
-
-function saveFav() {
-  if (!cur) return;
-  if (favs.find(f=>f.id===cur.id)) { toast(t('ta')); return; }
-  favs.push(cur); localStorage.setItem('sk_favs', JSON.stringify(favs));
-  toast(t('ts')); updStats(); renderMI();
-}
-function randomM() { cur = MD[Math.floor(Math.random()*MD.length)]; updHero(); toast(cur.name); }
-
-// ── Nav ──
-function goTab(n, b) {
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));
-  document.getElementById('screen-'+n).classList.add('active');
-  if (b) b.classList.add('active');
-  if (n==='myinfaq') renderMI();
-}
-
-// ── Menu ──
-function toggleMenu() { document.getElementById('smenu').classList.toggle('open'); }
-
-// ── Language ──
-function toggleLang() { lang = lang==='bm'?'en':'bm'; localStorage.setItem('sk_lang',lang); applyLang(); }
-function applyLang() {
-  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-hist-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','menu-lbl1','menu-lbl2','menu-history','menu-lang','menu-export'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t(id);});
-  document.getElementById('btnInfaq').textContent = t('bi');
-  document.getElementById('langBtn').textContent = lang==='bm'?'EN':'BM';
-  document.getElementById('nav-hariini').textContent = t('hi');
-  document.getElementById('nav-kempen').textContent = t('km');
-  document.getElementById('nav-myinfaq').textContent = t('mi');
-  renderK();
-}
-
-// ── Share & Export ──
-function shareM() {
-  if (!cur) return;
-  const tx = '🕌 Jom infaq ke '+cur.name+'!\nDuitNow: '+cur.duitnow+'\n\nhttps://eikanster.github.io/sedekahku';
-  if (navigator.share) navigator.share({title:'SedekahKu',text:tx});
-  else navigator.clipboard.writeText(tx).then(()=>toast('📋 Disalin!'));
-}
-function exportD() {
-  navigator.clipboard.writeText(JSON.stringify({favs,hist,exported:new Date().toISOString()},null,2)).then(()=>toast(t('te'))).catch(()=>toast('Gagal'));
-}
-
-// ── Toast ──
-function toast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg; el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'), 2800);
-}
-
-// ── Background data refresh from GitHub Pages ──
-async function refreshData() {
-  try {
-    const mf = await fetch('manifest.json?nc='+Date.now(), {cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);
-    if (!mf) return;
-    const ver = JSON.parse(localStorage.getItem('sk_ver')||'{}');
-    if (mf.files.masjid !== ver.masjid) {
-      const d = await fetch('data/masjid.json?v='+mf.files.masjid).then(r=>r.ok?r.json():null).catch(()=>null);
-      if (d && d.length) { MD = d; localStorage.setItem('sk_masjid', JSON.stringify(d)); cur = dailyM(); updHero(); }
-    }
-    if (mf.files.kempen !== ver.kempen) {
-      const d = await fetch('data/kempen.json?v='+mf.files.kempen).then(r=>r.ok?r.json():null).catch(()=>null);
-      if (d && d.length) { KD = d; localStorage.setItem('sk_kempen', JSON.stringify(d)); renderK(); }
-    }
-    localStorage.setItem('sk_ver', JSON.stringify(mf.files));
-  } catch(e) {}
-}
-
-// ── INIT — synchronous, no waiting ──
-document.getElementById('hijriDate').textContent = hijri();
-cur = dailyM();
-updHero();
-updStats();
-applyLang();
-renderMI();
-refreshData(); // fire-and-forget background refresh
-
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+  // ── Init ──
+  document.getElementById('hijriDate').textContent = hijri();
+  cur = dailyM();
+  updHero();
+  updStats();
+  applyLang();
+  renderMI();
+  refreshData();
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+});
 </script>
 </body>
 </html>
