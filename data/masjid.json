@@ -16,5 +16,86 @@
     "duitnow": "MASJIDSHAHALAM@PUBLIC",
     "verified": true,
     "verifiedSource": "official"
+  },
+  {
+    "id": "sgmy003",
+    "name": "Masjid Putra",
+    "state": "WP Putrajaya",
+    "mukim": "Presint 1",
+    "duitnow": "MASJIDPUTRA@PUBLIC",
+    "verified": true,
+    "verifiedSource": "official"
+  },
+  {
+    "id": "sgmy004",
+    "name": "Masjid Selat Melaka",
+    "state": "Melaka",
+    "mukim": "Pulau Melaka",
+    "duitnow": "MASJIDSELAT@PUBLIC",
+    "verified": true,
+    "verifiedSource": "official"
+  },
+  {
+    "id": "sgmy005",
+    "name": "Masjid Sultan Abu Bakar",
+    "state": "Johor",
+    "mukim": "Johor Bahru",
+    "duitnow": "MASJIDJOHOR@PUBLIC",
+    "verified": true,
+    "verifiedSource": "official"
+  },
+  {
+    "id": "sgmy006",
+    "name": "Masjid Kapitan Keling",
+    "state": "Penang",
+    "mukim": "George Town",
+    "duitnow": "KAPITANKELING@PUBLIC",
+    "verified": true,
+    "verifiedSource": "official"
+  },
+  {
+    "id": "sgmy007",
+    "name": "Masjid Zahir",
+    "state": "Kedah",
+    "mukim": "Alor Setar",
+    "duitnow": "MASJIDZAHIR@PUBLIC",
+    "verified": true,
+    "verifiedSource": "official"
+  },
+  {
+    "id": "sgmy008",
+    "name": "Masjid Sultan Idris Shah II",
+    "state": "Perak",
+    "mukim": "Ipoh",
+    "duitnow": "MASJIDIPOH@PUBLIC",
+    "verified": true,
+    "verifiedSource": "official"
+  },
+  {
+    "id": "sgmy009",
+    "name": "Masjid Kristal",
+    "state": "Terengganu",
+    "mukim": "Kuala Terengganu",
+    "duitnow": "KRISTAL@PUBLIC",
+    "verified": true,
+    "verifiedSource": "official"
+  },
+  {
+    "id": "sgmy010",
+    "name": "Masjid Muhammadi",
+    "state": "Kelantan",
+    "mukim": "Kota Bharu",
+    "duitnow": "MUHAMMADI@PUBLIC",
+    "verified": true,
+    "verifiedSource": "official"
+  },
+  {
+    "id": "sr001",
+    "name": "Surau Al-Ikhlas",
+    "state": "Selangor",
+    "mukim": "Bangi",
+    "duitnow": "SURAUALIKHLAS@PUBLIC",
+    "verified": false,
+    "verifiedSource": "user"
   }
 ]

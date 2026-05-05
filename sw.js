@@ -1,18 +1,22 @@
-const CACHE_NAME = 'sedekahku-v1';
+const CACHE_NAME = 'sedekahku-v2';
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/css/style.css',
-  '/js/app.js',
-  '/js/qrcode.min.js',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png'
+  './',
+  './index.html',
+  './css/style.css',
+  './js/app.js',
+  './js/qrcode.min.js',
+  './manifest.json',
+  './icons/icon-192.png',
+  './icons/icon-512.png'
 ];
 
 // Install — cache static assets
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS))
+    caches.open(CACHE_NAME).then(cache => {
+      console.log('[SW] Caching static assets');
+      return cache.addAll(STATIC_ASSETS);
+    })
   );
   self.skipWaiting();
 });
@@ -28,14 +32,14 @@ self.addEventListener('activate', event => {
 });
 
 // Fetch strategy:
-// - manifest.json → NetworkOnly (always fresh)
+// - version.json → NetworkOnly (always fresh)
 // - data JSON files → NetworkFirst (fresh when online, cache fallback offline)
 // - everything else → CacheFirst (static assets)
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
-  // NetworkOnly for manifest
-  if (url.pathname.endsWith('manifest.json')) {
+  // NetworkOnly for versioning file
+  if (url.pathname.endsWith('version.json')) {
     event.respondWith(fetch(event.request));
     return;
   }
