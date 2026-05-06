@@ -13,6 +13,7 @@ const QR_DEFAULT=[
 ];
 
 const KEMPEN=[{id:"kmp001",masjid_id:"sgmy001",title:"Tabung Pembinaan Masjid Negara",category:"renovation",description:"Kempen pengubahsuaian dan naik taraf Masjid Negara",target_amount:500000,collected_amount:125000,deadline:"2026-08-31",is_urgent:false,status:"active",qr_code_id:"qr-sgmy001",created_at:"2026-05-06T00:00:00Z",updated_at:"2026-05-06T00:00:00Z"}];
+let HIKMAH = [];
 
 let lang=localStorage.getItem('sk_lang')||'bm';
 let MD=JSON.parse(localStorage.getItem('sk_masjid')||'null')||MASJID;
@@ -136,60 +137,36 @@ function getHijriMonth(){
 
 function renderSeasonBanner(){
   const el = document.getElementById('seasonBanner');
-  if(!el) return;
+  if(!el || !HIKMAH.length) return;
   const month = getHijriMonth();
   const bm = lang === 'bm';
+  
+  // 1. Filter pool: specific month + generic (0)
+  let pool = HIKMAH.filter(h => h.month === month);
+  if(pool.length === 0) pool = HIKMAH.filter(h => h.month === 0);
 
-  const seasons = {
-    1: { // Muharram
-      cls:'season-muharram', icon:'🌙',
-      title: bm ? 'Maal Hijrah' : 'Islamic New Year',
-      msg: bm ? 'Tahun baru Hijrah. Mulakan dengan niat bersedekah lebih banyak tahun ini. Setiap infaq adalah bekalan untuk akhirat.' : 'A new Hijri year begins. Start it with a renewed intention to give more this year.'
-    },
-    3: { // Rabiul Awal
-      cls:'season-maulid', icon:'🌟',
-      title: bm ? 'Maulidur Rasul ﷺ' : 'Maulidur Rasul ﷺ',
-      msg: bm ? 'Bulan kelahiran Nabi Muhammad ﷺ. Hidupkan sunnah baginda dengan bersedekah kepada yang memerlukan.' : 'Month of the Prophet\'s ﷺ birth. Celebrate by following his Sunnah of generosity.'
-    },
-    7: { // Rejab
-      cls:'season-rejab', icon:'✨',
-      title: bm ? 'Bulan Rejab' : 'Month of Rejab',
-      msg: bm ? 'Israk Mikraj bulan ini. Bulan mulia untuk memperbanyak ibadat dan sedekah. Satu sedekah kini, pahala berlipat ganda.' : 'Isra\' Mi\'raj this month. A blessed time — multiply your rewards through generous giving.'
-    },
-    8: { // Syaaban
-      cls:'season-syaaban', icon:'🌙',
-      title: bm ? 'Malam Nisfu Syaaban' : 'Mid Syaaban',
-      msg: bm ? 'Pertengahan Syaaban tiba. Amal sedekah dibuka pintu luasnya. Bersihkan harta, bersihkan jiwa.' : 'Mid Syaaban is near. Open your heart — charity purifies the soul before Ramadan.'
-    },
-    9: { // Ramadan
-      cls:'season-ramadan', icon:'🔥',
-      title: bm ? 'Ramadan Kareem 🌙' : 'Ramadan Kareem 🌙',
-      msg: bm ? 'Pahala berlipat ganda! Setiap infaq di bulan ini seperti infaq 70 bulan. Cari Lailatul Qadar dengan bersedekah setiap malam.' : 'Rewards are multiplied! Every donation in Ramadan is like giving 70 months of charity. Seek Laylatul Qadr.'
-    },
-    10: { // Syawal
-      cls:'season-syawal', icon:'🎉',
-      title: bm ? 'Selamat Hari Raya!' : 'Eid Mubarak!',
-      msg: bm ? 'Aidilfitri yang penuh barakah. Jangan lupa bayar zakat fitrah dan sedekah kepada yang memerlukan.' : 'A blessed Eid. Remember Zakat Fitrah and extend your generosity to those in need.'
-    },
-    12: { // Zulhijjah
-      cls:'season-zulhijjah', icon:'🐄',
-      title: bm ? 'Zulhijjah & Aidiladha' : 'Zulhijjah & Eid Al-Adha',
-      msg: bm ? 'Musim haji dan korban. 10 hari pertama Zulhijjah adalah antara hari terbaik. Sedekah, korban dan doa.' : 'Season of Hajj & Qurban. The first 10 days of Zulhijjah are the best days of the year for good deeds.'
-    },
+  // 2. Daily rotation based on day of year
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const doy = Math.floor((now - start) / 864e5);
+  const quote = pool[doy % pool.length];
+
+  const monthThemes = {
+    1: 'season-muharram', 3: 'season-maulid', 7: 'season-rejab', 
+    8: 'season-syaaban', 9: 'season-ramadan', 10: 'season-syawal', 12: 'season-zulhijjah'
   };
 
-  const data = seasons[month] || {
-    cls: 'season-default', icon: '🕌',
-    title: bm ? 'Bersedekah Setiap Hari' : 'Give Every Day',
-    msg: bm ? 'Sedekah itu tidak mengurangkan harta — ia melipatgandakannya. Imbas QR masjid berhampiran dan mulakan infaq anda hari ini.' : 'Charity does not diminish wealth — it multiplies it. Scan a nearby masjid QR and start your infaq today.'
-  };
+  const theme = monthThemes[month] || 'season-default';
+  const icon = quote.id.startsWith('ram') ? '🌙' : (quote.id.startsWith('zul') ? '🐄' : '🕌');
 
   el.innerHTML = `
-    <div class="season-banner ${data.cls}">
-      <div class="season-icon">${data.icon}</div>
+    <div class="season-banner ${theme}">
+      <div class="season-icon">${icon}</div>
       <div>
-        <div class="season-title">${data.title}</div>
-        <div class="season-msg">${data.msg}</div>
+        <div class="season-title" style="font-size:12px;opacity:0.8;margin-bottom:2px;">${bm?'Kata-kata Hikmah':'Daily Wisdom'}</div>
+        <div class="season-msg" style="font-family:'Amiri',serif;font-size:15px;margin-bottom:5px;font-style:italic;">"${quote.arabic}"</div>
+        <div class="season-msg" style="font-weight:600;margin-bottom:2px;">${bm ? quote.bm : quote.en}</div>
+        <div class="season-msg" style="font-size:10px;opacity:0.6;">— ${quote.source}</div>
       </div>
     </div>`;
 }
@@ -608,6 +585,10 @@ async function refreshData(){
       const d=await fetch('data/kempen.json?v='+mf.files.kempen).then(r=>r.ok?r.json():null).catch(()=>null);
       if(d&&d.length){KD=d;localStorage.setItem('sk_kempen',JSON.stringify(d));renderK();}
     }
+    if(mf.files.hikmah!==ver.hikmah){
+      const d=await fetch('data/hikmah.json?v='+mf.files.hikmah).then(r=>r.ok?r.json():null).catch(()=>null);
+      if(d&&d.length){HIKMAH=d; renderSeasonBanner();}
+    }
     localStorage.setItem('sk_ver',JSON.stringify(mf.files));
     renderK();
   }catch(e){}
@@ -912,7 +893,9 @@ async function syncToCommunity(){
   }
 }
 
-document.addEventListener('DOMContentLoaded',function(){
+document.addEventListener('DOMContentLoaded', async function(){
+  // Load hikmah data
+  HIKMAH = await fetch('data/hikmah.json').then(r=>r.ok?r.json():[]).catch(()=>[]);
   document.getElementById('btnShuffle').onclick=shuffleM;
   document.getElementById('btnInfaq').onclick=()=>{ curK=null; openQR(); };
   document.getElementById('btnFavToggle').onclick=toggleFav;

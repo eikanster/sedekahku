@@ -1,0 +1,58 @@
+[
+  {
+    "id": "gen-1",
+    "month": 0,
+    "arabic": "مَا نَقَصَتْ صَدَقَةٌ مِنْ مَالٍ",
+    "bm": "Sedekah itu tidak mengurangkan harta.",
+    "en": "Charity does not decrease wealth.",
+    "source": "HR Muslim, no. 2588"
+  },
+  {
+    "id": "gen-2",
+    "month": 0,
+    "arabic": "اتَّقُوا النَّارَ وَلَوْ بِشِقِّ تَمْرَةٍ",
+    "bm": "Peliharalah dirimu dari api neraka walaupun hanya dengan sebiji tamar.",
+    "en": "Protect yourself from hellfire even by giving a piece of a date.",
+    "source": "HR Bukhari & Muslim"
+  },
+  {
+    "id": "gen-3",
+    "month": 0,
+    "arabic": "إِنَّ الصَّدَقَةَ لَتُطْفِئُ غَضَبَ الرَّبِّ",
+    "bm": "Sesungguhnya sedekah itu memadamkan kemurkaan Allah.",
+    "en": "Verily, charity extinguishes the wrath of the Lord.",
+    "source": "HR Tirmidhi"
+  },
+  {
+    "id": "ram-1",
+    "month": 9,
+    "arabic": "أَفْضَلُ الصَّدَقَةِ صَدَقَةٌ فِي رَمَضَانَ",
+    "bm": "Sedekah yang paling utama adalah sedekah di bulan Ramadan.",
+    "en": "The best charity is that given in Ramadan.",
+    "source": "HR Tirmidhi"
+  },
+  {
+    "id": "ram-2",
+    "month": 9,
+    "arabic": "كَانَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ أَجْوَدَ النَّاسِ بِالْخَيْرِ وَكَانَ أَجْوَدَ مَا يَكُونُ فِي رَمَضَانَ",
+    "bm": "Rasulullah ﷺ adalah manusia yang paling pemurah, dan baginda lebih pemurah lagi di bulan Ramadan.",
+    "en": "The Prophet ﷺ was the most generous of people, and he was even more generous in Ramadan.",
+    "source": "HR Bukhari"
+  },
+  {
+    "id": "zul-1",
+    "month": 12,
+    "arabic": "مَا مِنْ أَيَّامٍ الْعَمَلُ الصَّالِحُ فِيهَا أَحَبُّ إِلَى اللَّهِ مِنْ هَذِهِ الأَيَّامِ",
+    "bm": "Tiada hari di mana amal soleh lebih dicintai Allah daripada hari-hari ini (10 hari pertama Zulhijjah).",
+    "en": "There are no days in which righteous deeds are more beloved to Allah than these days (first 10 days of Zulhijjah).",
+    "source": "HR Bukhari"
+  },
+  {
+    "id": "muh-1",
+    "month": 1,
+    "arabic": "أَفْضَلُ الصِّيَامِ بَعْدَ رَمَضَانَ شَهْرُ اللَّهِ الْمُحَرَّمُ",
+    "bm": "Puasa yang paling utama selepas Ramadan adalah puasa di bulan Muharram.",
+    "en": "The best fasting after Ramadan is fasting in the month of Muharram.",
+    "source": "HR Muslim"
+  }
+]
