@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <meta name="theme-color" content="#093C5D"/>
-<title>SedekahKu</title>
+<title>QRSedekah</title>
 <link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="css/style.css">
@@ -27,7 +27,7 @@
 </div>
 <div id="app">
 <header class="hdr">
-  <div class="logo">Sedekah<span>Ku</span></div>
+  <div class="logo">QR<span>Sedekah</span></div>
   <div class="hdr-r">
     <button class="lang-btn" id="langBtn">EN</button>
     <button class="mbtn" id="menuBtn"><span></span><span></span><span></span></button>
@@ -56,6 +56,12 @@
       <div class="scard"><div class="snum" id="sFav">0</div><div class="slb" id="lbl-stat1">Masjid Disimpan</div></div>
       <div class="scard"><div class="snum" id="sInfaq">0</div><div class="slb" id="lbl-stat2">Infaq Dicatat</div></div>
     </div>
+    
+    <div class="coll-hdr open" style="margin-top:20px;" onclick="toggleColl(this)">
+      <span id="lbl-kempen-title">Kempen Aktif</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="coll-cnt open" id="kempenList"></div>
   </div>
 
   <div class="screen" id="screen-search">
@@ -71,18 +77,17 @@
     <div id="searchList"></div>
   </div>
 
-  <div class="screen" id="screen-kempen">
-    <div class="slbl" id="lbl-kempen-title">Kempen Aktif</div>
-    <div id="kempenList"></div>
+  <div class="screen" id="screen-scan" style="text-align:center;padding-top:60px;">
+    <div class="slbl">Sumbang Data</div>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:30px;">Imbas QR masjid atau surau untuk menambah ke koleksi komuniti.</p>
+    <button class="btn-scan" id="btnTabScan" style="height:120px;flex-direction:column;gap:12px;">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      <span style="font-size:16px;">Buka Kamera Scanner</span>
+    </button>
   </div>
 
   <div class="screen" id="screen-myinfaq">
-
-    <div class="coll-hdr open" onclick="toggleColl(this)">
-      <span id="lbl-fav-title">❤️ Masjid Kegemaran</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-    </div>
-    <div class="coll-cnt open" id="favList"></div>
+    <div class="slbl">Sejarah Infaq</div>
 
     <div class="coll-hdr" onclick="toggleColl(this)">
       <span id="lbl-hist-infaq">Sejarah Infaq Masjid</span>
@@ -95,15 +100,43 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
     <div class="coll-cnt" id="kHistList"></div>
+  </div>
 
+  <div class="screen" id="screen-saya">
+    <div class="slbl">Profil Saya</div>
+    <div class="hero" style="padding:20px;margin-bottom:20px;">
+      <div style="font-size:40px;margin-bottom:10px;">👤</div>
+      <div class="mname" style="font-size:18px;">Penyumbang QRSedekah</div>
+      <div style="font-size:12px;color:var(--mint);margin-top:5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">Level: Contributor</div>
+    </div>
+
+    <div class="coll-hdr open" onclick="toggleColl(this)">
+      <span>❤️ Masjid Kegemaran</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="coll-cnt open" id="profileFavList"></div>
+
+    <div class="coll-hdr open" onclick="toggleColl(this)">
+      <span>🔖 Koleksi Imbasan Saya</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="coll-cnt open" id="profileLocalList">
+      <div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Belum ada imbasan tempatan.</div>
+    </div>
+    
+    <button class="btn-scan" id="btnSync" style="margin-top:20px;background:var(--card);border:1px solid var(--teal);color:var(--teal);display:none;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <span>Kongsi Koleksi ke Komuniti</span>
+    </button>
   </div>
 </div>
 </div>
 
 <nav class="bnav">
-  <button class="ni active" id="nav-btn-hariini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M18.66 5.34l1.41-1.41"/></svg><span class="nlbl" id="nav-hariini">Hari Ini</span></button>
-  <button class="ni" id="nav-btn-kempen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span class="nlbl" id="nav-kempen">Kempen</span></button>
-  <button class="ni" id="nav-btn-myinfaq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="nlbl" id="nav-myinfaq">Rekod</span></button>
+  <button class="ni active" id="nav-btn-hariini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="nlbl">Utama</span></button>
+  <button class="ni" id="nav-btn-myinfaq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg><span class="nlbl">Sejarah</span></button>
+  <button class="ni" id="nav-btn-scan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span class="nlbl">Imbas</span></button>
+  <button class="ni" id="nav-btn-saya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="nlbl">Saya</span></button>
 </nav>
 
 <!-- Donate QR Modal -->
@@ -153,6 +186,7 @@
     <div class="unv-badge">⏳ Belum Disahkan</div>
     <div class="ktit" id="addName" style="margin-top:10px;"></div>
     <div class="ksub" id="addCity"></div>
+    <div id="locBadge" style="font-size:10px;font-weight:600;padding:4px 12px;border-radius:20px;margin-bottom:12px;display:inline-block;letter-spacing:0.5px;"></div>
     <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:16px;text-align:left;">
       <div style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">ID DuitNow / Proxy</div>
       <div id="addProxy" style="font-size:13px;font-weight:600;color:var(--mint);word-break:break-all;font-family:monospace;"></div>
@@ -176,11 +210,12 @@
     <div class="mst" id="menu-lbl2">Tetapan</div>
     <div class="mit" id="menuLang"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span id="menu-lang">Tukar Bahasa</span></div>
     <div class="mit" id="menuExport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span id="menu-export">Eksport Data</span></div>
-    <div class="mft"><strong>SedekahKu</strong><br/>Data disimpan dalam peranti anda.<br/>Tiada akaun diperlukan.</div>
+    <div class="mft"><strong>QRSedekah</strong><br/>Data disimpan dalam peranti anda.<br/>Tiada akaun diperlukan.</div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
 <script src="js/html5-qrcode.min.js"></script>
 <script src="js/qrcode.min.js"></script>
 <script src="js/app.js"></script>

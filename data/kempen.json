@@ -1,12 +1,17 @@
 [
   {
     "id": "kmp001",
+    "masjid_id": "sgmy001",
     "title": "Tabung Pembinaan Masjid Negara",
-    "masjidId": "sgmy001",
+    "category": "renovation",
     "description": "Kempen pengubahsuaian dan naik taraf Masjid Negara",
-    "targetAmount": 500000,
-    "startDate": "2026-05-01",
-    "endDate": "2026-08-31",
-    "active": true
+    "target_amount": 500000,
+    "collected_amount": 125000,
+    "deadline": "2026-08-31",
+    "is_urgent": false,
+    "status": "active",
+    "qr_code_id": "qr-sgmy001",
+    "created_at": "2026-05-01T00:00:00Z",
+    "updated_at": "2026-05-06T00:00:00Z"
   }
 ]
