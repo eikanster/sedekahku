@@ -371,6 +371,7 @@ function renderMI(){
   const kHistList=document.getElementById('kHistList');
   const pFavList=document.getElementById('profileFavList');
   const pLocalList=document.getElementById('profileLocalList');
+  updStats();
 
   const favHTML = favs.length?favs.map(f=>`
     <div class="fcard" data-id="${f.id}">
