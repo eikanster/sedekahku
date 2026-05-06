@@ -126,10 +126,7 @@ function hijri(){
 
 function getHijriMonth(){
   try{
-    // Extract month number (1-12) from Hijri calendar
-    const parts = new Date().toLocaleDateString('en-u-ca-islamic',{month:'numeric',year:'numeric',day:'numeric'}).split('/');
-    // en-US format: M/D/YYYY, so month is parts[0]
-    return parseInt(parts[0]);
+    return parseInt(new Intl.DateTimeFormat('en-u-ca-islamic', {month: 'numeric'}).format(new Date()));
   }catch{
     return 0;
   }
@@ -137,9 +134,23 @@ function getHijriMonth(){
 
 function renderSeasonBanner(){
   const el = document.getElementById('seasonBanner');
-  if(!el || !HIKMAH.length) return;
+  if(!el) return;
   const month = getHijriMonth();
   const bm = lang === 'bm';
+  
+  // Internal fallback if HIKMAH not loaded yet
+  if(!HIKMAH || !HIKMAH.length){
+    el.innerHTML = `
+      <div class="season-banner season-default">
+        <div class="season-icon">🕌</div>
+        <div>
+          <div class="season-title" style="font-size:12px;opacity:0.8;margin-bottom:2px;">${bm?'Kata-kata Hikmah':'Daily Wisdom'}</div>
+          <div class="season-msg" style="font-weight:600;margin-bottom:2px;">${bm ? 'Sedekah itu tidak mengurangkan harta.' : 'Charity does not decrease wealth.'}</div>
+          <div class="season-msg" style="font-size:10px;opacity:0.6;">— HR Muslim</div>
+        </div>
+      </div>`;
+    return;
+  }
   
   // 1. Filter pool: specific month + generic (0)
   let pool = HIKMAH.filter(h => h.month === month);
