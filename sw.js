@@ -7,7 +7,8 @@ const STATIC_ASSETS = [
   './js/qrcode.min.js',
   './manifest.json',
   './icons/icon-192.png',
-  './icons/icon-512.png'
+  './icons/icon-512.png',
+  './data/hikmah.json'
 ];
 
 // Install — cache static assets
