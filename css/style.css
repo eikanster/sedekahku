@@ -165,6 +165,14 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
 .kov.open{opacity:1;pointer-events:all}
 .ksh{background:var(--navy);border:1px solid var(--border);border-bottom:none;border-radius:28px 28px 0 0;padding:28px 24px 48px;width:100%;transform:translateY(100%);transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
 .kov.open .ksh{transform:none}
+/* Centered Modal variation */
+#qrModal{align-items:center;padding:20px}
+#qrModal .ksh{border-radius:28px;transform:scale(0.9);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);padding-bottom:28px;max-width:380px}
+#qrModal.open .ksh{transform:scale(1);opacity:1}
+#qrModal .khdl{display:none} /* Hide the drag handle for centered modal */
+
+.btn-close-x{position:absolute;top:16px;right:16px;width:32px;height:32px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:50%;color:var(--muted);font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;line-height:1;padding-bottom:4px;transition:all .2s}
+.btn-close-x:hover{background:rgba(255,107,107,0.1);color:#ff6b6b;border-color:rgba(255,107,107,0.3)}
 .khdl{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px}
 .ktit{font-family:'Amiri',serif;font-size:22px;font-weight:700;text-align:center;margin-bottom:4px}
 .ksub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:24px}
