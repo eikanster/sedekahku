@@ -23,6 +23,13 @@ let favs=JSON.parse(localStorage.getItem('sk_favs')||'[]');
 let hist=JSON.parse(localStorage.getItem('sk_hist')||'[]');
 let localMasjid=JSON.parse(localStorage.getItem('sk_local_masjid')||'[]');
 let localQr=JSON.parse(localStorage.getItem('sk_local_qr')||'[]');
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const installBtn = document.getElementById('menuInstall');
+  if(installBtn) installBtn.style.display = 'flex';
+});
 let cur=null;
 let curK=null;
 let scanPending=null;
@@ -49,6 +56,7 @@ const T={
     'menu-history':'Rekod Infaq',
     'menu-lang':'Tukar Bahasa',
     'menu-export':'Eksport Data',
+    'menu-install':'Muat Turun App',
     bi:'💚 Infaq Sekarang',
     db:'✨ Alhamdulillah dah Sedekah!',
     qs:'Imbas QR DuitNow untuk infaq',
@@ -82,6 +90,7 @@ const T={
     'menu-history':'Infaq History',
     'menu-lang':'Switch Language',
     'menu-export':'Export Data',
+    'menu-install':'Install App',
     bi:'💚 Donate Now',
     db:'✨ Alhamdulillah, I have Donated!',
     qs:'Scan DuitNow QR to donate',
@@ -549,7 +558,7 @@ function toggleLang(){
 }
 
 function applyLang(){
-  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','menu-lbl1','menu-lbl2','menu-lang','menu-export'].forEach(id=>{
+  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','menu-lbl1','menu-lbl2','menu-lang','menu-export','menu-install'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.textContent=t(id);
   });
@@ -920,6 +929,16 @@ document.addEventListener('DOMContentLoaded', async function(){
   document.getElementById('menuOverlay').onclick=toggleMenu;
   document.getElementById('menuLang').onclick=()=>{toggleLang();toggleMenu();};
   document.getElementById('menuExport').onclick=()=>{exportD();toggleMenu();};
+  document.getElementById('menuInstall').onclick=async ()=>{
+    if(!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      document.getElementById('menuInstall').style.display = 'none';
+    }
+    deferredPrompt = null;
+    toggleMenu();
+  };
   document.getElementById('nav-btn-hariini').onclick=()=>goTab('hariini');
   document.getElementById('nav-btn-scan').onclick=()=>goTab('scan');
   document.getElementById('nav-btn-saya').onclick=()=>goTab('saya');
