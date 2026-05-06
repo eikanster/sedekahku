@@ -123,9 +123,54 @@ function hijri(){
   }
 }
 
+function animateCounter(el, target){
+  if(!el) return;
+  const duration = 600;
+  const start = performance.now();
+  const startVal = parseInt(el.textContent)||0;
+  function step(now){
+    const elapsed = now - start;
+    const progress = Math.min(elapsed/duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(startVal + (target - startVal) * ease);
+    if(progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function updateLevelRing(){
+  const scans = localMasjid.length;
+  const infaqs = hist.length;
+  const total = scans + infaqs;
+  const maxLevel = 20;
+  const progress = Math.min(total / maxLevel, 1);
+  const circumference = 2 * Math.PI * 34;
+  const offset = circumference * (1 - progress);
+  const ring = document.getElementById('levelRingFill');
+  if(ring) setTimeout(()=>ring.style.strokeDashoffset = offset, 100);
+  
+  const levelEl = document.getElementById('profileLevel');
+  const emoji = document.querySelector('.level-ring-emoji');
+  if(total === 0){ if(levelEl) levelEl.textContent='Level: Pemula'; if(emoji) emoji.textContent='🌱'; }
+  else if(total < 5){ if(levelEl) levelEl.textContent='Level: Penggerak'; if(emoji) emoji.textContent='🕌'; }
+  else if(total < 10){ if(levelEl) levelEl.textContent='Level: Contributor'; if(emoji) emoji.textContent='⭐'; }
+  else if(total < 20){ if(levelEl) levelEl.textContent='Level: Penggerak Komuniti'; if(emoji) emoji.textContent='🏆'; }
+  else { if(levelEl) levelEl.textContent='Level: QR Master'; if(emoji) emoji.textContent='💎'; }
+}
+
+function addRipple(e, el){
+  const r = document.createElement('span');
+  const rect = el.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  r.className = 'ripple';
+  r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+  el.appendChild(r);
+  setTimeout(()=>r.remove(), 700);
+}
+
 function updStats(){
-  document.getElementById('sFav').textContent=favs.length;
-  document.getElementById('sInfaq').textContent=hist.length;
+  animateCounter(document.getElementById('sFav'), favs.length);
+  animateCounter(document.getElementById('sInfaq'), hist.length);
   const syncBtn = document.getElementById('btnSync');
   if(syncBtn) syncBtn.style.display = localMasjid.length > 0 ? 'flex' : 'none';
 }
@@ -248,12 +293,18 @@ function renderK(){
     return `<div class="kcard" data-id="${k.id}">
       <div class="kbadge">${isOther && m ? m.name : 'AKTIF'}</div>
       <div class="ktitle">${k.title}</div>
-      <div class="pbar"><div class="pfill" style="width:${p}%"></div></div>
+      <div class="pbar"><div class="pfill" data-fill="${p}"></div></div>
       <div class="plbls"><span>${p}% terkumpul</span><span>RM <strong>${(k.target_amount/1000).toFixed(0)}k</strong></span></div>
       <div class="kdl">⏰ ${dl>0?dl+(lang==='bm'?' hari lagi':' days left'):(lang==='bm'?'Tamat':'Ended')}</div>
     </div>`;
   }).join('');
   bindCards();
+  // Animate progress bars after render
+  setTimeout(()=>{
+    document.querySelectorAll('.pfill[data-fill]').forEach(bar=>{
+      bar.style.width = bar.dataset.fill + '%';
+    });
+  }, 50);
 }
 
 function renderMI(){
@@ -275,6 +326,12 @@ function renderMI(){
     </div>`).join(''):`<div class="empty"><div class="eico">🕌</div><div class="etit">${t('ef')}</div><div class="edesc">${t('efd')}</div></div>`;
 
   if(pFavList) pFavList.innerHTML = favHTML;
+
+  // Update profile stats with animation
+  animateCounter(document.getElementById('profileScanCount'), localMasjid.length);
+  animateCounter(document.getElementById('profileInfaqCount'), hist.length);
+  animateCounter(document.getElementById('profileFavCount'), favs.length);
+  updateLevelRing();
 
   const localHTML = localMasjid.length?localMasjid.map(m=>`
     <div class="fcard" data-id="${m.id}">
@@ -829,6 +886,13 @@ document.addEventListener('DOMContentLoaded',function(){
   renderMI();
   renderK();
   refreshData();
+
+  // ── Ripple Effect on all interactive buttons ──
+  document.querySelectorAll('.btn-i, .btn-db, .btn-scan, .kcard').forEach(el=>{
+    el.style.position='relative';
+    el.style.overflow='hidden';
+    el.addEventListener('click', e=>addRipple(e, el));
+  });
 
   if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
 
