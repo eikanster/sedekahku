@@ -2,7 +2,7 @@
   "name": "QRSedekah",
   "short_name": "QRSedekah",
   "description": "Daily infaq & sedekah to Malaysian masjid and surau",
-  "start_url": "index.html",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#062B44",
   "theme_color": "#093C5D",
