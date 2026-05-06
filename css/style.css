@@ -161,7 +161,7 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
 .sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
 .scard{background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:16px}
 .snum{font-size:22px;font-weight:700;color:var(--mint)}.slb{font-size:11px;color:var(--muted);margin-top:2px}
-.kov{position:fixed;inset:0;z-index:100;background:rgba(6,43,68,.92);backdrop-filter:blur(12px);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .3s}
+.kov{position:fixed;inset:0;z-index:250;background:rgba(6,43,68,.92);backdrop-filter:blur(12px);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .3s}
 .kov.open{opacity:1;pointer-events:all}
 .ksh{background:var(--navy);border:1px solid var(--border);border-bottom:none;border-radius:28px 28px 0 0;padding:28px 24px 48px;width:100%;transform:translateY(100%);transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
 .kov.open .ksh{transform:none}
@@ -211,7 +211,7 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
 .nlbl{font-size:9px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;opacity:0.8}
 .ndot{position:absolute;top:6px;right:10px;width:6px;height:6px;background:var(--mint);border-radius:50%;display:none;box-shadow:0 0 10px var(--mint)}
 .ni.notif .ndot{display:block}
-.smenu{position:fixed;inset:0;z-index:200;pointer-events:none}
+.smenu{position:fixed;inset:0;z-index:400;pointer-events:none}
 .smenu.open{pointer-events:all}
 .sov{position:absolute;inset:0;background:rgba(6,43,68,.7);backdrop-filter:blur(4px);opacity:0;transition:opacity .3s}
 .smenu.open .sov{opacity:1}
