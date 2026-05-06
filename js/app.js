@@ -291,7 +291,7 @@ function renderMI(){
   const mHist=hist.filter(h=>h.type!=='kempen');
   const kHist=hist.filter(h=>h.type==='kempen');
 
-  const mapHist=(list)=>list.length?list.map((h)=>{
+  const mapHist=(list)=>list.map((h)=>{
     const idx=hist.indexOf(h);
     return `
     <div class="hi">
@@ -300,13 +300,22 @@ function renderMI(){
         <div class="hname">${h.kName||h.name}</div>
         <div class="hdate2">${h.disp} ${h.kName?'• '+h.name:''}</div>
       </div>
-      <button class="btn-rm" onclick="delHist(${idx})">
+      <button class="btn-rm" onclick="event.stopPropagation(); delHist(${idx})">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
-    </div>`}).join(''):`<div style="text-align:center;padding:20px 0;color:var(--muted);font-size:13px">${t('eh')}</div>`;
+    </div>`}).join('');
 
-  histList.innerHTML=mapHist(mHist);
-  kHistList.innerHTML=mapHist(kHist);
+  const mHTML = mapHist(mHist);
+  const kHTML = mapHist(kHist);
+  
+  const fHist = document.getElementById('fullHistList');
+  if(fHist){
+    if(!mHist.length && !kHist.length){
+      fHist.innerHTML = `<div style="text-align:center;padding:20px 0;color:var(--muted);font-size:13px">${t('eh')}</div>`;
+    } else {
+      fHist.innerHTML = `<div id="histList">${mHTML}</div><div id="kHistList">${kHTML}</div>`;
+    }
+  }
 
   bindCards();
 }
@@ -408,7 +417,7 @@ function goTab(n){
   const btn=document.getElementById('nav-btn-'+n);
   if(btn) btn.classList.add('active');
   if(n==='hariini') renderK();
-  if(n==='myinfaq' || n==='saya') renderMI();
+  if(n==='saya') renderMI();
   if(n==='search') renderSearch();
 }
 
@@ -788,11 +797,9 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('langBtn').onclick=toggleLang;
   document.getElementById('menuBtn').onclick=toggleMenu;
   document.getElementById('menuOverlay').onclick=toggleMenu;
-  document.getElementById('menuGoHistory').onclick=()=>{goTab('myinfaq');toggleMenu();};
   document.getElementById('menuLang').onclick=()=>{toggleLang();toggleMenu();};
   document.getElementById('menuExport').onclick=()=>{exportD();toggleMenu();};
   document.getElementById('nav-btn-hariini').onclick=()=>goTab('hariini');
-  document.getElementById('nav-btn-myinfaq').onclick=()=>goTab('myinfaq');
   document.getElementById('nav-btn-scan').onclick=()=>goTab('scan');
   document.getElementById('nav-btn-saya').onclick=()=>goTab('saya');
 
