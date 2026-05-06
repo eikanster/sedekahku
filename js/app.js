@@ -123,6 +123,77 @@ function hijri(){
   }
 }
 
+function getHijriMonth(){
+  try{
+    // Extract month number (1-12) from Hijri calendar
+    const parts = new Date().toLocaleDateString('en-u-ca-islamic',{month:'numeric',year:'numeric',day:'numeric'}).split('/');
+    // en-US format: M/D/YYYY, so month is parts[0]
+    return parseInt(parts[0]);
+  }catch{
+    return 0;
+  }
+}
+
+function renderSeasonBanner(){
+  const el = document.getElementById('seasonBanner');
+  if(!el) return;
+  const month = getHijriMonth();
+  const bm = lang === 'bm';
+
+  const seasons = {
+    1: { // Muharram
+      cls:'season-muharram', icon:'🌙',
+      title: bm ? 'Maal Hijrah' : 'Islamic New Year',
+      msg: bm ? 'Tahun baru Hijrah. Mulakan dengan niat bersedekah lebih banyak tahun ini. Setiap infaq adalah bekalan untuk akhirat.' : 'A new Hijri year begins. Start it with a renewed intention to give more this year.'
+    },
+    3: { // Rabiul Awal
+      cls:'season-maulid', icon:'🌟',
+      title: bm ? 'Maulidur Rasul ﷺ' : 'Maulidur Rasul ﷺ',
+      msg: bm ? 'Bulan kelahiran Nabi Muhammad ﷺ. Hidupkan sunnah baginda dengan bersedekah kepada yang memerlukan.' : 'Month of the Prophet\'s ﷺ birth. Celebrate by following his Sunnah of generosity.'
+    },
+    7: { // Rejab
+      cls:'season-rejab', icon:'✨',
+      title: bm ? 'Bulan Rejab' : 'Month of Rejab',
+      msg: bm ? 'Israk Mikraj bulan ini. Bulan mulia untuk memperbanyak ibadat dan sedekah. Satu sedekah kini, pahala berlipat ganda.' : 'Isra\' Mi\'raj this month. A blessed time — multiply your rewards through generous giving.'
+    },
+    8: { // Syaaban
+      cls:'season-syaaban', icon:'🌙',
+      title: bm ? 'Malam Nisfu Syaaban' : 'Mid Syaaban',
+      msg: bm ? 'Pertengahan Syaaban tiba. Amal sedekah dibuka pintu luasnya. Bersihkan harta, bersihkan jiwa.' : 'Mid Syaaban is near. Open your heart — charity purifies the soul before Ramadan.'
+    },
+    9: { // Ramadan
+      cls:'season-ramadan', icon:'🔥',
+      title: bm ? 'Ramadan Kareem 🌙' : 'Ramadan Kareem 🌙',
+      msg: bm ? 'Pahala berlipat ganda! Setiap infaq di bulan ini seperti infaq 70 bulan. Cari Lailatul Qadar dengan bersedekah setiap malam.' : 'Rewards are multiplied! Every donation in Ramadan is like giving 70 months of charity. Seek Laylatul Qadr.'
+    },
+    10: { // Syawal
+      cls:'season-syawal', icon:'🎉',
+      title: bm ? 'Selamat Hari Raya!' : 'Eid Mubarak!',
+      msg: bm ? 'Aidilfitri yang penuh barakah. Jangan lupa bayar zakat fitrah dan sedekah kepada yang memerlukan.' : 'A blessed Eid. Remember Zakat Fitrah and extend your generosity to those in need.'
+    },
+    12: { // Zulhijjah
+      cls:'season-zulhijjah', icon:'🐄',
+      title: bm ? 'Zulhijjah & Aidiladha' : 'Zulhijjah & Eid Al-Adha',
+      msg: bm ? 'Musim haji dan korban. 10 hari pertama Zulhijjah adalah antara hari terbaik. Sedekah, korban dan doa.' : 'Season of Hajj & Qurban. The first 10 days of Zulhijjah are the best days of the year for good deeds.'
+    },
+  };
+
+  const data = seasons[month] || {
+    cls: 'season-default', icon: '🕌',
+    title: bm ? 'Bersedekah Setiap Hari' : 'Give Every Day',
+    msg: bm ? 'Sedekah itu tidak mengurangkan harta — ia melipatgandakannya. Imbas QR masjid berhampiran dan mulakan infaq anda hari ini.' : 'Charity does not diminish wealth — it multiplies it. Scan a nearby masjid QR and start your infaq today.'
+  };
+
+  el.innerHTML = `
+    <div class="season-banner ${data.cls}">
+      <div class="season-icon">${data.icon}</div>
+      <div>
+        <div class="season-title">${data.title}</div>
+        <div class="season-msg">${data.msg}</div>
+      </div>
+    </div>`;
+}
+
 function animateCounter(el, target){
   if(!el) return;
   const duration = 600;
@@ -489,19 +560,17 @@ function toggleLang(){
 }
 
 function applyLang(){
-  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','menu-lbl1','menu-lbl2','menu-history','menu-lang','menu-export','lbl-hist-infaq','lbl-hist-kempen'].forEach(id=>{
+  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','menu-lbl1','menu-lbl2','menu-lang','menu-export'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.textContent=t(id);
   });
   const btnInfaq=document.getElementById('btnInfaq');
   if(btnInfaq&&btnInfaq.childNodes[0]) btnInfaq.childNodes[0].textContent=t('bi');
   document.getElementById('langBtn').textContent=lang==='bm'?'EN':'BM';
-  document.getElementById('nav-hariini').textContent=t('hi');
-  document.getElementById('nav-kempen').textContent=t('km');
-  document.getElementById('nav-myinfaq').textContent=t('mi');
   const sInput=document.getElementById('searchInput');
   if(sInput) sInput.placeholder=t('search-ph');
   renderK();
+  renderSeasonBanner();
 }
 
 function shareM(){
@@ -878,11 +947,12 @@ document.addEventListener('DOMContentLoaded',function(){
 
   document.getElementById('qrModal').onclick=function(e){if(e.target===this)closeQR();};
 
-  document.getElementById('hijriDate').textContent=hijri();
+  document.getElementById('hijriDate').textContent = hijri();
   cur=dailyM();
   updHero();
   updStats();
   applyLang();
+  renderSeasonBanner();
   renderMI();
   renderK();
   refreshData();
