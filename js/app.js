@@ -70,6 +70,8 @@ const T={
     efd:'Tekan Simpan pada mana-mana masjid.',
     eh:'Belum ada rekod infaq',
     ehd:'Tekan Alhamdulillah dah Sedekah! selepas infaq.',
+    'lbl-solat':'Waktu Solat',
+    'lbl-renungan':'📿 Renungan Harian',
     'menu-refresh':'Kemaskini Data',
     'menu-kopi':'Belanja Kopi ☕',
     'lbl-scan':'Imbas QR Masjid / Surau',
@@ -108,6 +110,8 @@ const T={
     efd:'Tap Save on any masjid.',
     eh:'No infaq records yet',
     ehd:'Tap Alhamdulillah after each infaq.',
+    'lbl-solat':'Prayer Times',
+    'lbl-renungan':'📿 Daily Reflection',
     'menu-refresh':'Refresh Data',
     'menu-kopi':'Buy Me a Coffee ☕',
     'lbl-scan':'Scan Masjid / Surau QR',
@@ -622,7 +626,7 @@ function toggleLang(){
 }
 
 function applyLang(){
-  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','lbl-hist-title','lbl-scan','lbl-sync-comm','menu-lbl1','menu-lbl2','menu-history','menu-lang','menu-refresh','menu-export','menu-install','menu-kopi'].forEach(id=>{
+  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','lbl-hist-title','lbl-scan','lbl-sync-comm','lbl-solat','lbl-renungan','menu-lbl1','menu-lbl2','menu-history','menu-lang','menu-refresh','menu-export','menu-install','menu-kopi'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.textContent=t(id);
   });
@@ -722,21 +726,16 @@ function renderWaktuSolatPrompt(){
   const el=document.getElementById('waktuSolat');
   if(!el) return;
   const bm=lang==='bm';
-  el.innerHTML=`<div class="solat-wrap">
-    <div class="solat-hdr"><span class="solat-ttl">🕐 ${bm?'Waktu Solat':'Prayer Times'}</span></div>
-    <div class="solat-prompt">
-      <div style="font-size:13px;color:var(--muted);margin-bottom:12px;">${bm?'Aktifkan lokasi untuk waktu solat tempatan':'Enable location for local prayer times'}</div>
-      <button class="btn-loc" onclick="requestSolatLoc()">📍 ${bm?'Aktifkan Lokasi':'Enable Location'}</button>
-    </div>
-  </div>`;
+  el.innerHTML=`<div style="padding:4px 0 14px;cursor:pointer;color:var(--muted);font-size:12px;" onclick="requestSolatLoc()">📍 ${bm?'Ketik untuk aktifkan lokasi':'Tap to enable location'}</div>`;
 }
 
 function requestSolatLoc(){
-  const btn=document.querySelector('#waktuSolat .btn-loc');
-  if(btn) btn.textContent=lang==='bm'?'⏳ Memuatkan...':'⏳ Loading...';
+  const btn=document.getElementById('btnSolatRefresh');
+  if(btn) btn.style.opacity='0.4';
   getLoc(loc=>{
     if(loc) fetchWaktuSolat(loc.lat,loc.lng);
     else{ renderWaktuSolatPrompt(); showToast(lang==='bm'?'Lokasi tidak dapat diakses':'Location unavailable'); }
+    if(btn) btn.style.opacity='1';
   });
 }
 
@@ -764,23 +763,17 @@ function renderWaktuSolat(timings){
     const[h,m]=t.split(':').map(Number);
     return(h*60+m)>nowMins;
   });
-  el.innerHTML=`<div class="solat-wrap">
-    <div class="solat-hdr">
-      <span class="solat-ttl">🕐 ${bm?'Waktu Solat Hari Ini':'Prayer Times Today'}</span>
-      <button onclick="requestSolatLoc()" style="background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;line-height:1;padding:4px;" title="Refresh">🔄</button>
-    </div>
-    <div class="solat-grid">
-      ${SOLAT_PRAYERS.map((p,i)=>{
-        const time=timings[p.key]||'--:--';
-        const[h,m]=time.split(':').map(Number);
-        const isPast=(h*60+(m||0))<nowMins;
-        const isNext=i===nextIdx;
-        return`<div class="solat-item${isNext?' next':isPast?' past':''}">
-          <div class="solat-name">${bm?p.bm:p.en}</div>
-          <div class="solat-time">${time}</div>
-        </div>`;
-      }).join('')}
-    </div>
+  el.innerHTML=`<div class="solat-row">
+    ${SOLAT_PRAYERS.map((p,i)=>{
+      const time=timings[p.key]||'--:--';
+      const[h,m]=(time+'').split(':').map(Number);
+      const isPast=(h*60+(m||0))<nowMins;
+      const isNext=i===nextIdx;
+      return`<div class="solat-col${isNext?' next':isPast?' past':''}">
+        <div class="solat-name">${bm?p.bm:p.en}</div>
+        <div class="solat-time">${time}</div>
+      </div>`;
+    }).join('')}
   </div>`;
 }
 
@@ -1105,6 +1098,7 @@ document.addEventListener('DOMContentLoaded', async function(){
   // Load hikmah data
   HIKMAH = await fetch('data/hikmah.json').then(r=>r.ok?r.json():[]).catch(()=>[]);
   document.getElementById('btnShuffle').onclick=shuffleM;
+  document.getElementById('btnSolatRefresh').onclick=requestSolatLoc;
   document.getElementById('btnInfaq').onclick=()=>{ curK=null; openQR(); };
   document.getElementById('btnFavToggle').onclick=toggleFav;
   document.getElementById('btnDeleteRecord').onclick=()=>{ closeQR(); delLocalMasjid(cur.id); };

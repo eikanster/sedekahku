@@ -266,20 +266,15 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
 /* Search input focus */
 .s-box:focus-within{border-color:rgba(93,248,216,.5)!important;box-shadow:0 0 0 3px rgba(93,248,216,.08)}
 
-/* Waktu Solat */
-.solat-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:10px;margin-bottom:4px}
-.solat-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.solat-ttl{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal)}
-.solat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.solat-item{text-align:center;padding:10px 6px;border-radius:var(--rs);background:rgba(255,255,255,0.02);border:1px solid transparent;transition:all .3s}
-.solat-item.next{background:rgba(93,248,216,0.1);border-color:rgba(93,248,216,0.3)}
-.solat-item.past{opacity:0.4}
-.solat-name{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
-.solat-time{font-size:16px;font-weight:700;color:var(--fg);font-family:'Amiri',serif}
-.solat-item.next .solat-name,.solat-item.next .solat-time{color:var(--mint)}
-.solat-prompt{text-align:center;padding:16px 0}
-.btn-loc{background:none;border:1px solid var(--border);color:var(--teal);font-family:inherit;font-size:12px;font-weight:600;padding:10px 20px;border-radius:50px;cursor:pointer;transition:all .2s}
-.btn-loc:hover{border-color:var(--teal);background:rgba(111,209,215,0.08)}
+/* Waktu Solat — compact flat row */
+.solat-row{display:flex;justify-content:space-between;padding:6px 0 14px;gap:2px}
+.solat-col{flex:1;text-align:center}
+.solat-name{font-size:8px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.solat-time{font-size:14px;font-weight:700;color:var(--fg);font-family:'Amiri',serif}
+.solat-col.next .solat-name{color:var(--mint)}
+.solat-col.next .solat-time{color:var(--mint)}
+.solat-col.next .solat-time::after{content:'';display:block;width:14px;height:2px;background:var(--mint);border-radius:1px;margin:3px auto 0}
+.solat-col.past .solat-name,.solat-col.past .solat-time{opacity:0.3}
 
 /* Status Badge Pills */
 .status-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;padding:4px 12px;border-radius:20px}
