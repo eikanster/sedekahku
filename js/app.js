@@ -959,21 +959,6 @@ function confirmAddMasjid(){
   document.getElementById('addMasjidModal').classList.remove('open');
 }
 
-function submitToAdmin(){
-  if(!scanPending) return;
-  const {masjid,qr}=scanPending;
-  const msg=encodeURIComponent(
-    '🕌 *Cadangan Masjid Baru*\n\n'+
-    '*Nama:* '+masjid.name+'\n'+
-    '*Lokasi:* '+masjid.daerah+', '+masjid.postcode+'\n'+
-    '*Koordinat:* '+(masjid.lat?masjid.lat+','+masjid.lng:'Tiada')+'\n'+
-    '*QR String:* '+qr.duitnow_string+'\n'+
-    '*Masa Imbas:* '+new Date(masjid.created_at).toLocaleString('ms-MY')+'\n\n'+
-    'Sila sahkan dan tambah ke dalam direktori QRSedekah.'
-  );
-  window.open('https://t.me/kawantelegram?text='+msg,'_blank');
-  confirmAddMasjid();
-}
 
 async function syncToCommunity(){
   if(!localMasjid.length){
@@ -1054,7 +1039,6 @@ document.addEventListener('DOMContentLoaded', async function(){
   document.getElementById('scanFileInput').onchange=(e)=>scanFromFile(e.target.files[0]);
   document.getElementById('btnCancelScan').onclick=closeScan;
   document.getElementById('btnConfirmAdd').onclick=confirmAddMasjid;
-  document.getElementById('btnSubmitAdmin').onclick=submitToAdmin;
   document.getElementById('btnSync').onclick=syncToCommunity;
   document.getElementById('btnCancelAdd').onclick=()=>{
     scanPending=null;
