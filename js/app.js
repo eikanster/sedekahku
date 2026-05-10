@@ -418,7 +418,9 @@ function renderMI(){
         <div class="fname">${m.name} <span style="font-size:9px;color:#ffc800;font-weight:600;">● LOKAL</span></div>
         <div class="floc">${m.daerah||''}, ${m.state}</div>
       </div>
-      <span style="color:var(--teal);opacity:.6;font-size:20px">›</span>
+      <button class="btn-rm" onclick="event.stopPropagation(); delLocalMasjid('${m.id}')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
     </div>`).join(''):`<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Belum ada imbasan tempatan.</div>`;
   
   if(pLocalList) pLocalList.innerHTML = localHTML;
@@ -530,18 +532,62 @@ function saveFav(){
   renderMI();
 }
 
+let _confirmCb=null;
+function showConfirm(msg,sub,onYes){
+  _confirmCb=onYes;
+  document.getElementById('confirmMsg').textContent=msg;
+  document.getElementById('confirmSub').textContent=sub||'';
+  document.getElementById('confirmModal').classList.add('open');
+}
+function closeConfirm(){
+  document.getElementById('confirmModal').classList.remove('open');
+  _confirmCb=null;
+}
+
 function delFav(id){
-  favs=favs.filter(f=>f.id!==id);
-  localStorage.setItem('sk_favs',JSON.stringify(favs));
-  updStats();
-  renderMI();
+  const item=favs.find(f=>f.id===id);
+  showConfirm(
+    lang==='bm'?'Buang dari kegemaran?':'Remove from favourites?',
+    item?.name||'',
+    ()=>{
+      favs=favs.filter(f=>f.id!==id);
+      localStorage.setItem('sk_favs',JSON.stringify(favs));
+      updStats();
+      renderMI();
+    }
+  );
 }
 
 function delHist(index){
-  hist.splice(index,1);
-  localStorage.setItem('sk_hist',JSON.stringify(hist));
-  updStats();
-  renderMI();
+  const item=hist[index];
+  showConfirm(
+    lang==='bm'?'Padam rekod infaq ini?':'Delete this infaq record?',
+    item?.kName||item?.name||'',
+    ()=>{
+      hist.splice(index,1);
+      localStorage.setItem('sk_hist',JSON.stringify(hist));
+      updStats();
+      renderMI();
+    }
+  );
+}
+
+function delLocalMasjid(id){
+  const item=localMasjid.find(m=>m.id===id);
+  showConfirm(
+    lang==='bm'?'Padam dari koleksi tempatan?':'Delete from local collection?',
+    item?.name||'',
+    ()=>{
+      localMasjid=localMasjid.filter(m=>m.id!==id);
+      localQr=localQr.filter(q=>q.masjid_id!==id);
+      favs=favs.filter(f=>f.id!==id);
+      localStorage.setItem('sk_local_masjid',JSON.stringify(localMasjid));
+      localStorage.setItem('sk_local_qr',JSON.stringify(localQr));
+      localStorage.setItem('sk_favs',JSON.stringify(favs));
+      updStats();
+      renderMI();
+    }
+  );
 }
 
 function goTab(n){
@@ -1049,6 +1095,9 @@ document.addEventListener('DOMContentLoaded', async function(){
   if(sInput) sInput.oninput=(e)=>renderSearch(e.target.value);
 
   document.getElementById('qrModal').onclick=function(e){if(e.target===this)closeQR();};
+  document.getElementById('confirmYes').onclick=()=>{ if(_confirmCb) _confirmCb(); closeConfirm(); };
+  document.getElementById('confirmNo').onclick=closeConfirm;
+  document.getElementById('confirmModal').onclick=function(e){if(e.target===this)closeConfirm();};
 
   // Profile fields
   const profNameInput=document.getElementById('profName');
