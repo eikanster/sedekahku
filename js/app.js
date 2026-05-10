@@ -34,7 +34,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 let cur=null;
 let curK=null;
 let scanPending=null;
-const SUBMIT_URL=''; // Paste your Google Web App URL here
+const SUBMIT_URL='https://script.google.com/macros/s/AKfycbzJzDkn8_tynoOG9La0RKApF9mWlkkO_Bp0f830xlkoXn0x7_qpC_Jzn2ISnNV-3FqA/exec';
 const KOPI_URL='https://toyyibpay.com/Belanja-Kopi-QRSedakah';
 
 const T={
@@ -57,7 +57,7 @@ const T={
     'menu-lbl2':'Tetapan',
     'menu-history':'Rekod Infaq',
     'menu-lang':'Tukar Bahasa',
-    'menu-export':'Eksport Data',
+    'menu-export':'Sumbang Data QR',
     'menu-install':'Muat Turun App',
     bi:'💚 Infaq Sekarang',
     db:'✨ Alhamdulillah dah Sedekah!',
@@ -94,7 +94,7 @@ const T={
     'menu-lbl2':'Settings',
     'menu-history':'Infaq History',
     'menu-lang':'Switch Language',
-    'menu-export':'Export Data',
+    'menu-export':'Submit QR Data',
     'menu-install':'Install App',
     bi:'💚 Donate Now',
     db:'✨ Alhamdulillah, I have Donated!',
@@ -976,49 +976,47 @@ function submitToAdmin(){
 }
 
 async function syncToCommunity(){
-  if(!localMasjid.length) return;
-  if(!SUBMIT_URL){
-    showToast('SUBMIT_URL belum disetkan');
+  if(!localMasjid.length){
+    showToast(lang==='bm'?'Tiada data imbasan untuk dihantar':'No scan data to submit');
     return;
   }
-  
-  const btn = document.getElementById('btnSync');
-  const originalText = btn.innerHTML;
-  btn.innerHTML = '<span>⏳ Menghantar...</span>';
-  btn.disabled = true;
+  if(!profile.name){
+    showToast(lang==='bm'?'Sila isi nama anda dalam Profil dahulu':'Please fill in your name in Profile first');
+    return;
+  }
 
-  const payload = localMasjid.map(m => {
-    const q = localQr.find(qr => qr.masjid_id === m.id) || {};
+  const btn=document.getElementById('btnSync');
+  if(btn){ btn.innerHTML='<span>⏳ Menghantar...</span>'; btn.disabled=true; }
+
+  const payload=localMasjid.map(m=>{
+    const q=localQr.find(qr=>qr.masjid_id===m.id)||{};
     return {
-      id: m.id,
+      submitter_name: profile.name||'',
+      submitter_phone: profile.phone||'',
       name: m.name,
       daerah: m.daerah,
       state: m.state,
-      postcode: m.postcode,
-      lat: m.lat,
-      lng: m.lng,
-      qr_string: q.duitnow_string,
+      postcode: m.postcode||'',
+      lat: m.lat||'',
+      lng: m.lng||'',
+      qr_string: q.duitnow_string||'',
       scanned_at: m.created_at,
-      source: m.scan_source || 'unknown'
+      source: m.scan_source||'unknown'
     };
   });
 
-  try {
-    const response = await fetch(SUBMIT_URL, {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    });
-    const result = await response.json();
-    if(result.result === 'success'){
-      showToast('✅ Berjaya dikongsi ke komuniti!');
-    } else {
-      showToast('❌ Gagal menghantar');
+  try{
+    const response=await fetch(SUBMIT_URL,{method:'POST',body:JSON.stringify(payload)});
+    const result=await response.json();
+    if(result.result==='success'){
+      showToast(lang==='bm'?`✅ ${result.count} rekod berjaya dihantar!`:`✅ ${result.count} record(s) submitted!`);
+    }else{
+      showToast('❌ '+(result.message||'Gagal menghantar'));
     }
-  } catch (e) {
-    showToast('❌ Ralat rangkaian');
-  } finally {
-    btn.innerHTML = originalText;
-    btn.disabled = false;
+  }catch(e){
+    showToast(lang==='bm'?'❌ Ralat rangkaian':'❌ Network error');
+  }finally{
+    if(btn){ btn.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span id="lbl-sync-comm">'+t('lbl-sync-comm')+'</span>'; btn.disabled=false; }
   }
 }
 
@@ -1035,7 +1033,7 @@ document.addEventListener('DOMContentLoaded', async function(){
   document.getElementById('menuBtn').onclick=toggleMenu;
   document.getElementById('menuOverlay').onclick=toggleMenu;
   document.getElementById('menuLang').onclick=()=>{toggleLang();toggleMenu();};
-  document.getElementById('menuExport').onclick=()=>{exportD();toggleMenu();};
+  document.getElementById('menuExport').onclick=()=>{syncToCommunity();toggleMenu();};
   document.getElementById('menuInstall').onclick=async ()=>{
     if(!deferredPrompt) return;
     deferredPrompt.prompt();
