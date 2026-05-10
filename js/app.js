@@ -46,7 +46,7 @@ const T={
     'lbl-kempen-title':'Kempen Aktif',
     'lbl-fav-title':'❤️ Masjid Kegemaran',
     'lbl-hist-title':'Rekod Infaq',
-    'lbl-simpan':'Simpan',
+    'lbl-simpan':'Fav',
     'lbl-kongsi':'Kongsi',
     'lbl-lain':'Cari',
     'lbl-stat1':'Masjid Disimpan',
@@ -86,7 +86,7 @@ const T={
     'lbl-kempen-title':'Active Campaigns',
     'lbl-fav-title':'❤️ Fav Masjid',
     'lbl-hist-title':'Infaq History',
-    'lbl-simpan':'Save',
+    'lbl-simpan':'Fav',
     'lbl-kongsi':'Share',
     'lbl-lain':'Search',
     'lbl-stat1':'Saved Masjid',
@@ -133,10 +133,22 @@ function dailyM(){
   return MD[Math.abs(h)%MD.length];
 }
 
+function updSimpanBtn(){
+  const btn=document.getElementById('btnSimpan');
+  if(!btn||!cur) return;
+  const isFav=!!favs.find(f=>f.id===cur.id);
+  btn.style.color=isFav?'var(--mint)':'';
+  btn.style.borderColor=isFav?'rgba(93,248,216,0.3)':'';
+  btn.style.background=isFav?'rgba(93,248,216,0.06)':'';
+  const path=btn.querySelector('path');
+  if(path) path.style.fill=isFav?'var(--mint)':'none';
+}
+
 function updHero(){
   if(!cur) return;
   document.getElementById('masjidName').textContent=cur.name;
   document.getElementById('masjidLoc').textContent=(cur.daerah||'')+', '+cur.state;
+  updSimpanBtn();
 }
 
 function hijri(){
@@ -328,6 +340,7 @@ function toggleFav(){
   }
   localStorage.setItem('sk_favs',JSON.stringify(favs));
   updStats();
+  updSimpanBtn();
   renderMI();
   updFavBtn();
 }
@@ -1102,7 +1115,7 @@ document.addEventListener('DOMContentLoaded', async function(){
   document.getElementById('btnInfaq').onclick=()=>{ curK=null; openQR(); };
   document.getElementById('btnFavToggle').onclick=toggleFav;
   document.getElementById('btnDeleteRecord').onclick=()=>{ closeQR(); delLocalMasjid(cur.id); };
-  document.getElementById('btnSimpan').onclick=saveFav;
+  document.getElementById('btnSimpan').onclick=toggleFav;
   document.getElementById('btnKongsi').onclick=shareM;
   document.getElementById('btnLain').onclick=()=>goTab('search');
   document.getElementById('btnDB').onclick=confirmPay;
