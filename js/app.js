@@ -71,6 +71,8 @@ const T={
     eh:'Belum ada rekod infaq',
     ehd:'Tekan Alhamdulillah dah Sedekah! selepas infaq.',
     'menu-kopi':'Belanja Kopi ☕',
+    'lbl-scan':'Imbas QR Masjid / Surau',
+    'lbl-sync-comm':'Kongsi Koleksi ke Komuniti',
     'search-ph':'Cari nama masjid atau lokasi...'
   },
   en:{
@@ -106,6 +108,8 @@ const T={
     eh:'No infaq records yet',
     ehd:'Tap Alhamdulillah after each infaq.',
     'menu-kopi':'Buy Me a Coffee ☕',
+    'lbl-scan':'Scan Masjid / Surau QR',
+    'lbl-sync-comm':'Share My Collection',
     'search-ph':'Search masjid name or location...'
   }
 };
@@ -563,13 +567,12 @@ function toggleLang(){
 }
 
 function applyLang(){
-  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','menu-lbl1','menu-lbl2','menu-lang','menu-export','menu-install','menu-kopi'].forEach(id=>{
+  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','lbl-hist-title','lbl-scan','lbl-sync-comm','menu-lbl1','menu-lbl2','menu-history','menu-lang','menu-export','menu-install','menu-kopi'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.textContent=t(id);
   });
   const btnInfaq=document.getElementById('btnInfaq');
   if(btnInfaq&&btnInfaq.childNodes[0]) btnInfaq.childNodes[0].textContent=t('bi');
-  document.getElementById('langBtn').textContent=lang==='bm'?'EN':'BM';
   const sInput=document.getElementById('searchInput');
   if(sInput) sInput.placeholder=t('search-ph');
   const _cs=JSON.parse(localStorage.getItem('sk_solat')||'null');
@@ -1029,7 +1032,6 @@ document.addEventListener('DOMContentLoaded', async function(){
   document.getElementById('btnKongsi').onclick=shareM;
   document.getElementById('btnLain').onclick=()=>goTab('search');
   document.getElementById('btnDB').onclick=confirmPay;
-  document.getElementById('langBtn').onclick=toggleLang;
   document.getElementById('menuBtn').onclick=toggleMenu;
   document.getElementById('menuOverlay').onclick=toggleMenu;
   document.getElementById('menuLang').onclick=()=>{toggleLang();toggleMenu();};
