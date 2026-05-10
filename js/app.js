@@ -275,6 +275,12 @@ function openQR(){
     }
   }
   updFavBtn();
+  const btnDel=document.getElementById('btnDeleteRecord');
+  if(btnDel){
+    const isLocal=cur.id.startsWith('local_');
+    btnDel.style.display=isLocal?'block':'none';
+    btnDel.textContent=lang==='bm'?'🗑️ Padam Rekod Ini':'🗑️ Delete This Record';
+  }
   document.getElementById('qrModal').classList.add('open');
 }
 
@@ -418,9 +424,7 @@ function renderMI(){
         <div class="fname">${m.name} <span style="font-size:9px;color:#ffc800;font-weight:600;">● LOKAL</span></div>
         <div class="floc">${m.daerah||''}, ${m.state}</div>
       </div>
-      <button class="btn-rm" onclick="event.stopPropagation(); delLocalMasjid('${m.id}')">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
+      <span style="color:var(--teal);opacity:.6;font-size:20px">›</span>
     </div>`).join(''):`<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Belum ada imbasan tempatan.</div>`;
   
   if(pLocalList) pLocalList.innerHTML = localHTML;
@@ -1057,6 +1061,7 @@ document.addEventListener('DOMContentLoaded', async function(){
   document.getElementById('btnShuffle').onclick=shuffleM;
   document.getElementById('btnInfaq').onclick=()=>{ curK=null; openQR(); };
   document.getElementById('btnFavToggle').onclick=toggleFav;
+  document.getElementById('btnDeleteRecord').onclick=()=>{ closeQR(); delLocalMasjid(cur.id); };
   document.getElementById('btnSimpan').onclick=saveFav;
   document.getElementById('btnKongsi').onclick=shareM;
   document.getElementById('btnLain').onclick=()=>goTab('search');
