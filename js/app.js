@@ -262,6 +262,7 @@ function openQR(){
   const duitnowStr=qr?qr.duitnow_string:'';
   
   document.getElementById('qrName').textContent = curK ? curK.title : cur.name;
+  document.getElementById('qrBadge').innerHTML = statusBadge(cur.status);
   document.getElementById('qrSub').textContent = curK ? '🕌 ' + cur.name : t('qs');
   document.getElementById('qrDN').textContent=duitnowStr;
   document.getElementById('btnDB').textContent=t('db');
@@ -398,10 +399,11 @@ function renderMI(){
 
   const favHTML = favs.length?favs.map(f=>`
     <div class="fcard" data-id="${f.id}">
-      <div class="fico">🕌</div>
+      <div class="fico">${(f.status==='verified'||f.status==='community')?'🕌':'🔖'}</div>
       <div class="finfo">
         <div class="fname">${f.name}</div>
         <div class="floc">${f.daerah||f.mukim||''}, ${f.state}</div>
+        <div style="margin-top:5px;">${statusBadge(f.status)}</div>
       </div>
       <button class="btn-rm" onclick="event.stopPropagation(); delFav('${f.id}')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -488,10 +490,11 @@ function renderSearch(q=''){
 
   el.innerHTML=filtered.map(m=>`
     <div class="fcard" data-id="${m.id}">
-      <div class="fico">${m.status==='verified'?'🕌':'🔖'}</div>
+      <div class="fico">${(m.status==='verified'||m.status==='community')?'🕌':'🔖'}</div>
       <div class="finfo">
-        <div class="fname">${m.name}${m.status==='pending'&&m.id.startsWith('local_')?' <span style="font-size:9px;color:#ffc800;font-weight:600;">● LOKAL</span>':''}</div>
+        <div class="fname">${m.name}</div>
         <div class="floc">${m.daerah||''}${m.state?', '+m.state:''}</div>
+        <div style="margin-top:5px;">${statusBadge(m.status)}</div>
       </div>
       <span style="color:var(--teal);opacity:.6;font-size:20px">›</span>
     </div>`).join('');
@@ -675,6 +678,14 @@ async function refreshData(){
     localStorage.setItem('sk_ver',JSON.stringify(mf.files));
     renderK();
   }catch(e){}
+}
+
+// ── Status Badge ─────────────────────────────────────────────────
+function statusBadge(status){
+  if(status==='verified')  return '<span class="status-badge badge-verified">✓ Disahkan</span>';
+  if(status==='community') return '<span class="status-badge badge-community">👥 Komuniti</span>';
+  if(status==='pending')   return '<span class="status-badge badge-pending">⏳ Semakan</span>';
+  return '';
 }
 
 // ── Profile ──────────────────────────────────────────────────────
