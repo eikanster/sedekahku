@@ -96,7 +96,7 @@
   <div class="screen" id="screen-saya">
     <div class="slbl">Profil Saya</div>
 
-    <div class="hero" style="padding:24px;margin-bottom:12px;text-align:center;">
+    <div class="hero" style="padding:24px;margin-bottom:20px;text-align:center;">
       <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6FD1D7"/><stop offset="100%" stop-color="#5DF8D8"/></linearGradient></defs></svg>
       <div class="level-ring" id="levelRing">
         <svg viewBox="0 0 80 80" width="80" height="80">
@@ -105,28 +105,20 @@
         </svg>
         <span class="level-ring-emoji">🕌</span>
       </div>
-      <div class="mname" style="font-size:18px;" id="profileName">Penyumbang QRSedekah</div>
-      <div id="profileLevel" style="font-size:11px;color:var(--mint);margin-top:6px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">Level: Contributor</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px;">
+        <div class="mname" style="font-size:18px;margin-bottom:0;" id="profileName">Penyumbang QRSedekah</div>
+        <button onclick="openProfileEdit('edit')" style="background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;opacity:0.6;line-height:1;flex-shrink:0;" title="Edit">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+      </div>
+      <div id="profileLevel" style="font-size:11px;color:var(--mint);font-weight:700;letter-spacing:2px;text-transform:uppercase;">Level: Contributor</div>
       <div style="display:flex;gap:20px;justify-content:center;margin-top:16px;">
-        <div style="text-align:center"><div class="snum" id="profileScanCount">0</div><div style="font-size:10px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:1px;">Imbasan</div></div>
+        <div style="text-align:center"><div class="snum" id="profileFavCount">0</div><div style="font-size:10px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:1px;">Fav</div></div>
         <div style="width:1px;background:var(--border)"></div>
         <div style="text-align:center"><div class="snum" id="profileInfaqCount">0</div><div style="font-size:10px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:1px;">Infaq</div></div>
         <div style="width:1px;background:var(--border)"></div>
-        <div style="text-align:center"><div class="snum" id="profileFavCount">0</div><div style="font-size:10px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:1px;">Simpanan</div></div>
+        <div style="text-align:center"><div class="snum" id="profileScanCount">0</div><div style="font-size:10px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:1px;">Imbasan</div></div>
       </div>
-    </div>
-
-    <div class="hero" style="padding:20px;margin-bottom:20px;">
-      <div style="font-size:10px;color:var(--teal);letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:14px;">✏️ Maklumat Saya</div>
-      <div class="prof-field">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <input type="text" id="profName" placeholder="Nama anda..." maxlength="60">
-      </div>
-      <div class="prof-field">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.92 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        <input type="tel" id="profPhone" placeholder="No. telefon (01x-xxxxxxx)" maxlength="15">
-      </div>
-      <div style="font-size:11px;color:var(--muted);text-align:center;line-height:1.6;">Disimpan dalam peranti anda. Digunakan semasa hantar data ke komuniti.</div>
     </div>
 
     <div class="coll-hdr" onclick="toggleColl(this)">
@@ -245,6 +237,26 @@
       <span id="menu-kopi">Belanja Kopi ☕</span>
     </div>
     <div class="mft"><strong>QRSedekah</strong><br/>Data disimpan dalam peranti anda.<br/>Tiada akaun diperlukan.</div>
+  </div>
+</div>
+
+<!-- Profile Edit Modal -->
+<div class="kov" id="profileEditModal">
+  <div class="ksh">
+    <div class="khdl"></div>
+    <div class="ktit" id="profileEditTitle">Maklumat Saya</div>
+    <div class="ksub" id="profileEditSub" style="min-height:0;"></div>
+    <div class="prof-field">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <input type="text" id="modalProfName" placeholder="Nama anda..." maxlength="60">
+    </div>
+    <div class="prof-field" style="margin-bottom:6px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.92 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <input type="tel" id="modalProfPhone" placeholder="No. telefon (01x-xxxxxxx)" maxlength="15">
+    </div>
+    <div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:20px;line-height:1.6;">Disimpan dalam peranti anda sahaja.</div>
+    <button class="btn-db" id="btnSaveProfile">💾 Simpan</button>
+    <button class="btn-db" id="btnCancelProfileEdit" style="background:none;border:1px solid var(--border);color:var(--muted);margin-top:8px;">Batal</button>
   </div>
 </div>
 

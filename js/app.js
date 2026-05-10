@@ -708,6 +708,43 @@ function statusBadge(status){
   return '';
 }
 
+// ── Profile Edit Modal ────────────────────────────────────────────
+let _profileEditMode='edit'; // 'edit' | 'gate'
+
+function openProfileEdit(mode='edit'){
+  _profileEditMode=mode;
+  const bm=lang==='bm';
+  document.getElementById('modalProfName').value=profile.name||'';
+  document.getElementById('modalProfPhone').value=profile.phone||'';
+  const titleEl=document.getElementById('profileEditTitle');
+  const subEl=document.getElementById('profileEditSub');
+  if(mode==='gate'){
+    if(titleEl) titleEl.textContent=bm?'Lengkapkan Profil':'Complete Your Profile';
+    if(subEl){ subEl.textContent=bm?'Nama diperlukan untuk hantar data ke komuniti.':'Name required to submit community data.'; subEl.style.marginBottom='16px'; }
+  }else{
+    if(titleEl) titleEl.textContent=bm?'Maklumat Saya':'My Info';
+    if(subEl){ subEl.textContent=''; subEl.style.marginBottom='0'; }
+  }
+  document.getElementById('btnSaveProfile').textContent=bm?'💾 Simpan':'💾 Save';
+  document.getElementById('profileEditModal').classList.add('open');
+  setTimeout(()=>document.getElementById('modalProfName').focus(),400);
+}
+
+function closeProfileEdit(){
+  document.getElementById('profileEditModal').classList.remove('open');
+}
+
+function saveProfileEdit(){
+  const name=document.getElementById('modalProfName').value.trim();
+  const phone=document.getElementById('modalProfPhone').value.trim();
+  profile.name=name;
+  profile.phone=phone;
+  saveProfile();
+  renderProfileHeader();
+  closeProfileEdit();
+  if(_profileEditMode==='gate'&&name) syncToCommunity();
+}
+
 // ── Profile ──────────────────────────────────────────────────────
 function renderProfileHeader(){
   const el=document.getElementById('profileName');
@@ -1066,7 +1103,7 @@ async function syncToCommunity(){
     return;
   }
   if(!profile.name){
-    showToast(lang==='bm'?'Sila isi nama anda dalam Profil dahulu':'Please fill in your name in Profile first');
+    openProfileEdit('gate');
     return;
   }
 
@@ -1164,17 +1201,12 @@ document.addEventListener('DOMContentLoaded', async function(){
   document.getElementById('confirmNo').onclick=closeConfirm;
   document.getElementById('confirmModal').onclick=function(e){if(e.target===this)closeConfirm();};
 
-  // Profile fields
-  const profNameInput=document.getElementById('profName');
-  const profPhoneInput=document.getElementById('profPhone');
-  if(profNameInput){
-    profNameInput.value=profile.name||'';
-    profNameInput.oninput=e=>{ profile.name=e.target.value; saveProfile(); renderProfileHeader(); };
-  }
-  if(profPhoneInput){
-    profPhoneInput.value=profile.phone||'';
-    profPhoneInput.oninput=e=>{ profile.phone=e.target.value; saveProfile(); };
-  }
+  // Profile edit modal
+  document.getElementById('btnSaveProfile').onclick=saveProfileEdit;
+  document.getElementById('btnCancelProfileEdit').onclick=closeProfileEdit;
+  document.getElementById('profileEditModal').onclick=function(e){if(e.target===this)closeProfileEdit();};
+  document.getElementById('modalProfName').onkeydown=e=>{if(e.key==='Enter') document.getElementById('modalProfPhone').focus();};
+  document.getElementById('modalProfPhone').onkeydown=e=>{if(e.key==='Enter') saveProfileEdit();};
 
   // Belanja Kopi
   const menuKopi=document.getElementById('menuKopi');
