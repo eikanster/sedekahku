@@ -367,46 +367,74 @@ function confirmPay(){
 function renderK(){
   const el=document.getElementById('kempenList');
   const titleEl=document.getElementById('lbl-kempen-title');
-  if(!el || !cur) return;
+  if(!el||!cur) return;
+  const bm=lang==='bm';
 
-  let active = KD.filter(k=>k.status==='active');
-  let currentMasjidKempen = active.filter(k=>k.masjid_id === cur.id);
-  
-  let listToShow = currentMasjidKempen;
-  let isOther = false;
+  const active=KD.filter(k=>k.status==='active');
+  const curMasjidK=active.filter(k=>k.masjid_id===cur.id);
+  const listToShow=curMasjidK.length?curMasjidK:active;
+  const isOther=!curMasjidK.length;
 
-  if(currentMasjidKempen.length > 0){
-    if(titleEl) titleEl.textContent = lang==='bm'?'Kempen Masjid Ini':'Campaigns for this Masjid';
-  } else {
-    listToShow = active;
-    isOther = true;
-    if(titleEl) titleEl.textContent = lang==='bm'?'Kempen Pilihan':'Featured Campaigns';
-  }
+  if(titleEl) titleEl.textContent=bm
+    ?(isOther?'Kempen Pilihan':'Kempen Masjid Ini')
+    :(isOther?'Featured Campaigns':'Campaigns for this Masjid');
 
   if(!listToShow.length){
-    el.innerHTML='<div class="empty"><div class="eico">📋</div><div class="etit">'+(lang==='bm'?'Tiada kempen aktif':'No active campaigns')+'</div></div>';
+    el.innerHTML=`<div style="padding:12px 0;color:var(--muted);font-size:13px;">${bm?'Tiada kempen aktif':'No active campaigns'}</div>`;
     return;
   }
 
   el.innerHTML=listToShow.map(k=>{
     const p=k.collected_amount?Math.min(100,Math.round(k.collected_amount/k.target_amount*100)):0;
     const dl=Math.ceil((new Date(k.deadline)-new Date())/864e5);
-    const m=MD.find(x=>x.id===k.masjid_id);
-    return `<div class="kcard" data-id="${k.id}">
-      <div class="kbadge">${isOther && m ? m.name : 'AKTIF'}</div>
-      <div class="ktitle">${k.title}</div>
-      <div class="pbar"><div class="pfill" data-fill="${p}"></div></div>
-      <div class="plbls"><span>${p}% terkumpul</span><span>RM <strong>${(k.target_amount/1000).toFixed(0)}k</strong></span></div>
-      <div class="kdl">⏰ ${dl>0?dl+(lang==='bm'?' hari lagi':' days left'):(lang==='bm'?'Tamat':'Ended')}</div>
+    const dlTxt=dl>0?dl+(bm?' hari lagi':' days left'):(bm?'Tamat':'Ended');
+    return `<div class="krow${k.is_urgent?' krow-urgent':''}" onclick="openKempen('${k.id}')">
+      <div class="krow-accent"></div>
+      <div class="krow-body">
+        <div class="krow-title">${k.title}</div>
+        <div class="krow-bar"><div class="krow-fill" data-fill="${p}"></div></div>
+        <div class="krow-stats">${p}% · RM ${(k.target_amount/1000).toFixed(0)}k · ⏰ ${dlTxt}</div>
+      </div>
+      <span class="krow-arrow">›</span>
     </div>`;
   }).join('');
-  bindCards();
-  // Animate progress bars after render
+
   setTimeout(()=>{
-    document.querySelectorAll('.pfill[data-fill]').forEach(bar=>{
-      bar.style.width = bar.dataset.fill + '%';
+    document.querySelectorAll('.krow-fill[data-fill]').forEach(bar=>{
+      bar.style.width=bar.dataset.fill+'%';
     });
-  }, 50);
+  },50);
+}
+
+function openKempen(id){
+  const k=KD.find(x=>x.id===id);
+  if(!k) return;
+  curK=k;
+  const m=MD.find(x=>x.id===k.masjid_id)||localMasjid.find(x=>x.id===k.masjid_id);
+  const p=k.collected_amount?Math.min(100,Math.round(k.collected_amount/k.target_amount*100)):0;
+  const dl=Math.ceil((new Date(k.deadline)-new Date())/864e5);
+  const bm=lang==='bm';
+
+  document.getElementById('kmBadge').innerHTML=k.is_urgent
+    ?'<span class="status-badge" style="background:rgba(255,138,80,0.15);border:1px solid rgba(255,138,80,0.3);color:#ff8a50;">⚡ '+(bm?'Segera':'Urgent')+'</span>'
+    :'<span class="kbadge">AKTIF</span>';
+  document.getElementById('kmTitle').textContent=k.title;
+  document.getElementById('kmMasjid').textContent='🕌 '+(m?m.name:k.masjid_id);
+  document.getElementById('kmPct').textContent=p+'% '+(bm?'terkumpul':'collected');
+  document.getElementById('kmTarget').textContent='RM '+(k.target_amount||0).toLocaleString();
+  document.getElementById('kmDeadline').textContent='⏰ '+(dl>0?dl+(bm?' hari lagi':' days left'):(bm?'Tamat':'Ended'));
+  document.getElementById('kmDesc').textContent=k.description||'';
+  document.getElementById('btnBantuKempen').textContent=bm?'💚 Bantu Kempen Ini':'💚 Support This Campaign';
+
+  const bar=document.getElementById('kmBar');
+  bar.style.width='0%';
+  setTimeout(()=>bar.style.width=p+'%',50);
+
+  document.getElementById('kempenModal').classList.add('open');
+}
+
+function closeKempen(){
+  document.getElementById('kempenModal').classList.remove('open');
 }
 
 function renderMI(){
@@ -1197,6 +1225,14 @@ document.addEventListener('DOMContentLoaded', async function(){
   if(sInput) sInput.oninput=(e)=>renderSearch(e.target.value);
 
   document.getElementById('qrModal').onclick=function(e){if(e.target===this)closeQR();};
+  document.getElementById('kempenModal').onclick=function(e){if(e.target===this)closeKempen();};
+  document.getElementById('btnBantuKempen').onclick=()=>{
+    if(!curK) return;
+    const m=MD.find(x=>x.id===curK.masjid_id)||localMasjid.find(x=>x.id===curK.masjid_id);
+    if(m) cur=m;
+    closeKempen();
+    openQR();
+  };
   document.getElementById('confirmYes').onclick=()=>{ if(_confirmCb) _confirmCb(); closeConfirm(); };
   document.getElementById('confirmNo').onclick=closeConfirm;
   document.getElementById('confirmModal').onclick=function(e){if(e.target===this)closeConfirm();};

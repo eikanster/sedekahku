@@ -253,6 +253,20 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
 @keyframes count-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .snum.counting{animation:count-up .5s ease}
 
+/* Kempen compact rows */
+.krow{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid rgba(111,209,215,0.07);cursor:pointer;transition:opacity .15s}
+.krow:last-child{border-bottom:none}
+.krow:active{opacity:0.6}
+.krow-accent{width:3px;min-height:38px;border-radius:2px;background:var(--teal);flex-shrink:0;align-self:stretch}
+.krow-urgent .krow-accent{background:#ff8a50}
+.krow-body{flex:1;min-width:0}
+.krow-title{font-size:13px;font-weight:600;color:var(--fg);margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.krow-bar{height:3px;background:rgba(255,255,255,0.07);border-radius:2px;margin-bottom:4px;overflow:hidden}
+.krow-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--teal),var(--mint));width:0%;transition:width 1s cubic-bezier(0.25,1,0.5,1)}
+.krow-urgent .krow-fill{background:linear-gradient(90deg,#ff8a50,#ffc080)}
+.krow-stats{font-size:10px;color:var(--muted);letter-spacing:0.3px}
+.krow-arrow{color:var(--teal);opacity:0.4;font-size:18px;flex-shrink:0}
+
 /* Kcard upgrade */
 .kcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:12px;cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
 .kcard::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(93,248,216,0.03),transparent);opacity:0;transition:opacity .3s}
