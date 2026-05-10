@@ -242,6 +242,15 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
 .ripple{position:absolute;border-radius:50%;background:rgba(93,248,216,0.25);transform:scale(0);animation:ripple-anim .6s linear;pointer-events:none}
 @keyframes ripple-anim{to{transform:scale(4);opacity:0}}
 
+/* Saya Tab Switcher */
+.saya-tabs{display:flex;border-top:1px solid var(--border);margin:16px -24px -24px;border-radius:0 0 var(--r) var(--r);overflow:hidden}
+.saya-tab{flex:1;padding:14px 6px;background:none;border:none;border-right:1px solid var(--border);cursor:pointer;font-family:inherit;transition:background .2s}
+.saya-tab:last-child{border-right:none}
+.saya-tab .snum{display:block;font-size:20px;font-weight:700;color:var(--muted);transition:color .2s}
+.saya-tab .tab-lbl{display:block;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:2px;transition:color .2s}
+.saya-tab.active{background:rgba(93,248,216,0.06)}
+.saya-tab.active .snum,.saya-tab.active .tab-lbl{color:var(--mint)}
+
 /* Profile Level Ring */
 .level-ring{width:80px;height:80px;margin:0 auto 16px;position:relative;display:flex;align-items:center;justify-content:center}
 .level-ring svg{position:absolute;top:0;left:0;transform:rotate(-90deg)}

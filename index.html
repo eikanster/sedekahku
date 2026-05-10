@@ -113,39 +113,23 @@
       </div>
       <div id="profileLevel" style="font-size:11px;color:var(--mint);font-weight:700;letter-spacing:2px;text-transform:uppercase;">Level: Contributor</div>
       <div style="display:flex;gap:20px;justify-content:center;margin-top:16px;">
-        <div style="text-align:center"><div class="snum" id="profileFavCount">0</div><div style="font-size:10px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:1px;">Fav</div></div>
-        <div style="width:1px;background:var(--border)"></div>
-        <div style="text-align:center"><div class="snum" id="profileInfaqCount">0</div><div style="font-size:10px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:1px;">Infaq</div></div>
-        <div style="width:1px;background:var(--border)"></div>
-        <div style="text-align:center"><div class="snum" id="profileScanCount">0</div><div style="font-size:10px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:1px;">Imbasan</div></div>
-      </div>
+        <div class="saya-tabs">
+          <button class="saya-tab active" id="tabFav" onclick="switchSayaTab('fav')">
+            <span class="snum" id="profileFavCount">0</span>
+            <span class="tab-lbl">Fav</span>
+          </button>
+          <button class="saya-tab" id="tabInfaq" onclick="switchSayaTab('infaq')">
+            <span class="snum" id="profileInfaqCount">0</span>
+            <span class="tab-lbl">Infaq</span>
+          </button>
+          <button class="saya-tab" id="tabImbasan" onclick="switchSayaTab('imbasan')">
+            <span class="snum" id="profileScanCount">0</span>
+            <span class="tab-lbl">Imbasan</span>
+          </button>
+        </div>
     </div>
 
-    <div class="coll-hdr" onclick="toggleColl(this)">
-      <span>❤️ Masjid Kegemaran</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-    </div>
-    <div class="coll-cnt" id="profileFavList"></div>
-
-    <div class="coll-hdr" onclick="toggleColl(this)">
-      <span>🔖 Koleksi Imbasan Saya</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-    </div>
-    <div class="coll-cnt" id="profileLocalList"></div>
-
-    <div class="coll-hdr" onclick="toggleColl(this)">
-      <span id="lbl-hist-title">⌛ Sejarah Infaq</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-    </div>
-    <div class="coll-cnt" id="fullHistList">
-      <div id="histList"></div>
-      <div id="kHistList"></div>
-    </div>
-    
-    <button class="btn-s" id="btnSync" style="margin-top:20px; width:100%; padding:14px; background:rgba(111,209,215,0.05); border:1px solid var(--teal); color:var(--teal); display:none; gap:10px;">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.2 15c.7-1.2 1-2.5.7-3.9-.6-2-2.4-3.5-4.4-3.5h-1.2c-.7-3-3.2-5.2-6.3-5.2-3.2 0-5.9 2.4-6.4 5.5C1.6 8.7 0 10.6 0 13c0 3.3 2.7 6 6 6h13c2.2 0 4-1.8 4-4 0-.4-.1-.8-.3-1.1z"/><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/></svg>
-      <span id="lbl-sync-comm">Kongsi Koleksi ke Komuniti</span>
-    </button>
+    <div id="sayaContent" style="padding-top:8px;"></div>
   </div>
 </div>
 </div>

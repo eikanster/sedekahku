@@ -265,8 +265,6 @@ function addRipple(e, el){
 function updStats(){
   animateCounter(document.getElementById('sFav'), favs.length);
   animateCounter(document.getElementById('sInfaq'), hist.length);
-  const syncBtn = document.getElementById('btnSync');
-  if(syncBtn) syncBtn.style.display = localMasjid.length > 0 ? 'flex' : 'none';
 }
 
 function openQR(){
@@ -444,9 +442,38 @@ function renderMI(){
   const pLocalList=document.getElementById('profileLocalList');
   updStats();
 
-  const favHTML = favs.length?favs.map(f=>`
+  renderProfileHeader();
+  animateCounter(document.getElementById('profileFavCount'), favs.length);
+  animateCounter(document.getElementById('profileInfaqCount'), hist.length);
+  animateCounter(document.getElementById('profileScanCount'), localMasjid.length);
+  updateLevelRing();
+  renderSayaContent();
+}
+
+// ── Saya Tab Switcher ─────────────────────────────────────────────
+let _sayaTab='fav';
+
+function switchSayaTab(tab){
+  _sayaTab=tab;
+  ['fav','infaq','imbasan'].forEach(t=>{
+    const btn=document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1));
+    if(btn) btn.classList.toggle('active',t===tab);
+  });
+  renderSayaContent();
+}
+
+function renderSayaContent(){
+  const el=document.getElementById('sayaContent');
+  if(!el) return;
+  if(_sayaTab==='fav')     renderSayaFav(el);
+  else if(_sayaTab==='infaq')    renderSayaInfaq(el);
+  else if(_sayaTab==='imbasan')  renderSayaImbasan(el);
+}
+
+function renderSayaFav(el){
+  el.innerHTML=favs.length?favs.map(f=>`
     <div class="fcard" data-id="${f.id}">
-      <div class="fico">${(f.status==='verified'||f.status==='community')?'🕌':'🔖'}</div>
+      <div class="fico">${(f.status==='official'||f.status==='verified'||f.status==='community')?'🕌':'🔖'}</div>
       <div class="finfo">
         <div class="fname">${f.name}</div>
         <div class="floc">${f.daerah||f.mukim||''}, ${f.state}</div>
@@ -456,17 +483,29 @@ function renderMI(){
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
     </div>`).join(''):`<div class="empty"><div class="eico">🕌</div><div class="etit">${t('ef')}</div><div class="edesc">${t('efd')}</div></div>`;
+  bindCards();
+}
 
-  if(pFavList) pFavList.innerHTML = favHTML;
+function renderSayaInfaq(el){
+  if(!hist.length){
+    el.innerHTML=`<div class="empty"><div class="eico">✨</div><div class="etit">${t('eh')}</div><div class="edesc">${t('ehd')}</div></div>`;
+    return;
+  }
+  el.innerHTML=hist.map((h,idx)=>`
+    <div class="hi">
+      <div class="hdot"></div>
+      <div class="hinfo">
+        <div class="hname">${h.kName||h.name}</div>
+        <div class="hdate2">${h.disp}${h.kName?' · '+h.name:''}</div>
+      </div>
+      <button class="btn-rm" onclick="event.stopPropagation(); delHist(${idx})">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>`).join('');
+}
 
-  // Update profile stats with animation
-  renderProfileHeader();
-  animateCounter(document.getElementById('profileScanCount'), localMasjid.length);
-  animateCounter(document.getElementById('profileInfaqCount'), hist.length);
-  animateCounter(document.getElementById('profileFavCount'), favs.length);
-  updateLevelRing();
-
-  const localHTML = localMasjid.length?localMasjid.map(m=>`
+function renderSayaImbasan(el){
+  el.innerHTML=localMasjid.length?localMasjid.map(m=>`
     <div class="fcard" data-id="${m.id}">
       <div class="fico">🔖</div>
       <div class="finfo">
@@ -475,38 +514,15 @@ function renderMI(){
       </div>
       <span style="color:var(--teal);opacity:.6;font-size:20px">›</span>
     </div>`).join(''):`<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Belum ada imbasan tempatan.</div>`;
-  
-  if(pLocalList) pLocalList.innerHTML = localHTML;
 
-  const mHist=hist.filter(h=>h.type!=='kempen');
-  const kHist=hist.filter(h=>h.type==='kempen');
-
-  const mapHist=(list)=>list.map((h)=>{
-    const idx=hist.indexOf(h);
-    return `
-    <div class="hi">
-      <div class="hdot"></div>
-      <div class="hinfo">
-        <div class="hname">${h.kName||h.name}</div>
-        <div class="hdate2">${h.disp} ${h.kName?'• '+h.name:''}</div>
-      </div>
-      <button class="btn-rm" onclick="event.stopPropagation(); delHist(${idx})">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
-    </div>`}).join('');
-
-  const mHTML = mapHist(mHist);
-  const kHTML = mapHist(kHist);
-  
-  const fHist = document.getElementById('fullHistList');
-  if(fHist){
-    if(!mHist.length && !kHist.length){
-      fHist.innerHTML = `<div style="text-align:center;padding:20px 0;color:var(--muted);font-size:13px">${t('eh')}</div>`;
-    } else {
-      fHist.innerHTML = `<div id="histList">${mHTML}</div><div id="kHistList">${kHTML}</div>`;
-    }
+  if(localMasjid.length){
+    const syncBtn=document.createElement('button');
+    syncBtn.className='btn-s';
+    syncBtn.style.cssText='margin-top:16px;width:100%;padding:14px;background:rgba(111,209,215,0.05);border:1px solid var(--teal);color:var(--teal);gap:10px;';
+    syncBtn.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.2 15c.7-1.2 1-2.5.7-3.9-.6-2-2.4-3.5-4.4-3.5h-1.2c-.7-3-3.2-5.2-6.3-5.2-3.2 0-5.9 2.4-6.4 5.5C1.6 8.7 0 10.6 0 13c0 3.3 2.7 6 6 6h13c2.2 0 4-1.8 4-4 0-.4-.1-.8-.3-1.1z"/><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/></svg><span>'+t('lbl-sync-comm')+'</span>';
+    syncBtn.onclick=syncToCommunity;
+    el.appendChild(syncBtn);
   }
-
   bindCards();
 }
 
@@ -1215,7 +1231,7 @@ document.addEventListener('DOMContentLoaded', async function(){
   document.getElementById('scanFileInput').onchange=(e)=>scanFromFile(e.target.files[0]);
   document.getElementById('btnCancelScan').onclick=closeScan;
   document.getElementById('btnConfirmAdd').onclick=confirmAddMasjid;
-  document.getElementById('btnSync').onclick=syncToCommunity;
+  // btnSync moved into Imbasan tab content (rendered dynamically)
   document.getElementById('btnCancelAdd').onclick=()=>{
     scanPending=null;
     document.getElementById('addMasjidModal').classList.remove('open');
