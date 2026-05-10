@@ -1080,7 +1080,8 @@ async function syncToCommunity(){
       lng:             str(m.lng),
       qr_string:       str(q.duitnow_string),
       scanned_at:      str(m.created_at),
-      source:          str(m.scan_source)||'unknown'
+      source:          str(m.scan_source)||'unknown',
+      type:            str(m.type)||'masjid'
     };
   });
 
