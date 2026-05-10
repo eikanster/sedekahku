@@ -265,3 +265,25 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
 
 /* Search input focus */
 .s-box:focus-within{border-color:rgba(93,248,216,.5)!important;box-shadow:0 0 0 3px rgba(93,248,216,.08)}
+
+/* Waktu Solat */
+.solat-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:10px;margin-bottom:4px}
+.solat-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.solat-ttl{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal)}
+.solat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.solat-item{text-align:center;padding:10px 6px;border-radius:var(--rs);background:rgba(255,255,255,0.02);border:1px solid transparent;transition:all .3s}
+.solat-item.next{background:rgba(93,248,216,0.1);border-color:rgba(93,248,216,0.3)}
+.solat-item.past{opacity:0.4}
+.solat-name{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.solat-time{font-size:16px;font-weight:700;color:var(--fg);font-family:'Amiri',serif}
+.solat-item.next .solat-name,.solat-item.next .solat-time{color:var(--mint)}
+.solat-prompt{text-align:center;padding:16px 0}
+.btn-loc{background:none;border:1px solid var(--border);color:var(--teal);font-family:inherit;font-size:12px;font-weight:600;padding:10px 20px;border-radius:50px;cursor:pointer;transition:all .2s}
+.btn-loc:hover{border-color:var(--teal);background:rgba(111,209,215,0.08)}
+
+/* Profile edit fields */
+.prof-field{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:50px;padding:12px 18px;margin-bottom:10px;transition:border-color .2s}
+.prof-field:focus-within{border-color:rgba(93,248,216,.4)}
+.prof-field svg{color:var(--muted);flex-shrink:0}
+.prof-field input{background:none;border:none;color:var(--fg);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;width:100%;outline:none}
+.prof-field input::placeholder{color:var(--muted)}

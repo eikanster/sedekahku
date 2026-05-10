@@ -23,6 +23,7 @@ let favs=JSON.parse(localStorage.getItem('sk_favs')||'[]');
 let hist=JSON.parse(localStorage.getItem('sk_hist')||'[]');
 let localMasjid=JSON.parse(localStorage.getItem('sk_local_masjid')||'[]');
 let localQr=JSON.parse(localStorage.getItem('sk_local_qr')||'[]');
+let profile=JSON.parse(localStorage.getItem('sk_profile')||'{"name":"","phone":""}');
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
@@ -34,6 +35,7 @@ let cur=null;
 let curK=null;
 let scanPending=null;
 const SUBMIT_URL=''; // Paste your Google Web App URL here
+const KOPI_URL='https://toyyibpay.com/Belanja-Kopi-QRSedakah';
 
 const T={
   bm:{
@@ -68,6 +70,7 @@ const T={
     efd:'Tekan Simpan pada mana-mana masjid.',
     eh:'Belum ada rekod infaq',
     ehd:'Tekan Alhamdulillah dah Sedekah! selepas infaq.',
+    'menu-kopi':'Belanja Kopi ☕',
     'search-ph':'Cari nama masjid atau lokasi...'
   },
   en:{
@@ -102,6 +105,7 @@ const T={
     efd:'Tap Save on any masjid.',
     eh:'No infaq records yet',
     ehd:'Tap Alhamdulillah after each infaq.',
+    'menu-kopi':'Buy Me a Coffee ☕',
     'search-ph':'Search masjid name or location...'
   }
 };
@@ -397,6 +401,7 @@ function renderMI(){
   if(pFavList) pFavList.innerHTML = favHTML;
 
   // Update profile stats with animation
+  renderProfileHeader();
   animateCounter(document.getElementById('profileScanCount'), localMasjid.length);
   animateCounter(document.getElementById('profileInfaqCount'), hist.length);
   animateCounter(document.getElementById('profileFavCount'), favs.length);
@@ -558,7 +563,7 @@ function toggleLang(){
 }
 
 function applyLang(){
-  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','menu-lbl1','menu-lbl2','menu-lang','menu-export','menu-install'].forEach(id=>{
+  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','menu-lbl1','menu-lbl2','menu-lang','menu-export','menu-install','menu-kopi'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.textContent=t(id);
   });
@@ -567,12 +572,16 @@ function applyLang(){
   document.getElementById('langBtn').textContent=lang==='bm'?'EN':'BM';
   const sInput=document.getElementById('searchInput');
   if(sInput) sInput.placeholder=t('search-ph');
+  const _cs=JSON.parse(localStorage.getItem('sk_solat')||'null');
+  if(_cs&&_cs.date===new Date().toISOString().slice(0,10)) renderWaktuSolat(_cs.timings);
+  else renderWaktuSolatPrompt();
   renderK();
   renderSeasonBanner();
 }
 
 function shareM(){
   if(!cur) return;
+  const qr=getQR(cur.id);
   const tx='🕌 Jom infaq ke '+cur.name+'!\nDuitNow: '+(qr?qr.duitnow_string:'')+'\n\nhttps://eikanster.github.io/sedekahku';
   if(navigator.share) navigator.share({title:'QRSedekah',text:tx});
   else navigator.clipboard.writeText(tx).then(()=>showToast('📋 Disalin!'));
@@ -613,6 +622,99 @@ async function refreshData(){
     localStorage.setItem('sk_ver',JSON.stringify(mf.files));
     renderK();
   }catch(e){}
+}
+
+// ── Profile ──────────────────────────────────────────────────────
+function renderProfileHeader(){
+  const el=document.getElementById('profileName');
+  if(el) el.textContent=profile.name||'Penyumbang QRSedekah';
+}
+
+function saveProfile(){
+  localStorage.setItem('sk_profile',JSON.stringify(profile));
+}
+
+// ── Waktu Solat ───────────────────────────────────────────────────
+const SOLAT_PRAYERS=[
+  {key:'Fajr',   bm:'Subuh',   en:'Fajr'},
+  {key:'Sunrise',bm:'Syuruk',  en:'Sunrise'},
+  {key:'Dhuhr',  bm:'Zohor',   en:'Dhuhr'},
+  {key:'Asr',    bm:'Asar',    en:'Asr'},
+  {key:'Maghrib',bm:'Maghrib', en:'Maghrib'},
+  {key:'Isha',   bm:'Isyak',   en:'Isha'}
+];
+
+function initWaktuSolat(){
+  const today=new Date().toISOString().slice(0,10);
+  const cached=JSON.parse(localStorage.getItem('sk_solat')||'null');
+  if(cached&&cached.date===today) renderWaktuSolat(cached.timings);
+  else renderWaktuSolatPrompt();
+}
+
+function renderWaktuSolatPrompt(){
+  const el=document.getElementById('waktuSolat');
+  if(!el) return;
+  const bm=lang==='bm';
+  el.innerHTML=`<div class="solat-wrap">
+    <div class="solat-hdr"><span class="solat-ttl">🕐 ${bm?'Waktu Solat':'Prayer Times'}</span></div>
+    <div class="solat-prompt">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:12px;">${bm?'Aktifkan lokasi untuk waktu solat tempatan':'Enable location for local prayer times'}</div>
+      <button class="btn-loc" onclick="requestSolatLoc()">📍 ${bm?'Aktifkan Lokasi':'Enable Location'}</button>
+    </div>
+  </div>`;
+}
+
+function requestSolatLoc(){
+  const btn=document.querySelector('#waktuSolat .btn-loc');
+  if(btn) btn.textContent=lang==='bm'?'⏳ Memuatkan...':'⏳ Loading...';
+  getLoc(loc=>{
+    if(loc) fetchWaktuSolat(loc.lat,loc.lng);
+    else{ renderWaktuSolatPrompt(); showToast(lang==='bm'?'Lokasi tidak dapat diakses':'Location unavailable'); }
+  });
+}
+
+async function fetchWaktuSolat(lat,lng){
+  const today=new Date().toISOString().slice(0,10);
+  try{
+    const r=await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lng}&method=3`);
+    const data=await r.json();
+    if(data.code===200){
+      const timings=data.data.timings;
+      localStorage.setItem('sk_solat',JSON.stringify({date:today,timings,lat,lng}));
+      renderWaktuSolat(timings);
+    }
+  }catch(e){}
+}
+
+function renderWaktuSolat(timings){
+  const el=document.getElementById('waktuSolat');
+  if(!el) return;
+  const bm=lang==='bm';
+  const nowMins=new Date().getHours()*60+new Date().getMinutes();
+  const nextIdx=SOLAT_PRAYERS.findIndex(p=>{
+    const t=timings[p.key];
+    if(!t) return false;
+    const[h,m]=t.split(':').map(Number);
+    return(h*60+m)>nowMins;
+  });
+  el.innerHTML=`<div class="solat-wrap">
+    <div class="solat-hdr">
+      <span class="solat-ttl">🕐 ${bm?'Waktu Solat Hari Ini':'Prayer Times Today'}</span>
+      <button onclick="requestSolatLoc()" style="background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;line-height:1;padding:4px;" title="Refresh">🔄</button>
+    </div>
+    <div class="solat-grid">
+      ${SOLAT_PRAYERS.map((p,i)=>{
+        const time=timings[p.key]||'--:--';
+        const[h,m]=time.split(':').map(Number);
+        const isPast=(h*60+(m||0))<nowMins;
+        const isNext=i===nextIdx;
+        return`<div class="solat-item${isNext?' next':isPast?' past':''}">
+          <div class="solat-name">${bm?p.bm:p.en}</div>
+          <div class="solat-time">${time}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
 }
 
 // ── EMVCo QR Parser ─────────────────────────────────────────────
@@ -750,6 +852,9 @@ function processScannedQR(rawString, source='live', exifLoc=null){
           locBadge.innerHTML = '📍 Lokasi dikesan <button onclick="clearLoc()" style="background:none;border:none;color:#ff4d4d;font-weight:bold;margin-left:5px;cursor:pointer;">[Padam]</button>';
           locBadge.style.background = 'rgba(93,248,216,0.1)';
         }
+        // Bonus: fetch solat times while we have location
+        const _ss=JSON.parse(localStorage.getItem('sk_solat')||'null');
+        if(!_ss||_ss.date!==new Date().toISOString().slice(0,10)) fetchWaktuSolat(loc.lat,loc.lng);
       } else if(locBadge) {
         locBadge.textContent = '❌ Lokasi tidak dikesan';
       }
@@ -961,11 +1066,28 @@ document.addEventListener('DOMContentLoaded', async function(){
 
   document.getElementById('qrModal').onclick=function(e){if(e.target===this)closeQR();};
 
+  // Profile fields
+  const profNameInput=document.getElementById('profName');
+  const profPhoneInput=document.getElementById('profPhone');
+  if(profNameInput){
+    profNameInput.value=profile.name||'';
+    profNameInput.oninput=e=>{ profile.name=e.target.value; saveProfile(); renderProfileHeader(); };
+  }
+  if(profPhoneInput){
+    profPhoneInput.value=profile.phone||'';
+    profPhoneInput.oninput=e=>{ profile.phone=e.target.value; saveProfile(); };
+  }
+
+  // Belanja Kopi
+  const menuKopi=document.getElementById('menuKopi');
+  if(menuKopi) menuKopi.onclick=()=>{ if(KOPI_URL) window.open(KOPI_URL,'_blank'); else showToast('Link belum disetkan'); toggleMenu(); };
+
   document.getElementById('hijriDate').textContent = hijri();
   cur=dailyM();
   updHero();
   updStats();
-  applyLang();
+  renderProfileHeader();
+  applyLang(); // also calls initWaktuSolat via renderWaktuSolatPrompt
   renderSeasonBanner();
   renderMI();
   renderK();
