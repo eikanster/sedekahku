@@ -1023,20 +1023,21 @@ async function syncToCommunity(){
   const btn=document.getElementById('btnSync');
   if(btn){ btn.innerHTML='<span>⏳ Menghantar...</span>'; btn.disabled=true; }
 
+  const str=v=>(v!=null&&v!=='')?String(v):'';
   const payload=localMasjid.map(m=>{
     const q=localQr.find(qr=>qr.masjid_id===m.id)||{};
     return {
-      submitter_name: profile.name||'',
-      submitter_phone: profile.phone||'',
-      name: m.name,
-      daerah: m.daerah,
-      state: m.state,
-      postcode: m.postcode||'',
-      lat: m.lat||'',
-      lng: m.lng||'',
-      qr_string: q.duitnow_string||'',
-      scanned_at: m.created_at,
-      source: m.scan_source||'unknown'
+      submitter_name: str(profile.name),
+      submitter_phone: str(profile.phone),
+      name:            str(m.name),
+      daerah:          str(m.daerah),
+      state:           str(m.state),
+      postcode:        str(m.postcode),
+      lat:             str(m.lat),
+      lng:             str(m.lng),
+      qr_string:       str(q.duitnow_string),
+      scanned_at:      str(m.created_at),
+      source:          str(m.scan_source)||'unknown'
     };
   });
 
