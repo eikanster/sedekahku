@@ -492,7 +492,7 @@ function renderSearch(q=''){
 
   el.innerHTML=filtered.map(m=>`
     <div class="fcard" data-id="${m.id}">
-      <div class="fico">${(m.status==='verified'||m.status==='community')?'🕌':'🔖'}</div>
+      <div class="fico">${(m.status==='official'||m.status==='verified'||m.status==='community')?'🕌':'🔖'}</div>
       <div class="finfo">
         <div class="fname">${m.name}</div>
         <div class="floc">${m.daerah||''}${m.state?', '+m.state:''}</div>
@@ -684,6 +684,7 @@ async function refreshData(){
 
 // ── Status Badge ─────────────────────────────────────────────────
 function statusBadge(status){
+  if(status==='official')  return '<span class="status-badge badge-official">⭐ Rasmi</span>';
   if(status==='verified')  return '<span class="status-badge badge-verified">✓ Disahkan</span>';
   if(status==='community') return '<span class="status-badge badge-community">👥 Komuniti</span>';
   if(status==='pending')   return '<span class="status-badge badge-pending">⏳ Semakan</span>';

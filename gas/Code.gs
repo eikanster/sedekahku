@@ -66,7 +66,7 @@ function doGet(e) {
 
     // Col index (0-based): D=3,E=4,F=5,G=6,H=7,I=8,J=9,K=10,L=11,M=12,N=13
     const approved = allData.filter(row =>
-      row[12] === 'verified' || row[12] === 'community'
+      row[12] === 'official' || row[12] === 'verified' || row[12] === 'community'
     );
 
     // Deduplicate by DuitNow string — prefer row with GPS
@@ -147,7 +147,7 @@ function checkCommunityPromotion(sheet, qrString) {
   if (uniquePhones.size >= COMMUNITY_THRESHOLD) {
     matchingRows.forEach(rowNum => {
       const currentStatus = sheet.getRange(rowNum, 13).getValue();
-      if (currentStatus !== 'verified') {
+      if (currentStatus !== 'verified' && currentStatus !== 'official') {
         sheet.getRange(rowNum, 13).setValue('community');
       }
     });
@@ -167,7 +167,7 @@ function generateJSON() {
 
   const allData = sheet.getRange(2, 1, lastRow - 1, TOTAL_COLS).getValues();
   const approved = allData.filter(row =>
-    row[12] === 'verified' || row[12] === 'community'
+    row[12] === 'official' || row[12] === 'verified' || row[12] === 'community'
   );
 
   if (approved.length === 0) {
