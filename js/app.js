@@ -70,6 +70,7 @@ const T={
     efd:'Tekan Simpan pada mana-mana masjid.',
     eh:'Belum ada rekod infaq',
     ehd:'Tekan Alhamdulillah dah Sedekah! selepas infaq.',
+    'menu-refresh':'Kemaskini Data',
     'menu-kopi':'Belanja Kopi ☕',
     'lbl-scan':'Imbas QR Masjid / Surau',
     'lbl-sync-comm':'Kongsi Koleksi ke Komuniti',
@@ -107,6 +108,7 @@ const T={
     efd:'Tap Save on any masjid.',
     eh:'No infaq records yet',
     ehd:'Tap Alhamdulillah after each infaq.',
+    'menu-refresh':'Refresh Data',
     'menu-kopi':'Buy Me a Coffee ☕',
     'lbl-scan':'Scan Masjid / Surau QR',
     'lbl-sync-comm':'Share My Collection',
@@ -620,7 +622,7 @@ function toggleLang(){
 }
 
 function applyLang(){
-  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','lbl-hist-title','lbl-scan','lbl-sync-comm','menu-lbl1','menu-lbl2','menu-history','menu-lang','menu-export','menu-install','menu-kopi'].forEach(id=>{
+  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','lbl-hist-title','lbl-scan','lbl-sync-comm','menu-lbl1','menu-lbl2','menu-history','menu-lang','menu-refresh','menu-export','menu-install','menu-kopi'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.textContent=t(id);
   });
@@ -779,6 +781,36 @@ function renderWaktuSolat(timings){
       }).join('')}
     </div>
   </div>`;
+}
+
+async function refreshFromSheet(force=false){
+  const today=new Date().toISOString().slice(0,10);
+  if(!force && localStorage.getItem('sk_sheet_date')===today) return;
+
+  try{
+    const r=await fetch(SUBMIT_URL,{cache:'no-store'});
+    const data=await r.json();
+    if(data.error||!data.masjid) return;
+
+    let changed=false;
+
+    if(data.masjid.length){
+      const existing=new Set(MD.map(m=>m.id));
+      const newM=data.masjid.filter(m=>!existing.has(m.id));
+      if(newM.length){ MD=[...MD,...newM]; localStorage.setItem('sk_masjid',JSON.stringify(MD)); changed=true; }
+    }
+
+    if(data.qr_code&&data.qr_code.length){
+      const existingQ=new Set(QR.map(q=>q.id));
+      const newQ=data.qr_code.filter(q=>!existingQ.has(q.id));
+      if(newQ.length){ QR=[...QR,...newQ]; localStorage.setItem('sk_qr',JSON.stringify(QR)); changed=true; }
+    }
+
+    localStorage.setItem('sk_sheet_date',today);
+    if(changed){ cur=dailyM(); updHero(); renderK(); }
+    return data.count||0;
+
+  }catch(e){ return null; }
 }
 
 // ── EMVCo QR Parser ─────────────────────────────────────────────
@@ -1081,6 +1113,13 @@ document.addEventListener('DOMContentLoaded', async function(){
   document.getElementById('menuBtn').onclick=toggleMenu;
   document.getElementById('menuOverlay').onclick=toggleMenu;
   document.getElementById('menuLang').onclick=()=>{toggleLang();toggleMenu();};
+  document.getElementById('menuRefresh').onclick=async()=>{
+    showToast(lang==='bm'?'⏳ Mengemaskini...':'⏳ Refreshing...');
+    const count=await refreshFromSheet(true);
+    toggleMenu();
+    if(count!=null) showToast(lang==='bm'?`✅ ${count} masjid dimuatkan`:`✅ ${count} masjid loaded`);
+    else showToast(lang==='bm'?'❌ Gagal sambung':'❌ Connection failed');
+  };
   document.getElementById('menuExport').onclick=()=>{syncToCommunity();toggleMenu();};
   document.getElementById('menuInstall').onclick=async ()=>{
     if(!deferredPrompt) return;
@@ -1142,6 +1181,7 @@ document.addEventListener('DOMContentLoaded', async function(){
   renderMI();
   renderK();
   refreshData();
+  refreshFromSheet();
 
   // ── Ripple Effect on all interactive buttons ──
   document.querySelectorAll('.btn-i, .btn-db, .btn-scan, .kcard').forEach(el=>{

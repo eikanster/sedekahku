@@ -79,6 +79,89 @@ function checkCommunityPromotion(sheet, qrString) {
   }
 }
 
+// ── Serve verified data to app (GET request) ─────────────────────
+// Same URL as doPost — GET returns data, POST receives submissions
+function doGet(e) {
+  try {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+    const lastRow = sheet.getLastRow();
+
+    if (lastRow < 2) {
+      return jsonResponse({ version: todayDate(), count: 0, masjid: [], qr_code: [] });
+    }
+
+    const allData = sheet.getRange(2, 1, lastRow - 1, 13).getValues();
+
+    // Filter verified + community only
+    const approved = allData.filter(row =>
+      row[12] === 'verified' || row[12] === 'community'
+    );
+
+    // Deduplicate by DuitNow string — prefer row with GPS coords
+    const seen = {};
+    approved.forEach(row => {
+      const qr = row[9];
+      if (!qr) return;
+      if (!seen[qr]) {
+        seen[qr] = row;
+      } else if (!seen[qr][7] && row[7]) {
+        seen[qr] = row;
+      }
+    });
+
+    const uniqueRows = Object.values(seen);
+    const now = new Date().toISOString();
+    const masjid = [];
+    const qr_code = [];
+
+    uniqueRows.forEach(row => {
+      const masjidId  = 'ms' + shortHash(row[9]);
+      const qrId      = 'qr-' + masjidId;
+      const lat       = row[7] !== '' ? parseFloat(row[7]) : null;
+      const lng       = row[8] !== '' ? parseFloat(row[8]) : null;
+      const status    = row[12];
+      const createdAt = (typeof row[0] === 'string' && row[0]) ? row[0]
+                      : (row[0] instanceof Date)               ? row[0].toISOString()
+                      : now;
+
+      masjid.push({
+        id: masjidId, name: row[3] || '', type: 'masjid',
+        address: null, daerah: row[4] || '', state: row[5] || '',
+        postcode: row[6] || null, lat: lat, lng: lng,
+        google_maps_url: (lat && lng) ? `https://www.google.com/maps?q=${lat},${lng}` : null,
+        image_url: null, status: status,
+        verified_by: status === 'verified' ? 'admin' : 'community',
+        verified_at: now, infaq_count: 0, featured_dates: [],
+        ramadan_priority: false, created_at: createdAt, updated_at: now
+      });
+
+      qr_code.push({
+        id: qrId, masjid_id: masjidId, duitnow_string: row[9],
+        merchant_id: null, account_name: (row[3] || '').toUpperCase(),
+        account_number: null, bank_name: null, qr_type: 'static',
+        qr_image_url: null, is_primary: true, type: 'general',
+        status: 'active', submitted_by_email: null,
+        submitted_by_phone: row[2] || null, created_at: createdAt
+      });
+    });
+
+    return jsonResponse({ version: todayDate(), count: uniqueRows.length, masjid, qr_code });
+
+  } catch(err) {
+    return jsonResponse({ error: err.toString() });
+  }
+}
+
+function jsonResponse(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function todayDate() {
+  return new Date().toISOString().slice(0, 10);
+}
+
 // ── Generate masjid.json + qr_code.json from verified rows ───────
 // Run manually: Extensions → Apps Script → Run → generateJSON
 function generateJSON() {
