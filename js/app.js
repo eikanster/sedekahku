@@ -356,6 +356,122 @@ function toggleFav(){
   updFavBtn();
 }
 
+function _roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y, x + w, y + r, r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x, y + h, x, y + h - r, r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x, y, x + r, y, r);
+  ctx.closePath();
+}
+
+function _wrapText(ctx, text, x, y, maxW, lineH) {
+  const words = text.split(' ');
+  let line = '';
+  for (let i = 0; i < words.length; i++) {
+    const test = line + words[i] + ' ';
+    if (ctx.measureText(test).width > maxW && i > 0) {
+      ctx.fillText(line.trim(), x, y);
+      line = words[i] + ' ';
+      y += lineH;
+    } else { line = test; }
+  }
+  ctx.fillText(line.trim(), x, y);
+  return y;
+}
+
+async function saveQRCard() {
+  const qrSource = document.querySelector('#qrc canvas') || document.querySelector('#qrc img');
+  if (!qrSource) { showToast('QR tidak tersedia'); return; }
+
+  const name = cur ? cur.name : '';
+  const status = cur ? cur.status : 'pending';
+  const duitnow = document.getElementById('qrDN').textContent || '';
+
+  const W = 500, PAD = 32;
+  const QR_SIZE = 280;
+  const LOGO_Y = 48, NAME_Y = 90, QR_TOP = 130;
+  const QR_BOX = QR_SIZE + 32;
+  const FOOT_Y = QR_TOP + QR_BOX + 56;
+  const H = FOOT_Y + 36;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // Background gradient
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, '#0D3A52'); bg.addColorStop(1, '#071D2B');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+
+  // Logo — "QR" teal + "Sedekah" white
+  ctx.font = 'bold 22px system-ui,sans-serif';
+  ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+  const qrW = ctx.measureText('QR').width;
+  const sedW = ctx.measureText('Sedekah').width;
+  const logoX = (W - qrW - sedW - 3) / 2;
+  ctx.fillStyle = '#6FD1D7'; ctx.fillText('QR', logoX, LOGO_Y);
+  ctx.fillStyle = '#ffffff'; ctx.fillText('Sedekah', logoX + qrW + 3, LOGO_Y);
+
+  // Divider
+  ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(PAD, 66); ctx.lineTo(W - PAD, 66); ctx.stroke();
+
+  // Masjid name
+  ctx.font = 'bold 20px system-ui,sans-serif';
+  ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  _wrapText(ctx, name, W / 2, NAME_Y, W - PAD * 2, 26);
+
+  // Status badge pill
+  const badgeColors = { official:'#ffc800', verified:'#3ed6a0', community:'#a78bfa', pending:'rgba(255,255,255,0.3)' };
+  const badgeLabels = { official:'⭐ Rasmi', verified:'✓ Disahkan', community:'👥 Komuniti', pending:'⏳ Semakan' };
+  ctx.font = '11px system-ui,sans-serif';
+  const badgeTxt = badgeLabels[status] || badgeLabels.pending;
+  const bW = ctx.measureText(badgeTxt).width + 20;
+  const bX = (W - bW) / 2, bY = NAME_Y + 32;
+  _roundRect(ctx, bX, bY, bW, 20, 10);
+  ctx.fillStyle = 'rgba(255,255,255,0.07)'; ctx.fill();
+  ctx.fillStyle = badgeColors[status] || badgeColors.pending;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(badgeTxt, W / 2, bY + 10);
+
+  // QR white box
+  const qrBoxX = (W - QR_BOX) / 2;
+  _roundRect(ctx, qrBoxX, QR_TOP, QR_BOX, QR_BOX, 18);
+  ctx.fillStyle = '#ffffff'; ctx.fill();
+  ctx.drawImage(qrSource, qrBoxX + 16, QR_TOP + 16, QR_SIZE, QR_SIZE);
+
+  // DuitNow string (truncated)
+  const disp = duitnow.length > 42 ? duitnow.slice(0, 42) + '…' : duitnow;
+  ctx.font = '10px monospace,sans-serif';
+  ctx.fillStyle = 'rgba(111,209,215,0.6)'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  ctx.fillText(disp, W / 2, QR_TOP + QR_BOX + 14);
+
+  // Tagline
+  ctx.font = '12px system-ui,sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.25)';
+  ctx.fillText('Imbas untuk berinfaq / bersedekah', W / 2, FOOT_Y);
+
+  canvas.toBlob(async (blob) => {
+    const fname = 'qrsedekah-' + name.replace(/\s+/g, '-').toLowerCase() + '.png';
+    const file = new File([blob], fname, { type: 'image/png' });
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: name }); return; }
+      catch (e) { if (e.name === 'AbortError') return; }
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = fname;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+  }, 'image/png');
+}
+
 function confirmPay(){
   if(!cur) return;
   const r={
@@ -1241,6 +1357,7 @@ document.addEventListener('DOMContentLoaded', async function(){
   document.getElementById('btnSolatRefresh').onclick=requestSolatLoc;
   document.getElementById('btnInfaq').onclick=()=>{ curK=null; openQR(); };
   document.getElementById('btnFavToggle').onclick=toggleFav;
+  document.getElementById('btnSaveCard').onclick=saveQRCard;
   document.getElementById('btnDeleteRecord').onclick=()=>{ closeQR(); delLocalMasjid(cur.id); };
   document.getElementById('btnSimpan').onclick=toggleFav;
   document.getElementById('btnKongsi').onclick=shareM;

@@ -167,7 +167,7 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
 .kov.open .ksh{transform:none}
 /* Centered Modal variation */
 #qrModal{align-items:center;padding:20px}
-#qrModal .ksh{border-radius:28px;transform:scale(0.9);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);padding-bottom:28px;max-width:380px}
+#qrModal .ksh{border-radius:28px;transform:scale(0.9);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);padding-bottom:28px;max-width:380px;max-height:90vh;overflow-y:auto}
 #qrModal.open .ksh{transform:scale(1);opacity:1}
 #qrModal .khdl{display:none} /* Hide the drag handle for centered modal */
 
