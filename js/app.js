@@ -70,6 +70,8 @@ const T={
     efd:'Tekan Simpan pada mana-mana masjid.',
     eh:'Belum ada rekod infaq',
     ehd:'Tekan Alhamdulillah dah Sedekah! selepas infaq.',
+    'menu-about':'Tentang App',
+    'menu-clear':'Padam Semua Data',
     'lbl-solat':'Waktu Solat',
     'lbl-renungan':'📿 Renungan Harian',
     'menu-refresh':'Kemaskini Data',
@@ -110,6 +112,8 @@ const T={
     efd:'Tap Save on any masjid.',
     eh:'No infaq records yet',
     ehd:'Tap Alhamdulillah after each infaq.',
+    'menu-about':'About',
+    'menu-clear':'Clear All Data',
     'lbl-solat':'Prayer Times',
     'lbl-renungan':'📿 Daily Reflection',
     'menu-refresh':'Refresh Data',
@@ -683,7 +687,7 @@ function toggleLang(){
 }
 
 function applyLang(){
-  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','lbl-hist-title','lbl-scan','lbl-sync-comm','lbl-solat','lbl-renungan','menu-lbl1','menu-lbl2','menu-history','menu-lang','menu-refresh','menu-export','menu-install','menu-kopi'].forEach(id=>{
+  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','lbl-hist-title','lbl-scan','lbl-sync-comm','lbl-solat','lbl-renungan','menu-lbl2','menu-lang','menu-refresh','menu-export','menu-about','menu-install','menu-kopi','menu-clear'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.textContent=t(id);
   });
@@ -708,6 +712,39 @@ function shareM(){
 
 function exportD(){
   navigator.clipboard.writeText(JSON.stringify({favs,hist,exported:new Date().toISOString()},null,2)).then(()=>showToast(t('te'))).catch(()=>showToast('Gagal'));
+}
+
+function openAbout(){
+  const ver=JSON.parse(localStorage.getItem('sk_ver')||'{}');
+  document.getElementById('aboutVersion').textContent=ver.masjid||'—';
+  document.getElementById('aboutModal').classList.add('open');
+  toggleMenu();
+}
+function closeAbout(){
+  document.getElementById('aboutModal').classList.remove('open');
+}
+
+function clearAllData(){
+  const bm=lang==='bm';
+  showConfirm(
+    bm?'Padam semua data?':'Clear all data?',
+    bm?'Kegemaran, rekod infaq, koleksi imbasan dan profil akan dipadam.':'Favourites, infaq records, scan collection and profile will be deleted.',
+    ()=>{
+      ['sk_masjid','sk_qr','sk_kempen','sk_favs','sk_hist','sk_local_masjid','sk_local_qr','sk_profile','sk_solat','sk_ver','sk_sheet_date','sk_sheet_count'].forEach(k=>localStorage.removeItem(k));
+      favs=[];hist=[];localMasjid=[];localQr=[];
+      profile={name:'',phone:''};
+      MD=MASJID;QR=QR_DEFAULT;KD=KEMPEN;
+      cur=dailyM();
+      updHero();
+      updStats();
+      renderProfileHeader();
+      renderMI();
+      renderK();
+      initWaktuSolat();
+      showToast(bm?'✅ Semua data dipadam':'✅ All data cleared');
+      toggleMenu();
+    }
+  );
 }
 
 function showToast(msg){
@@ -1203,6 +1240,9 @@ document.addEventListener('DOMContentLoaded', async function(){
   document.getElementById('menuBtn').onclick=toggleMenu;
   document.getElementById('menuOverlay').onclick=toggleMenu;
   document.getElementById('menuLang').onclick=()=>{toggleLang();toggleMenu();};
+  document.getElementById('menuAbout').onclick=openAbout;
+  document.getElementById('menuClearData').onclick=clearAllData;
+  document.getElementById('aboutModal').onclick=function(e){if(e.target===this)closeAbout();};
   document.getElementById('menuRefresh').onclick=async()=>{
     showToast(lang==='bm'?'⏳ Mengemaskini...':'⏳ Refreshing...');
     const count=await refreshFromSheet(true);
