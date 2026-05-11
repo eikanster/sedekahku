@@ -25,12 +25,21 @@ let localMasjid=JSON.parse(localStorage.getItem('sk_local_masjid')||'[]');
 let localQr=JSON.parse(localStorage.getItem('sk_local_qr')||'[]');
 let profile=JSON.parse(localStorage.getItem('sk_profile')||'{"name":"","phone":""}');
 let deferredPrompt;
+const _isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const _isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
   const installBtn = document.getElementById('menuInstall');
   if(installBtn) installBtn.style.display = 'flex';
 });
+// Show Install button on iOS (no beforeinstallprompt support) unless already installed
+if (_isIOS && !_isStandalone) {
+  window.addEventListener('DOMContentLoaded', () => {
+    const installBtn = document.getElementById('menuInstall');
+    if(installBtn) installBtn.style.display = 'flex';
+  });
+}
 let cur=null;
 let curK=null;
 let scanPending=null;
@@ -747,11 +756,11 @@ function clearAllData(){
   );
 }
 
-function showToast(msg){
+function showToast(msg, dur=2800){
   const el=document.getElementById('toast');
   el.textContent=msg;
   el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'),2800);
+  setTimeout(()=>el.classList.remove('show'),dur);
 }
 
 async function refreshData(){
@@ -1252,7 +1261,14 @@ document.addEventListener('DOMContentLoaded', async function(){
   };
   document.getElementById('menuExport').onclick=()=>{syncToCommunity();toggleMenu();};
   document.getElementById('menuInstall').onclick=async ()=>{
-    if(!deferredPrompt) return;
+    if(_isIOS){
+      toggleMenu();
+      showToast(lang==='bm'
+        ?'Tekan ⬆️ Share → "Add to Home Screen"'
+        :'Tap ⬆️ Share → "Add to Home Screen"', 4000);
+      return;
+    }
+    if(!deferredPrompt){ toggleMenu(); return; }
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
     if (outcome === 'accepted') {
