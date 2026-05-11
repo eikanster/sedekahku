@@ -243,7 +243,7 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
 @keyframes ripple-anim{to{transform:scale(4);opacity:0}}
 
 /* Saya Tab Switcher */
-.saya-tabs{display:flex;border-top:1px solid var(--border);margin:16px -24px -24px;border-radius:0 0 var(--r) var(--r);overflow:hidden}
+.saya-tabs{display:flex;border-top:1px solid var(--border);margin:14px -24px -24px;border-radius:0 0 var(--r) var(--r);overflow:hidden}
 .saya-tab{flex:1;padding:14px 6px;background:none;border:none;border-right:1px solid var(--border);cursor:pointer;font-family:inherit;transition:background .2s}
 .saya-tab:last-child{border-right:none}
 .saya-tab .snum{display:block;font-size:20px;font-weight:700;color:var(--muted);transition:color .2s}
