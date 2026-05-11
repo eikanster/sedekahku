@@ -687,7 +687,7 @@ function toggleLang(){
 }
 
 function applyLang(){
-  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','lbl-hist-title','lbl-scan','lbl-sync-comm','lbl-solat','lbl-renungan','menu-lbl2','menu-lang','menu-refresh','menu-export','menu-about','menu-install','menu-kopi','menu-clear'].forEach(id=>{
+  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','lbl-hist-title','lbl-scan','lbl-sync-comm','lbl-solat','lbl-renungan','menu-lbl2','menu-lang','menu-refresh','menu-export','menu-about','menu-install','menu-clear'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.textContent=t(id);
   });
@@ -1301,8 +1301,6 @@ document.addEventListener('DOMContentLoaded', async function(){
   document.getElementById('modalProfPhone').onkeydown=e=>{if(e.key==='Enter') saveProfileEdit();};
 
   // Belanja Kopi
-  const menuKopi=document.getElementById('menuKopi');
-  if(menuKopi) menuKopi.onclick=()=>{ if(KOPI_URL) window.open(KOPI_URL,'_blank'); else showToast('Link belum disetkan'); toggleMenu(); };
 
   document.getElementById('hijriDate').textContent = hijri();
   cur=dailyM();
