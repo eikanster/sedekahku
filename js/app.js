@@ -606,7 +606,7 @@ function renderSayaFav(el){
       <div class="finfo">
         <div class="fname">${f.name}</div>
         <div class="floc">${f.daerah||f.mukim||''}, ${f.state}</div>
-        <div style="margin-top:5px;">${statusBadge(f.status)}</div>
+        <div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap;">${statusBadge(f.status)}${typeBadge(f.type)}</div>
       </div>
       <button class="btn-rm" onclick="event.stopPropagation(); delFav('${f.id}')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -640,6 +640,7 @@ function renderSayaImbasan(el){
       <div class="finfo">
         <div class="fname">${m.name} <span style="font-size:9px;color:#ffc800;font-weight:600;">● LOKAL</span></div>
         <div class="floc">${m.daerah||''}, ${m.state}</div>
+        <div style="margin-top:4px;display:flex;gap:4px;">${typeBadge(m.type||'masjid')}</div>
       </div>
       <span style="color:var(--teal);opacity:.6;font-size:20px">›</span>
     </div>`).join(''):`<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Belum ada imbasan tempatan.</div>`;
@@ -686,7 +687,7 @@ function renderSearch(q=''){
       <div class="finfo">
         <div class="fname">${m.name}</div>
         <div class="floc">${m.daerah||''}${m.state?', '+m.state:''}</div>
-        <div style="margin-top:5px;">${statusBadge(m.status)}</div>
+        <div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap;">${statusBadge(m.status)}${typeBadge(m.type)}</div>
       </div>
       <span style="color:var(--teal);opacity:.6;font-size:20px">›</span>
     </div>`).join('');
@@ -914,6 +915,27 @@ function statusBadge(status){
   return '';
 }
 
+function detectType(name){
+  const n=(name||'').toUpperCase();
+  if(/\b(MASJID|MJD|MSJ|MASJED)\b/.test(n)) return 'masjid';
+  if(/\b(SURAU|SR)\b/.test(n)) return 'surau';
+  return 'lain';
+}
+
+function typeBadge(type){
+  if(type==='masjid') return '<span class="type-badge type-masjid">🕌 Masjid</span>';
+  if(type==='surau')  return '<span class="type-badge type-surau">🏠 Surau</span>';
+  if(type==='lain')   return '<span class="type-badge type-lain">👤 Lain-lain</span>';
+  return '';
+}
+
+function pickType(type){
+  if(scanPending) scanPending.masjid.type=type;
+  document.querySelectorAll('.type-pick').forEach(b=>{
+    b.classList.toggle('active', b.dataset.type===type);
+  });
+}
+
 // ── Profile Edit Modal ────────────────────────────────────────────
 let _profileEditMode='edit'; // 'edit' | 'gate'
 
@@ -1131,7 +1153,7 @@ function processScannedQR(rawString, source='live', exifLoc=null){
     masjid:{
       id:masjidId,
       name:name,
-      type:'masjid',
+      type:detectType(name),
       address:null,
       daerah:city,
       state:city,
@@ -1172,6 +1194,7 @@ function processScannedQR(rawString, source='live', exifLoc=null){
   closeScan();
 
   document.getElementById('addName').textContent=name;
+  pickType(detectType(name));
   document.getElementById('addCity').textContent=city+(postal?', '+postal:'');
   document.getElementById('addProxy').textContent=rawString.length>60?rawString.substring(0,60)+'...':rawString;
   const locBadge = document.getElementById('locBadge');

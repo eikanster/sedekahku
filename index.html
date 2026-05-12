@@ -189,6 +189,11 @@
     <div class="khdl"></div>
     <div class="unv-badge">⏳ Belum Disahkan</div>
     <div class="ktit" id="addName" style="margin-top:10px;"></div>
+    <div id="typePicker" style="display:flex;gap:8px;margin:10px 0 4px;">
+      <button class="type-pick tp-masjid" data-type="masjid" onclick="pickType('masjid')">🕌 Masjid</button>
+      <button class="type-pick tp-surau" data-type="surau" onclick="pickType('surau')">🏠 Surau</button>
+      <button class="type-pick tp-lain" data-type="lain" onclick="pickType('lain')">👤 Lain-lain</button>
+    </div>
     <div class="ksub" id="addCity"></div>
     <div id="locBadge" style="font-size:10px;font-weight:600;padding:4px 12px;border-radius:20px;margin-bottom:12px;display:inline-block;letter-spacing:0.5px;"></div>
     <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:16px;text-align:left;">

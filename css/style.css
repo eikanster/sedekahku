@@ -305,6 +305,14 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
 .badge-verified{background:rgba(93,248,216,0.12);border:1px solid rgba(93,248,216,0.3);color:var(--mint);box-shadow:0 2px 10px rgba(93,248,216,0.15)}
 .badge-community{background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.35);color:#c084fc;box-shadow:0 2px 10px rgba(167,139,250,0.2)}
 .badge-pending{background:rgba(255,200,0,0.1);border:1px solid rgba(255,200,0,0.25);color:#ffc800}
+.type-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;letter-spacing:0.4px;padding:3px 9px;border-radius:20px}
+.type-masjid{background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);color:#38bdf8}
+.type-surau{background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);color:#a78bfa}
+.type-lain{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--muted)}
+.type-pick{flex:1;padding:8px 4px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--muted);transition:all .2s}
+.type-pick.active.tp-masjid{background:rgba(56,189,248,0.12);border-color:rgba(56,189,248,0.4);color:#38bdf8}
+.type-pick.active.tp-surau{background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.4);color:#a78bfa}
+.type-pick.active.tp-lain{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.2);color:#ffffff}
 
 /* Profile edit fields */
 .prof-field{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:50px;padding:12px 18px;margin-bottom:10px;transition:border-color .2s}
