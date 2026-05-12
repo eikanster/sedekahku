@@ -1,10 +1,11 @@
-const CACHE_NAME = 'qrsedekah-v2';
+const CACHE_NAME = 'qrsedekah-v3';
 const STATIC_ASSETS = [
   './',
   './index.html',
   './css/style.css',
   './js/app.js',
   './js/qrcode.min.js',
+  './js/html5-qrcode.min.js',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',

@@ -819,6 +819,8 @@ function applyLang(){
   });
   const btnInfaq=document.getElementById('btnInfaq');
   if(btnInfaq&&btnInfaq.childNodes[0]) btnInfaq.childNodes[0].textContent=t('bi');
+  const ubMsg=document.getElementById('updateBarMsg');
+  if(ubMsg) ubMsg.textContent=lang==='bm'?'Versi baharu tersedia — ketik untuk muat semula':'New version available — tap to reload';
   const sInput=document.getElementById('searchInput');
   if(sInput) sInput.placeholder=t('search-ph');
   const _cs=JSON.parse(localStorage.getItem('sk_solat')||'null');
@@ -871,6 +873,11 @@ function clearAllData(){
       toggleMenu();
     }
   );
+}
+
+function showUpdateBar(){
+  const bar=document.getElementById('updateBar');
+  if(bar) bar.classList.add('show');
 }
 
 function showToast(msg, dur=2800){
@@ -1477,7 +1484,13 @@ document.addEventListener('DOMContentLoaded', async function(){
     el.addEventListener('click', e=>addRipple(e, el));
   });
 
-  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+    // When a new SW takes control, show update banner
+    navigator.serviceWorker.addEventListener('controllerchange', ()=>{
+      showUpdateBar();
+    });
+  }
 
   // ── Firefly Spawner ──
   (function spawnFireflies(){

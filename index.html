@@ -19,6 +19,10 @@
 </style>
 </head>
 <body>
+<div id="updateBar" onclick="window.location.reload()">
+  🔄 <span id="updateBarMsg">Versi baharu tersedia — ketik untuk muat semula</span>
+  <button onclick="event.stopPropagation();this.parentElement.classList.remove('show')" style="background:none;border:none;color:inherit;font-size:18px;line-height:1;padding:0 0 0 12px;cursor:pointer;opacity:.7;">&times;</button>
+</div>
 <div class="noise-overlay" aria-hidden="true"></div>
 <div class="aurora-container" aria-hidden="true">
     <div class="aurora-orb-1"></div>
