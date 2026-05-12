@@ -1,21 +1,73 @@
 {
   "name": "QRSedekah",
   "short_name": "QRSedekah",
-  "description": "Daily infaq & sedekah to Malaysian masjid and surau",
-  "start_url": "./",
+  "description": "Daily infaq & sedekah to Malaysian masjid and surau using DuitNow QR",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#062B44",
   "theme_color": "#093C5D",
+  "lang": "ms",
+  "dir": "ltr",
+  "categories": ["utilities", "lifestyle", "social"],
   "icons": [
     {
       "src": "icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/screen-home.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Skrin Utama — senarai masjid & kempen"
+    },
+    {
+      "src": "screenshots/screen-qr.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "QR DuitNow untuk berinfaq"
+    },
+    {
+      "src": "screenshots/screen-scan.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Imbas & simpan QR masjid tempatan"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Imbas QR",
+      "short_name": "Imbas",
+      "description": "Imbas QR DuitNow masjid baharu",
+      "url": "/?action=scan",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Kegemaran Saya",
+      "short_name": "Kegemaran",
+      "description": "Lihat senarai masjid kegemaran",
+      "url": "/?action=fav",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }
