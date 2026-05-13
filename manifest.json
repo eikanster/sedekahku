@@ -33,23 +33,23 @@
   ],
   "screenshots": [
     {
-      "src": "screenshots/screen-home.png",
+      "src": "screenshots/screen-home.jpg",
       "sizes": "1080x1920",
-      "type": "image/png",
+      "type": "image/jpeg",
       "form_factor": "narrow",
       "label": "Skrin Utama — senarai masjid & kempen"
     },
     {
-      "src": "screenshots/screen-qr.png",
+      "src": "screenshots/screen-qr.jpg",
       "sizes": "1080x1920",
-      "type": "image/png",
+      "type": "image/jpeg",
       "form_factor": "narrow",
       "label": "QR DuitNow untuk berinfaq"
     },
     {
-      "src": "screenshots/screen-scan.png",
+      "src": "screenshots/screen-scan.jpg",
       "sizes": "1080x1920",
-      "type": "image/png",
+      "type": "image/jpeg",
       "form_factor": "narrow",
       "label": "Imbas & simpan QR masjid tempatan"
     }
