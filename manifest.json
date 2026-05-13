@@ -1,7 +1,7 @@
 {
   "name": "QRSedekah",
   "short_name": "QRSedekah",
-  "description": "Daily infaq & sedekah to Malaysian masjid and surau using DuitNow QR",
+  "description": "Daily infaq and sedekah to Malaysian masjid and surau using DuitNow QR",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -37,7 +37,7 @@
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Skrin Utama — senarai masjid & kempen"
+      "label": "Skrin Utama - senarai masjid dan kempen"
     },
     {
       "src": "screenshots/screen-qr.png",
@@ -51,7 +51,7 @@
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Imbas & simpan QR masjid tempatan"
+      "label": "Imbas dan simpan QR masjid tempatan"
     }
   ],
   "shortcuts": [
