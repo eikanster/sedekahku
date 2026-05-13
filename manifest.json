@@ -1,16 +1,26 @@
 {
+  "id": "/",
   "name": "QRSedekah",
   "short_name": "QRSedekah",
   "description": "Daily infaq and sedekah to Malaysian masjid and surau using DuitNow QR",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "orientation": "portrait",
   "background_color": "#062B44",
   "theme_color": "#093C5D",
   "lang": "ms",
   "dir": "ltr",
-  "categories": ["utilities", "lifestyle", "social"],
+  "categories": ["education", "lifestyle", "social", "utilities"],
+  "prefer_related_applications": false,
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "handle_links": "preferred",
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
   "icons": [
     {
       "src": "icons/icon-192.png",
@@ -68,6 +78,21 @@
       "description": "Lihat senarai masjid kegemaran",
       "url": "/?action=fav",
       "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "share_target": {
+    "action": "/",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+qrsedekah",
+      "url": "/?qr=%s"
     }
   ]
 }
