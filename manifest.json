@@ -3,6 +3,11 @@
   "name": "QRSedekah",
   "short_name": "QRSedekah",
   "description": "Daily infaq and sedekah to Malaysian masjid and surau using DuitNow QR",
+  "dataVersion": "2026-05-13",
+  "files": {
+    "masjid": "2026-05-13",
+    "kempen": "2026-05-13"
+  },
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
