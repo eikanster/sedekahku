@@ -89,6 +89,18 @@
       "url": "url"
     }
   },
+  "file_handlers": [
+    {
+      "action": "/",
+      "accept": {
+        "image/png": [".png"],
+        "image/jpeg": [".jpg", ".jpeg"],
+        "image/webp": [".webp"]
+      },
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }],
+      "launch_type": "single-client"
+    }
+  ],
   "protocol_handlers": [
     {
       "protocol": "web+qrsedekah",

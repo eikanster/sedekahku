@@ -24,6 +24,48 @@ let hist=JSON.parse(localStorage.getItem('sk_hist')||'[]');
 let localMasjid=JSON.parse(localStorage.getItem('sk_local_masjid')||'[]');
 let localQr=JSON.parse(localStorage.getItem('sk_local_qr')||'[]');
 let profile=JSON.parse(localStorage.getItem('sk_profile')||'{"name":"","phone":""}');
+// ── File Handler — OS "Open with QRSedekah" for image files ──────
+if ('launchQueue' in window) {
+  window.launchQueue.setConsumer(async (launchParams) => {
+    if (!launchParams.files || !launchParams.files.length) return;
+    try {
+      const file = await launchParams.files[0].getFile();
+      if (!file.type.startsWith('image/')) return;
+      // Wait for DOM to be ready before processing
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => handleLaunchedFile(file));
+      } else {
+        handleLaunchedFile(file);
+      }
+    } catch(e) {}
+  });
+}
+
+function handleLaunchedFile(file) {
+  showToast(lang === 'bm' ? '📂 Memproses fail QR...' : '📂 Processing QR file...', 3000);
+  // Use a hidden temp div — keeps scan modal UI untouched
+  const TMP_ID = 'lq-tmp-reader';
+  let tmpDiv = document.getElementById(TMP_ID);
+  if (!tmpDiv) {
+    tmpDiv = document.createElement('div');
+    tmpDiv.id = TMP_ID;
+    tmpDiv.style.display = 'none';
+    document.body.appendChild(tmpDiv);
+  }
+  const scanner = new Html5Qrcode(TMP_ID);
+  getExifLoc(file, (exifLoc) => {
+    scanner.scanFile(file, true)
+      .then(decodedText => {
+        scanner.clear();
+        processScannedQR(decodedText, 'file', exifLoc);
+      })
+      .catch(() => {
+        scanner.clear();
+        showToast(lang === 'bm' ? '❌ QR tidak dapat dibaca dari fail ini' : '❌ Cannot read QR from this file');
+      });
+  });
+}
+
 let deferredPrompt;
 const _isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
 const _isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
