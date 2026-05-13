@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "dev.pages.sedekahku.twa",
+    "sha256_cert_fingerprints": ["B4:F2:3A:0A:E9:6B:DD:E0:92:C7:54:E9:80:CE:64:38:63:AF:F2:69:27:5F:52:66:F8:99:3E:5D:7D:62:03:8B"]
+  }
+}]
