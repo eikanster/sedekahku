@@ -1,14 +1,12 @@
 const MASJID=[
   {id:"sgmy001",name:"Masjid Negara",type:"masjid",address:null,daerah:"Kuala Lumpur",state:"WP Kuala Lumpur",postcode:null,lat:null,lng:null,google_maps_url:null,image_url:null,status:"verified",verified_by:"admin",verified_at:"2026-05-06T00:00:00Z",infaq_count:0,featured_dates:[],ramadan_priority:false,created_at:"2026-05-06T00:00:00Z",updated_at:"2026-05-06T00:00:00Z"},
   {id:"sgmy002",name:"Masjid Sultan Salahuddin Abdul Aziz Shah",type:"masjid",address:null,daerah:"Shah Alam",state:"Selangor",postcode:null,lat:null,lng:null,google_maps_url:null,image_url:null,status:"verified",verified_by:"admin",verified_at:"2026-05-06T00:00:00Z",infaq_count:0,featured_dates:[],ramadan_priority:false,created_at:"2026-05-06T00:00:00Z",updated_at:"2026-05-06T00:00:00Z"},
-  {id:"sgmy003",name:"Masjid Putra",type:"masjid",address:null,daerah:"Presint 1",state:"WP Putrajaya",postcode:null,lat:null,lng:null,google_maps_url:null,image_url:null,status:"verified",verified_by:"admin",verified_at:"2026-05-06T00:00:00Z",infaq_count:0,featured_dates:[],ramadan_priority:false,created_at:"2026-05-06T00:00:00Z",updated_at:"2026-05-06T00:00:00Z"},
   {id:"sgmy004",name:"Masjid Selat Melaka",type:"masjid",address:null,daerah:"Pulau Melaka",state:"Melaka",postcode:null,lat:null,lng:null,google_maps_url:null,image_url:null,status:"verified",verified_by:"admin",verified_at:"2026-05-06T00:00:00Z",infaq_count:0,featured_dates:[],ramadan_priority:false,created_at:"2026-05-06T00:00:00Z",updated_at:"2026-05-06T00:00:00Z"}
 ];
 
 const QR_DEFAULT=[
   {id:"qr-sgmy001",masjid_id:"sgmy001",duitnow_string:"MASJIDNEGARA@PUBLIC",merchant_id:null,account_name:"MASJID NEGARA",account_number:null,bank_name:null,qr_type:"static",qr_image_url:null,is_primary:true,type:"general",status:"active",submitted_by_email:null,submitted_by_phone:null,created_at:"2026-05-06T00:00:00Z"},
   {id:"qr-sgmy002",masjid_id:"sgmy002",duitnow_string:"MASJIDSHAHALAM@PUBLIC",merchant_id:null,account_name:"MASJID SULTAN SALAHUDDIN ABDUL AZIZ SHAH",account_number:null,bank_name:null,qr_type:"static",qr_image_url:null,is_primary:true,type:"general",status:"active",submitted_by_email:null,submitted_by_phone:null,created_at:"2026-05-06T00:00:00Z"},
-  {id:"qr-sgmy003",masjid_id:"sgmy003",duitnow_string:"MASJIDPUTRA@PUBLIC",merchant_id:null,account_name:"MASJID PUTRA",account_number:null,bank_name:null,qr_type:"static",qr_image_url:null,is_primary:true,type:"general",status:"active",submitted_by_email:null,submitted_by_phone:null,created_at:"2026-05-06T00:00:00Z"},
   {id:"qr-sgmy004",masjid_id:"sgmy004",duitnow_string:"MASJIDSELAT@PUBLIC",merchant_id:null,account_name:"MASJID SELAT MELAKA",account_number:null,bank_name:null,qr_type:"static",qr_image_url:null,is_primary:true,type:"general",status:"active",submitted_by_email:null,submitted_by_phone:null,created_at:"2026-05-06T00:00:00Z"}
 ];
 
