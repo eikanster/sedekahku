@@ -123,7 +123,6 @@ const T={
     ehd:'Tekan Alhamdulillah dah Sedekah! selepas infaq.',
     'menu-about':'Tentang App',
     'menu-clear':'Padam Semua Data',
-    'menu-reset':'Set Semula Cache',
     'lbl-solat':'Waktu Solat',
     'lbl-renungan':'📿 Renungan Harian',
     'menu-refresh':'Segarkan Data',
@@ -204,9 +203,9 @@ function updHero(){
   if(!cur) return;
   document.getElementById('masjidName').textContent=cur.name;
   document.getElementById('masjidLoc').textContent=(cur.daerah||'')+', '+cur.state;
-  const badgesEl = document.getElementById('masjidBadges');
-  if(badgesEl){
-    badgesEl.innerHTML = statusBadge(cur.status) + typeBadge(cur.type) + contributorBadge(cur.submitter_name);
+  const contribEl = document.getElementById('masjidContrib');
+  if(contribEl){
+    contribEl.textContent = (cur.status==='community' && cur.submitter_name) ? '📸 '+cur.submitter_name : '';
   }
   updSimpanBtn();
 }
@@ -653,7 +652,7 @@ function renderSayaFav(el){
       <div class="finfo">
         <div class="fname">${f.name}</div>
         <div class="floc">${f.daerah||f.mukim||''}, ${f.state}</div>
-        <div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap;">${statusBadge(f.status)}${typeBadge(f.type)}${contributorBadge(f.submitter_name)}</div>
+        <div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap;">${statusBadge(f.status)}${typeBadge(f.type)}</div>
       </div>
       <button class="btn-rm" onclick="event.stopPropagation(); delFav('${f.id}')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -734,7 +733,7 @@ function renderSearch(q=''){
       <div class="finfo">
         <div class="fname">${m.name}</div>
         <div class="floc">${m.daerah||''}${m.state?', '+m.state:''}</div>
-        <div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap;">${statusBadge(m.status)}${typeBadge(m.type)}${contributorBadge(m.submitter_name)}</div>
+        <div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap;">${statusBadge(m.status)}${typeBadge(m.type)}</div>
       </div>
       <span style="color:var(--teal);opacity:.6;font-size:20px">›</span>
     </div>`).join('');
@@ -860,7 +859,7 @@ function toggleLang(){
 }
 
 function applyLang(){
-  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','lbl-hist-title','lbl-scan','lbl-sync-comm','lbl-solat','lbl-renungan','menu-lbl2','menu-lang','menu-refresh','menu-export','menu-about','menu-install','menu-clear','menu-reset'].forEach(id=>{
+  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','lbl-hist-title','lbl-scan','lbl-sync-comm','lbl-solat','lbl-renungan','menu-lbl2','menu-lang','menu-refresh','menu-export','menu-about','menu-install','menu-clear'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.textContent=t(id);
   });
@@ -922,24 +921,6 @@ function clearAllData(){
   );
 }
 
-function resetCache(){
-  const bm=lang==='bm';
-  showConfirm(
-    bm?'Set semula cache?':'Reset database cache?',
-    bm?'Ini akan memuat turun data rasmi terkini tanpa memadam data peribadi anda.':'This will download the latest official data without deleting your personal data.',
-    async ()=>{
-      localStorage.removeItem('sk_masjid');
-      localStorage.removeItem('sk_qr');
-      localStorage.removeItem('sk_ver');
-      localStorage.removeItem('sk_sheet_date');
-      MD=MASJID; QR=QR_DEFAULT;
-      showToast(bm?'⏳ Menetapkan semula...':'⏳ Resetting cache...');
-      await refreshFromSheet(true);
-      toggleMenu();
-      location.reload();
-    }
-  );
-}
 
 function showUpdateBar(){
   const bar=document.getElementById('updateBar');
@@ -1002,11 +983,6 @@ function typeBadge(type){
   return '';
 }
 
-function contributorBadge(name){
-  if(!name) return '';
-  const shortName = name.length > 12 ? name.substring(0, 10) + '..' : name;
-  return `<span class="status-badge" style="background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);color:#a78bfa;font-size:9px;padding:2px 8px;">👤 ${shortName}</span>`;
-}
 
 function pickType(type){
   if(scanPending) scanPending.masjid.type=type;
@@ -1568,7 +1544,6 @@ document.addEventListener('DOMContentLoaded', async function(){
 
   // Belanja Kopi
 
-  document.getElementById('menuResetCache').onclick=resetCache;
   document.getElementById('hijriDate').textContent = hijri();
   cur=dailyM();
   updHero();
