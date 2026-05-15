@@ -103,6 +103,7 @@ function doGet(e) {
         postcode: row[6] || null, lat: lat, lng: lng,
         google_maps_url: (lat && lng) ? `https://www.google.com/maps?q=${lat},${lng}` : null,
         image_url: null, status: status,
+        submitter_name: row[1] || null,
         verified_by: status === 'verified' ? 'admin' : 'community',
         verified_at: now, infaq_count: 0, featured_dates: [],
         ramadan_priority: false, created_at: createdAt, updated_at: now
@@ -208,6 +209,7 @@ function generateJSON() {
       postcode: row[6] || null, lat: lat, lng: lng,
       google_maps_url: (lat && lng) ? `https://www.google.com/maps?q=${lat},${lng}` : null,
       image_url: null, status: status,
+      submitter_name: row[1] || null,
       verified_by: status === 'verified' ? 'admin' : 'community',
       verified_at: now, infaq_count: 0, featured_dates: [],
       ramadan_priority: false, created_at: createdAt, updated_at: now
