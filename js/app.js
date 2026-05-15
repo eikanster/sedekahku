@@ -10,13 +10,11 @@ const QR_DEFAULT=[
   {id:"qr-sgmy004",masjid_id:"sgmy004",duitnow_string:"MASJIDSELAT@PUBLIC",merchant_id:null,account_name:"MASJID SELAT MELAKA",account_number:null,bank_name:null,qr_type:"static",qr_image_url:null,is_primary:true,type:"general",status:"active",submitted_by_email:null,submitted_by_phone:null,created_at:"2026-05-06T00:00:00Z"}
 ];
 
-const KEMPEN=[{id:"kmp001",masjid_id:"sgmy001",title:"Tabung Pembinaan Masjid Negara",category:"renovation",description:"Kempen pengubahsuaian dan naik taraf Masjid Negara",target_amount:500000,collected_amount:125000,deadline:"2026-08-31",is_urgent:false,status:"active",qr_code_id:"qr-sgmy001",created_at:"2026-05-06T00:00:00Z",updated_at:"2026-05-06T00:00:00Z"}];
 let HIKMAH = [];
 
 let lang=localStorage.getItem('sk_lang')||'bm';
 let MD=JSON.parse(localStorage.getItem('sk_masjid')||'null')||MASJID;
 let QR=JSON.parse(localStorage.getItem('sk_qr')||'null')||QR_DEFAULT;
-let KD=JSON.parse(localStorage.getItem('sk_kempen')||'null')||KEMPEN;
 let favs=JSON.parse(localStorage.getItem('sk_favs')||'[]');
 let hist=JSON.parse(localStorage.getItem('sk_hist')||'[]');
 let localMasjid=JSON.parse(localStorage.getItem('sk_local_masjid')||'[]');
@@ -81,7 +79,6 @@ if (_isIOS && !_isStandalone) {
   });
 }
 let cur=null;
-let curK=null;
 let scanPending=null;
 const SUBMIT_URL='https://script.google.com/macros/s/AKfycbzJzDkn8_tynoOG9La0RKApF9mWlkkO_Bp0f830xlkoXn0x7_qpC_Jzn2ISnNV-3FqA/exec';
 const KOPI_URL='https://toyyibpay.com/Belanja-Kopi-QRSedakah';
@@ -92,7 +89,6 @@ const T={
     km:'Kempen',
     mi:'Rekod',
     'lbl-hariini':'Masjid Hari Ini',
-    'lbl-kempen-title':'Kempen Aktif',
     'lbl-fav-title':'❤️ Masjid Kegemaran',
     'lbl-hist-title':'Rekod Infaq',
     'lbl-simpan':'Fav',
@@ -101,7 +97,6 @@ const T={
     'lbl-stat1':'Masjid Disimpan',
     'lbl-stat2':'Infaq Dicatat',
     'lbl-hist-infaq':'Sejarah Infaq Masjid',
-    'lbl-hist-kempen':'Sejarah Infaq Kempen',
     'menu-lbl1':'Rekod',
     'menu-lbl2':'Tetapan',
     'menu-history':'Rekod Infaq',
@@ -134,7 +129,6 @@ const T={
     km:'Campaigns',
     mi:'History',
     'lbl-hariini':"Today's Masjid",
-    'lbl-kempen-title':'Active Campaigns',
     'lbl-fav-title':'❤️ Fav Masjid',
     'lbl-hist-title':'Infaq History',
     'lbl-simpan':'Fav',
@@ -143,7 +137,6 @@ const T={
     'lbl-stat1':'Saved Masjid',
     'lbl-stat2':'Infaq Recorded',
     'lbl-hist-infaq':'Masjid Infaq History',
-    'lbl-hist-kempen':'Campaign Infaq History',
     'menu-lbl1':'Records',
     'menu-lbl2':'Settings',
     'menu-history':'Infaq History',
@@ -332,17 +325,12 @@ function updStats(){
 
 function openQR(){
   if(!cur) return;
-  let qr;
-  if(curK && curK.qr_code_id){
-    qr = [...QR, ...localQr].find(q => q.id === curK.qr_code_id);
-  }
-  if(!qr) qr = getQR(cur.id);
-
+  const qr = getQR(cur.id);
   const duitnowStr=qr?qr.duitnow_string:'';
-  
-  document.getElementById('qrName').textContent = curK ? curK.title : cur.name;
+
+  document.getElementById('qrName').textContent = cur.name;
   document.getElementById('qrBadge').innerHTML = statusBadge(cur.status);
-  document.getElementById('qrSub').textContent = curK ? '🕌 ' + cur.name : t('qs');
+  document.getElementById('qrSub').textContent = t('qs');
   document.getElementById('qrDN').textContent=duitnowStr;
   document.getElementById('btnDB').textContent=t('db');
   const c=document.getElementById('qrc');
@@ -527,8 +515,8 @@ function confirmPay(){
   const r={
     id:cur.id,
     name:cur.name,
-    kName:curK?curK.title:null,
-    type:curK?'kempen':'masjid',
+    kName:null,
+    type:'masjid',
     loc:(cur.daerah||'')+', '+cur.state,
     date:new Date().toISOString(),
     disp:new Date().toLocaleDateString('ms-MY',{day:'numeric',month:'short',year:'numeric'})
@@ -541,84 +529,8 @@ function confirmPay(){
   renderMI();
 }
 
-function renderK(){
-  const el=document.getElementById('kempenList');
-  const titleEl=document.getElementById('lbl-kempen-title');
-  if(!el||!cur) return;
-  const bm=lang==='bm';
-
-  const active=KD.filter(k=>k.status==='active');
-  const curMasjidK=active.filter(k=>k.masjid_id===cur.id);
-  const listToShow=curMasjidK.length?curMasjidK:active;
-  const isOther=!curMasjidK.length;
-
-  if(titleEl) titleEl.textContent=bm
-    ?(isOther?'Kempen Pilihan':'Kempen Masjid Ini')
-    :(isOther?'Featured Campaigns':'Campaigns for this Masjid');
-
-  if(!listToShow.length){
-    el.innerHTML=`<div style="padding:12px 0;color:var(--muted);font-size:13px;">${bm?'Tiada kempen aktif':'No active campaigns'}</div>`;
-    return;
-  }
-
-  el.innerHTML=listToShow.map(k=>{
-    const p=k.collected_amount?Math.min(100,Math.round(k.collected_amount/k.target_amount*100)):0;
-    const dl=Math.ceil((new Date(k.deadline)-new Date())/864e5);
-    const dlTxt=dl>0?dl+(bm?' hari lagi':' days left'):(bm?'Tamat':'Ended');
-    return `<div class="krow${k.is_urgent?' krow-urgent':''}" onclick="openKempen('${k.id}')">
-      <div class="krow-accent"></div>
-      <div class="krow-body">
-        <div class="krow-title">${k.title}</div>
-        <div class="krow-bar"><div class="krow-fill" data-fill="${p}"></div></div>
-        <div class="krow-stats">${p}% · RM ${(k.target_amount/1000).toFixed(0)}k · ⏰ ${dlTxt}</div>
-      </div>
-      <span class="krow-arrow">›</span>
-    </div>`;
-  }).join('');
-
-  setTimeout(()=>{
-    document.querySelectorAll('.krow-fill[data-fill]').forEach(bar=>{
-      bar.style.width=bar.dataset.fill+'%';
-    });
-  },50);
-}
-
-function openKempen(id){
-  const k=KD.find(x=>x.id===id);
-  if(!k) return;
-  curK=k;
-  const m=MD.find(x=>x.id===k.masjid_id)||localMasjid.find(x=>x.id===k.masjid_id);
-  const p=k.collected_amount?Math.min(100,Math.round(k.collected_amount/k.target_amount*100)):0;
-  const dl=Math.ceil((new Date(k.deadline)-new Date())/864e5);
-  const bm=lang==='bm';
-
-  document.getElementById('kmBadge').innerHTML=k.is_urgent
-    ?'<span class="status-badge" style="background:rgba(255,138,80,0.15);border:1px solid rgba(255,138,80,0.3);color:#ff8a50;">⚡ '+(bm?'Segera':'Urgent')+'</span>'
-    :'<span class="kbadge">AKTIF</span>';
-  document.getElementById('kmTitle').textContent=k.title;
-  document.getElementById('kmMasjid').textContent='🕌 '+(m?m.name:k.masjid_id);
-  document.getElementById('kmPct').textContent=p+'% '+(bm?'terkumpul':'collected');
-  document.getElementById('kmTarget').textContent='RM '+(k.target_amount||0).toLocaleString();
-  document.getElementById('kmDeadline').textContent='⏰ '+(dl>0?dl+(bm?' hari lagi':' days left'):(bm?'Tamat':'Ended'));
-  document.getElementById('kmDesc').textContent=k.description||'';
-  document.getElementById('btnBantuKempen').textContent=bm?'💚 Bantu Kempen Ini':'💚 Support This Campaign';
-
-  const bar=document.getElementById('kmBar');
-  bar.style.width='0%';
-  setTimeout(()=>bar.style.width=p+'%',50);
-
-  document.getElementById('kempenModal').classList.add('open');
-}
-
-function closeKempen(){
-  document.getElementById('kempenModal').classList.remove('open');
-}
 
 function renderMI(){
-  const histList=document.getElementById('histList');
-  const kHistList=document.getElementById('kHistList');
-  const pFavList=document.getElementById('profileFavList');
-  const pLocalList=document.getElementById('profileLocalList');
   updStats();
 
   renderProfileHeader();
@@ -745,18 +657,11 @@ function renderSearch(q=''){
 }
 
 function bindCards(){
-  document.querySelectorAll('.fcard[data-id], .kcard[data-id]').forEach(el=>{
+  document.querySelectorAll('.fcard[data-id]').forEach(el=>{
     el.onclick=()=>{
-      let m;
-      curK=null;
-      if(el.classList.contains('kcard')){
-        curK=KD.find(x=>x.id===el.dataset.id);
-        m=MD.find(x=>x.id===curK.masjid_id);
-      }else{
-        m=MD.find(x=>x.id===el.dataset.id)
-          ||favs.find(f=>f.id===el.dataset.id)
-          ||localMasjid.find(l=>l.id===el.dataset.id);
-      }
+      const m=MD.find(x=>x.id===el.dataset.id)
+        ||favs.find(f=>f.id===el.dataset.id)
+        ||localMasjid.find(l=>l.id===el.dataset.id);
       if(m){cur=m;openQR();}
     };
   });
@@ -769,8 +674,7 @@ function shuffleM(){
   }while(next.id===cur.id&&MD.length>1);
   cur=next;
   updHero();
-  renderK();
-}
+  }
 
 function saveFav(){
   if(!cur) return;
@@ -847,8 +751,7 @@ function goTab(n){
   if(target) target.classList.add('active');
   const btn=document.getElementById('nav-btn-'+n);
   if(btn) btn.classList.add('active');
-  if(n==='hariini') renderK();
-  if(n==='saya') renderMI();
+  if(n==='hariini')   if(n==='saya') renderMI();
   if(n==='search') renderSearch();
 }
 
@@ -863,7 +766,7 @@ function toggleLang(){
 }
 
 function applyLang(){
-  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','lbl-hist-title','lbl-scan','lbl-sync-comm','lbl-solat','lbl-renungan','menu-lbl2','menu-lang','menu-refresh','menu-export','menu-about','menu-install','menu-clear'].forEach(id=>{
+  ['lbl-hariini','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','lbl-hist-title','lbl-scan','lbl-sync-comm','lbl-solat','lbl-renungan','menu-lbl2','menu-lang','menu-refresh','menu-export','menu-about','menu-install','menu-clear'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.textContent=t(id);
   });
@@ -876,8 +779,7 @@ function applyLang(){
   const _cs=JSON.parse(localStorage.getItem('sk_solat')||'null');
   if(_cs&&_cs.date===new Date().toISOString().slice(0,10)) renderWaktuSolat(_cs.timings);
   else renderWaktuSolatPrompt();
-  renderK();
-  renderSeasonBanner();
+    renderSeasonBanner();
 }
 
 function shareM(){
@@ -908,17 +810,16 @@ function clearAllData(){
     bm?'Padam semua data?':'Clear all data?',
     bm?'Kegemaran, rekod infaq, koleksi imbasan dan profil akan dipadam.':'Favourites, infaq records, scan collection and profile will be deleted.',
     ()=>{
-      ['sk_masjid','sk_qr','sk_kempen','sk_favs','sk_hist','sk_local_masjid','sk_local_qr','sk_profile','sk_solat','sk_ver','sk_sheet_date','sk_sheet_count'].forEach(k=>localStorage.removeItem(k));
+      ['sk_masjid','sk_qr','sk_favs','sk_hist','sk_local_masjid','sk_local_qr','sk_profile','sk_solat','sk_ver','sk_sheet_date','sk_sheet_count'].forEach(k=>localStorage.removeItem(k));
       favs=[];hist=[];localMasjid=[];localQr=[];
       profile={name:'',phone:''};
-      MD=MASJID;QR=QR_DEFAULT;KD=KEMPEN;
+      MD=MASJID;QR=QR_DEFAULT;
       cur=dailyM();
       updHero();
       updStats();
       renderProfileHeader();
       renderMI();
-      renderK();
-      initWaktuSolat();
+            initWaktuSolat();
       showToast(bm?'✅ Semua data dipadam':'✅ All data cleared');
       toggleMenu();
     }
@@ -951,17 +852,12 @@ async function refreshData(){
       const d=await fetch('data/qr_code.json?v='+mf.files.qr_code).then(r=>r.ok?r.json():null).catch(()=>null);
       if(d&&d.length){QR=d;localStorage.setItem('sk_qr',JSON.stringify(d));}
     }
-    if(mf.files.kempen!==ver.kempen){
-      const d=await fetch('data/kempen.json?v='+mf.files.kempen).then(r=>r.ok?r.json():null).catch(()=>null);
-      if(d&&d.length){KD=d;localStorage.setItem('sk_kempen',JSON.stringify(d));renderK();}
-    }
     if(mf.files.hikmah!==ver.hikmah){
       const d=await fetch('data/hikmah.json?v='+mf.files.hikmah).then(r=>r.ok?r.json():null).catch(()=>null);
       if(d&&d.length){HIKMAH=d; renderSeasonBanner();}
     }
     localStorage.setItem('sk_ver',JSON.stringify(mf.files));
-    renderK();
-  }catch(e){}
+      }catch(e){}
 }
 
 // ── Status Badge ─────────────────────────────────────────────────
@@ -1150,7 +1046,7 @@ async function refreshFromSheet(force=false){
     localStorage.setItem('sk_sheet_date',today);
     localStorage.setItem('sk_last_sync',new Date().toISOString());
     updLastSyncDisplay();
-    if(changed){ cur=dailyM(); updHero(); renderK(); }
+    if(changed){ cur=dailyM(); updHero(); }
     return data.count||0;
 
   }catch(e){ return null; }
@@ -1468,7 +1364,7 @@ document.addEventListener('DOMContentLoaded', async function(){
   HIKMAH = await fetch('data/hikmah.json').then(r=>r.ok?r.json():[]).catch(()=>[]);
   document.getElementById('btnShuffle').onclick=shuffleM;
   document.getElementById('btnSolatRefresh').onclick=requestSolatLoc;
-  document.getElementById('btnInfaq').onclick=()=>{ curK=null; openQR(); };
+  document.getElementById('btnInfaq').onclick=()=>openQR();
   document.getElementById('btnFavToggle').onclick=toggleFav;
   document.getElementById('btnSaveCard').onclick=saveQRCard;
   document.getElementById('btnDeleteRecord').onclick=()=>{ closeQR(); delLocalMasjid(cur.id); };
@@ -1527,14 +1423,6 @@ document.addEventListener('DOMContentLoaded', async function(){
   if(sInput) sInput.oninput=(e)=>renderSearch(e.target.value);
 
   document.getElementById('qrModal').onclick=function(e){if(e.target===this)closeQR();};
-  document.getElementById('kempenModal').onclick=function(e){if(e.target===this)closeKempen();};
-  document.getElementById('btnBantuKempen').onclick=()=>{
-    if(!curK) return;
-    const m=MD.find(x=>x.id===curK.masjid_id)||localMasjid.find(x=>x.id===curK.masjid_id);
-    if(m) cur=m;
-    closeKempen();
-    openQR();
-  };
   document.getElementById('confirmYes').onclick=()=>{ if(_confirmCb) _confirmCb(); closeConfirm(); };
   document.getElementById('confirmNo').onclick=closeConfirm;
   document.getElementById('confirmModal').onclick=function(e){if(e.target===this)closeConfirm();};
@@ -1556,13 +1444,12 @@ document.addEventListener('DOMContentLoaded', async function(){
   applyLang(); // also calls initWaktuSolat via renderWaktuSolatPrompt
   renderSeasonBanner();
   renderMI();
-  renderK();
-  refreshData();
+    refreshData();
   refreshFromSheet();
   updLastSyncDisplay();
 
   // ── Ripple Effect on all interactive buttons ──
-  document.querySelectorAll('.btn-i, .btn-db, .btn-scan, .kcard').forEach(el=>{
+  document.querySelectorAll('.btn-i, .btn-db, .btn-scan').forEach(el=>{
     el.style.position='relative';
     el.style.overflow='hidden';
     el.addEventListener('click', e=>addRipple(e, el));

@@ -77,13 +77,6 @@
     <div class="slbl" style="margin-top:16px;">
       <span id="lbl-renungan">📿 Renungan Harian</span>
     </div>
-    <div id="seasonBanner"></div>
-
-    <div class="coll-hdr open" style="margin-top:10px;" onclick="toggleColl(this)">
-      <span id="lbl-kempen-title">Kempen Aktif</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-    </div>
-    <div class="coll-cnt open" id="kempenList"></div>
   </div>
 
   <div class="screen" id="screen-search">
@@ -249,7 +242,7 @@
     <div class="khdl"></div>
     <div style="text-align:center;margin-bottom:20px;">
       <div class="logo" style="font-size:32px;margin-bottom:8px;">QR<span>Sedekah</span></div>
-      <div style="font-size:13px;color:var(--muted);line-height:1.8;">Direktori QR DuitNow masjid &amp; surau Malaysia<br/>Dikuasakan oleh komuniti 🇲🇾</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.8;">Direktori QR DuitNow Masjid &amp; Surau Malaysia<br/>Dikuasakan oleh komuniti 🇲🇾</div>
     </div>
     <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:16px;margin-bottom:20px;">
       <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);"><span style="color:var(--muted);">Versi Data</span><span id="aboutVersion" style="color:var(--mint);font-weight:600;">—</span></div>
@@ -261,24 +254,6 @@
   </div>
 </div>
 
-<!-- Kempen Detail Modal -->
-<div class="kov" id="kempenModal">
-  <div class="ksh">
-    <button class="btn-close-x" onclick="closeKempen()">&times;</button>
-    <div class="khdl"></div>
-    <div id="kmBadge" style="text-align:center;margin-bottom:14px;"></div>
-    <div class="ktit" id="kmTitle" style="margin-bottom:6px;"></div>
-    <div class="ksub" id="kmMasjid" style="margin-bottom:20px;"></div>
-    <div class="pbar" style="margin-bottom:10px;"><div class="pfill" id="kmBar"></div></div>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-      <span id="kmPct" style="font-size:13px;font-weight:700;color:var(--mint);"></span>
-      <span id="kmTarget" style="font-size:12px;color:var(--muted);"></span>
-    </div>
-    <div id="kmDeadline" style="font-size:12px;color:var(--muted);margin-bottom:18px;"></div>
-    <div id="kmDesc" style="font-size:13px;color:var(--fg);line-height:1.7;margin-bottom:24px;opacity:0.8;"></div>
-    <button class="btn-db" id="btnBantuKempen">💚 Bantu Kempen Ini</button>
-  </div>
-</div>
 
 <!-- Profile Edit Modal -->
 <div class="kov" id="profileEditModal">
