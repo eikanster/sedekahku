@@ -202,8 +202,11 @@ function updHero(){
   document.getElementById('masjidName').textContent=cur.name;
   document.getElementById('masjidLoc').textContent=(cur.daerah||'')+', '+cur.state;
   const contribEl = document.getElementById('masjidContrib');
-  if(contribEl){
-    contribEl.textContent = (cur.status==='community' && cur.submitter_name) ? '📸 '+cur.submitter_name : '';
+  const contribName = document.getElementById('masjidContribName');
+  if(contribEl && contribName){
+    const show = cur.status==='community' && cur.submitter_name;
+    contribEl.style.display = show ? 'flex' : 'none';
+    contribName.textContent = show ? cur.submitter_name : '';
   }
   updSimpanBtn();
 }
