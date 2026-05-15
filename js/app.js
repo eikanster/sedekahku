@@ -108,7 +108,7 @@ const T={
     'menu-lbl2':'Tetapan',
     'menu-history':'Rekod Infaq',
     'menu-lang':'Tukar Bahasa',
-    'menu-export':'Sumbang Data QR',
+    'menu-export':'Muat Naik QR Lokal',
     'menu-install':'Muat Turun App',
     bi:'💚 Infaq Sekarang',
     db:'✨ Alhamdulillah dah Sedekah!',
@@ -123,9 +123,10 @@ const T={
     ehd:'Tekan Alhamdulillah dah Sedekah! selepas infaq.',
     'menu-about':'Tentang App',
     'menu-clear':'Padam Semua Data',
+    'menu-reset':'Set Semula Cache',
     'lbl-solat':'Waktu Solat',
     'lbl-renungan':'📿 Renungan Harian',
-    'menu-refresh':'Kemaskini Data',
+    'menu-refresh':'Segarkan Data',
     'menu-kopi':'Belanja Kopi ☕',
     'lbl-scan':'Imbas QR Masjid / Surau',
     'lbl-sync-comm':'Kongsi Koleksi ke Komuniti',
@@ -150,7 +151,7 @@ const T={
     'menu-lbl2':'Settings',
     'menu-history':'Infaq History',
     'menu-lang':'Switch Language',
-    'menu-export':'Submit QR Data',
+    'menu-export':'Upload Local QR',
     'menu-install':'Install App',
     bi:'💚 Donate Now',
     db:'✨ Alhamdulillah, I have Donated!',
@@ -203,6 +204,10 @@ function updHero(){
   if(!cur) return;
   document.getElementById('masjidName').textContent=cur.name;
   document.getElementById('masjidLoc').textContent=(cur.daerah||'')+', '+cur.state;
+  const badgesEl = document.getElementById('masjidBadges');
+  if(badgesEl){
+    badgesEl.innerHTML = statusBadge(cur.status) + typeBadge(cur.type) + contributorBadge(cur.submitter_name);
+  }
   updSimpanBtn();
 }
 
@@ -648,7 +653,7 @@ function renderSayaFav(el){
       <div class="finfo">
         <div class="fname">${f.name}</div>
         <div class="floc">${f.daerah||f.mukim||''}, ${f.state}</div>
-        <div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap;">${statusBadge(f.status)}${typeBadge(f.type)}</div>
+        <div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap;">${statusBadge(f.status)}${typeBadge(f.type)}${contributorBadge(f.submitter_name)}</div>
       </div>
       <button class="btn-rm" onclick="event.stopPropagation(); delFav('${f.id}')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -729,7 +734,7 @@ function renderSearch(q=''){
       <div class="finfo">
         <div class="fname">${m.name}</div>
         <div class="floc">${m.daerah||''}${m.state?', '+m.state:''}</div>
-        <div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap;">${statusBadge(m.status)}${typeBadge(m.type)}</div>
+        <div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap;">${statusBadge(m.status)}${typeBadge(m.type)}${contributorBadge(m.submitter_name)}</div>
       </div>
       <span style="color:var(--teal);opacity:.6;font-size:20px">›</span>
     </div>`).join('');
@@ -855,7 +860,7 @@ function toggleLang(){
 }
 
 function applyLang(){
-  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','lbl-hist-title','lbl-scan','lbl-sync-comm','lbl-solat','lbl-renungan','menu-lbl2','menu-lang','menu-refresh','menu-export','menu-about','menu-install','menu-clear'].forEach(id=>{
+  ['lbl-hariini','lbl-kempen-title','lbl-fav-title','lbl-simpan','lbl-kongsi','lbl-lain','lbl-stat1','lbl-stat2','lbl-hist-title','lbl-scan','lbl-sync-comm','lbl-solat','lbl-renungan','menu-lbl2','menu-lang','menu-refresh','menu-export','menu-about','menu-install','menu-clear','menu-reset'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.textContent=t(id);
   });
@@ -913,6 +918,25 @@ function clearAllData(){
       initWaktuSolat();
       showToast(bm?'✅ Semua data dipadam':'✅ All data cleared');
       toggleMenu();
+    }
+  );
+}
+
+function resetCache(){
+  const bm=lang==='bm';
+  showConfirm(
+    bm?'Set semula cache?':'Reset database cache?',
+    bm?'Ini akan memuat turun data rasmi terkini tanpa memadam data peribadi anda.':'This will download the latest official data without deleting your personal data.',
+    async ()=>{
+      localStorage.removeItem('sk_masjid');
+      localStorage.removeItem('sk_qr');
+      localStorage.removeItem('sk_ver');
+      localStorage.removeItem('sk_sheet_date');
+      MD=MASJID; QR=QR_DEFAULT;
+      showToast(bm?'⏳ Menetapkan semula...':'⏳ Resetting cache...');
+      await refreshFromSheet(true);
+      toggleMenu();
+      location.reload();
     }
   );
 }
@@ -976,6 +1000,12 @@ function typeBadge(type){
   if(type==='surau')  return '<span class="type-badge type-surau">🏠 Surau</span>';
   if(type==='lain')   return '<span class="type-badge type-lain">👤 Lain-lain</span>';
   return '';
+}
+
+function contributorBadge(name){
+  if(!name) return '';
+  const shortName = name.length > 12 ? name.substring(0, 10) + '..' : name;
+  return `<span class="status-badge" style="background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);color:#a78bfa;font-size:9px;padding:2px 8px;">👤 ${shortName}</span>`;
 }
 
 function pickType(type){
@@ -1115,23 +1145,54 @@ async function refreshFromSheet(force=false){
 
     let changed=false;
 
-    if(data.masjid.length){
-      const existing=new Set(MD.map(m=>m.id));
-      const newM=data.masjid.filter(m=>!existing.has(m.id));
-      if(newM.length){ MD=[...MD,...newM]; localStorage.setItem('sk_masjid',JSON.stringify(MD)); changed=true; }
+    if(data.masjid && data.masjid.length){
+      MD = data.masjid;
+      localStorage.setItem('sk_masjid', JSON.stringify(MD));
+      
+      // Update Favorites with latest data
+      let favChanged = false;
+      favs = favs.map(f => {
+        const fresh = MD.find(m => m.id === f.id);
+        if(fresh) { favChanged = true; return fresh; }
+        return f;
+      });
+      if(favChanged) localStorage.setItem('sk_favs', JSON.stringify(favs));
+      
+      changed = true;
     }
 
-    if(data.qr_code&&data.qr_code.length){
-      const existingQ=new Set(QR.map(q=>q.id));
-      const newQ=data.qr_code.filter(q=>!existingQ.has(q.id));
-      if(newQ.length){ QR=[...QR,...newQ]; localStorage.setItem('sk_qr',JSON.stringify(QR)); changed=true; }
+    if(data.qr_code && data.qr_code.length){
+      QR = data.qr_code;
+      localStorage.setItem('sk_qr', JSON.stringify(QR));
+      changed = true;
     }
 
     localStorage.setItem('sk_sheet_date',today);
+    localStorage.setItem('sk_last_sync',new Date().toISOString());
+    updLastSyncDisplay();
     if(changed){ cur=dailyM(); updHero(); renderK(); }
     return data.count||0;
 
   }catch(e){ return null; }
+}
+
+function updLastSyncDisplay(){
+  const el=document.getElementById('syncStatus');
+  if(!el) return;
+  const last=localStorage.getItem('sk_last_sync');
+  if(!last){ el.textContent=''; return; }
+  
+  const date=new Date(last);
+  const now=new Date();
+  const diff=Math.floor((now-date)/1000);
+  
+  let timeStr='';
+  if(diff<60) timeStr=lang==='bm'?'Baru sahaja':'Just now';
+  else if(diff<3600) timeStr=Math.floor(diff/60)+(lang==='bm'?' minit lepas':'m ago');
+  else if(diff<86400) timeStr=Math.floor(diff/3600)+(lang==='bm'?' jam lepas':'h ago');
+  else timeStr=date.toLocaleDateString(lang==='bm'?'ms-MY':'en-GB',{day:'numeric',month:'short'});
+
+  el.textContent=(lang==='bm'?'Disegar: ':'Synced: ')+timeStr;
 }
 
 // ── EMVCo QR Parser ─────────────────────────────────────────────
@@ -1507,6 +1568,7 @@ document.addEventListener('DOMContentLoaded', async function(){
 
   // Belanja Kopi
 
+  document.getElementById('menuResetCache').onclick=resetCache;
   document.getElementById('hijriDate').textContent = hijri();
   cur=dailyM();
   updHero();
@@ -1518,6 +1580,7 @@ document.addEventListener('DOMContentLoaded', async function(){
   renderK();
   refreshData();
   refreshFromSheet();
+  updLastSyncDisplay();
 
   // ── Ripple Effect on all interactive buttons ──
   document.querySelectorAll('.btn-i, .btn-db, .btn-scan, .kcard').forEach(el=>{
