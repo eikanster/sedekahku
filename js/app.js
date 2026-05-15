@@ -206,7 +206,10 @@ function updHero(){
   if(contribEl && contribName){
     const show = cur.status==='community' && cur.submitter_name;
     contribEl.style.display = show ? 'flex' : 'none';
+    contribEl.style.marginBottom = show ? '20px' : '0';
     contribName.textContent = show ? cur.submitter_name : '';
+    const mlocEl = document.querySelector('.mloc');
+    if(mlocEl) mlocEl.style.marginBottom = show ? '4px' : '20px';
   }
   updSimpanBtn();
 }
