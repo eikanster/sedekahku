@@ -932,6 +932,8 @@ function saveProfileEdit(){
 function renderProfileHeader(){
   const el=document.getElementById('profileName');
   if(el) el.textContent=profile.name||'Penyumbang QRSedekah';
+  const ph=document.getElementById('profilePhone');
+  if(ph) ph.textContent=profile.phone?'📞 '+profile.phone:'';
 }
 
 function saveProfile(){
