@@ -69,7 +69,7 @@
         <button class="btn-s" id="btnLain"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg><span id="lbl-lain">Cari</span></button>
       </div>
     </div>
-    <div class="slbl" style="margin-top:16px;">
+    <div class="slbl" style="margin-top:28px;">
       <span id="lbl-solat">Waktu Solat</span>
       <button class="btn-shuf" id="btnSolatRefresh" title="Refresh">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
@@ -77,15 +77,14 @@
     </div>
     <div id="waktuSolat"></div>
 
-    <div class="slbl" style="margin-top:16px;">
+    <div class="slbl" style="margin-top:32px;">
       <span id="lbl-renungan">📿 Renungan Harian</span>
     </div>
     <div id="seasonBanner"></div>
   </div>
 
   <div class="screen" id="screen-search">
-    <div class="slbl">Cari Masjid</div>
-    <div class="s-box">
+    <div class="s-box" style="margin-top:8px;">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="opacity:.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input type="text" id="searchInput" placeholder="Cari nama masjid atau lokasi...">
     </div>
@@ -96,12 +95,13 @@
     <div id="searchList"></div>
   </div>
 
-  <div class="screen" id="screen-scan" style="text-align:center;padding-top:60px;">
-    <div class="slbl">Sumbang Data</div>
-    <p style="color:var(--muted);font-size:14px;margin-bottom:30px;">Imbas QR masjid atau surau untuk menambah ke koleksi komuniti.</p>
-    <button class="btn-scan" id="btnTabScan" style="height:120px;flex-direction:column;gap:12px;">
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-      <span style="font-size:16px;">Buka Kamera Scanner</span>
+  <div class="screen" id="screen-scan" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center;padding:32px 24px;">
+    <div style="font-size:48px;margin-bottom:20px;opacity:0.9;">📷</div>
+    <div style="font-family:'Amiri',serif;font-size:22px;font-weight:700;color:var(--fg);margin-bottom:8px;line-height:1.3;">Imbas QR Masjid</div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:32px;max-width:260px;line-height:1.7;">Terus ke masjid atau surau, imbas QR DuitNow mereka dan bantu komuniti.</p>
+    <button class="btn-scan" id="btnTabScan" style="width:100%;max-width:300px;height:64px;font-size:15px;font-weight:600;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      <span id="lbl-scan-btn">Buka Kamera</span>
     </button>
   </div>
 
